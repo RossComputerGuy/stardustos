@@ -10,6 +10,7 @@ set(ARCH_DIR "${PROJECT_SOURCE_DIR}/arch/${TARGET_ARCH}")
 include("${ARCH_DIR}/build.cmake")
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
-add_compile_options("-nostdinc" "-fno-builtin")
+add_compile_options("-nostdinc" "-fno-builtin" "-Werror=implicit-function-declaration")
 add_link_options("-nostdlib" "-nostartfiles")
-add_executable(kernel.elf ${ARCH_FILES})
+add_executable(kernel.elf ${ARCH_FILES}
+  "${PROJECT_SOURCE_DIR}/src/string.c")
