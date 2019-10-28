@@ -1,0 +1,9 @@
+{
+   "cpp.buildConfigurations": [
+      {
+         "name": "",
+         "directory": ""
+      }
+   ],
+   "cpp.clangdArgs": "-Inewland/include"
+}
