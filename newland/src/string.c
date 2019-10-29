@@ -8,3 +8,9 @@ size_t strlen(const char* str) {
   while (*str++ != '\0') len++;
   return len;
 }
+
+void* memset(void* ptr, int val, size_t size) {
+  unsigned char* buff = (unsigned char*)ptr;
+  for (size_t i = 0; i < size; i++) buff[i] = val;
+  return ptr;
+}

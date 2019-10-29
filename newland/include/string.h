@@ -13,3 +13,4 @@ typedef unsigned short size_t;
 #endif
 
 size_t strlen(const char* str);
+void* memset(void* ptr, int val, size_t size);
