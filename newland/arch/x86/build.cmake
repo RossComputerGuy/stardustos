@@ -1,6 +1,7 @@
 set(ARCH_FILES "${ARCH_DIR}/src/asm/entry.s"
   "${ARCH_DIR}/src/asm/gdt.s"
   "${ARCH_DIR}/src/asm/idt.s"
+  "${ARCH_DIR}/src/asm/irq.s"
   "${ARCH_DIR}/src/bootstrap.c"
   "${ARCH_DIR}/src/gdt.c"
   "${ARCH_DIR}/src/idt.c"

@@ -3,7 +3,12 @@
   */
 #pragma once
 
+#include <newland/arch/idt.h>
 #include <newland/types.h>
+
+typedef void (*irq_t)(regs_t regs);
 
 uint32_t irq_disable();
 void irq_restore(uint32_t flags);
+
+void register_irq_handler(uint8_t i, irq_t handler);
