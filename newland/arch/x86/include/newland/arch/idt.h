@@ -23,6 +23,6 @@ typedef struct {
 typedef struct {
   uint16_t limit;
   uint32_t base;
-} idt_t;
+} __attribute__((packed)) idt_t;
 
 void idt_init();

@@ -17,6 +17,6 @@ typedef struct {
 typedef struct {
   uint16_t limit;
   uint32_t base;
-} gdt_t;
+} __attribute__((packed)) gdt_t;
 
 void gdt_init();

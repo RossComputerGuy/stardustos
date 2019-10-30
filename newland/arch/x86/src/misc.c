@@ -6,9 +6,7 @@
 #include <string.h>
 
 void halt() {
-_halt:
-  asm volatile ("hlt");
-  goto _halt;
+  while (1) asm volatile ("hlt");
 }
 
 void panic(const char* msg) {
