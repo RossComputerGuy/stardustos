@@ -20,12 +20,6 @@
     ret
 .endm
 
-.globl idt_flush
-idt_flush:
-  movl 4(%esp), %eax
-  lidtl (%eax)
-  ret
-
 isr_common_stub:
   pusha
   mov %dx, %ax

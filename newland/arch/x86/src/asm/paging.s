@@ -3,26 +3,26 @@
   */
 .globl paging_invalidate_tlb
 paging_invalidate_tlb:
-  mov %cr3, %eax
-  mov %eax, %cr3
+  movl %cr3, %eax
+  movl %eax, %cr3
   ret
 
 .globl paging_enable
 paging_enable:
-  mov %cr0, %eax
-  or $0x80000000, %eax
-  mov %eax, %cr0
+  movl %cr0, %eax
+  orl $0x80000000, %eax
+  movl %eax, %cr0
   ret
 
 .globl paging_disable
 paging_disable:
-  mov %cr0, %eax
-  or $0x7fffffff, %eax
-  mov %eax, %cr0
+  movl %cr0, %eax
+  orl $0x7fffffff, %eax
+  movl %eax, %cr0
   ret
 
 .globl paging_loaddir
 paging_loaddir:
-  mov 4(%esp), %eax
-  mov %eax, %cr3
+  movl 4(%esp), %eax
+  movl %eax, %cr3
   ret

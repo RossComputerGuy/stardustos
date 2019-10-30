@@ -22,7 +22,6 @@ void bootstrap_main(uint32_t magic, uint32_t mbaddr) {
 
   gdt_init();
   idt_init();
-  irq_disable();
   timer_init(50);
   mem_init(mbi);
 }

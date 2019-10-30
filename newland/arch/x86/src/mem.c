@@ -156,10 +156,11 @@ void mem_loadmmap(multiboot_info_t* mbi) {
       }
     }
   }
+  used_mem = PAGE_ALIGN(__kernel_end);
 }
 
 void mem_init(multiboot_info_t* mbi) {
-  memset(&mem, 0, sizeof(mem));
+  memset(mem, 0, sizeof(mem));
 
   for (unsigned int i = 0; i < 256; i++) {
     page_dir_entry_t* pde = &krnl_pgdir.entries[i];

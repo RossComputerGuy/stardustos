@@ -1,10 +1,8 @@
 /**
   * NewLand Kernel - (C) 2019 Tristan Ross
   */
-.globl gdt_flush
-gdt_flush:
-  movl 4(%esp), %eax
-  lgdtl (%eax)
+.globl gdt_reloadseg
+gdt_reloadseg:
   jmp $0x08, $.flush
 .flush:
   mov $0x10, %ax
