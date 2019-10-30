@@ -96,5 +96,5 @@ void idt_init() {
   idt_set_gate(30, (uint32_t)isr30, 0x08, 0x8E);
   idt_set_gate(31, (uint32_t)isr31, 0x08, 0x8E);
 
-  asm ("lidt %0" :: "m"(idt));
+  idt_flush((uint32_t)&idt);
 }

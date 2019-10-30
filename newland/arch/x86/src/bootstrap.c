@@ -19,4 +19,6 @@ void bootstrap_main(uint32_t magic, uint32_t mbaddr) {
 
   gdt_init();
   idt_init();
+
+  asm volatile ("int $0x1");
 }
