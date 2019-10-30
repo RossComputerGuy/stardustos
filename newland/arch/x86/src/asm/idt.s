@@ -22,8 +22,8 @@
 
 .globl idt_flush
 idt_flush:
-  movl 4(%eax), %esp
-  lidtl (%esp)
+  movl 4(%esp), %eax
+  lidtl (%eax)
   ret
 
 isr_common_stub:
