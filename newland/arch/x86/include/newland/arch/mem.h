@@ -3,6 +3,7 @@
   */
 #pragma once
 
+#include <newland/boot/multiboot.h>
 #include <newland/types.h>
 
 typedef union {
@@ -45,6 +46,9 @@ typedef struct {
   page_dir_entry_t entries[1024];
 } page_dir_t;
 
+extern void paging_enable();
+extern void paging_disable();
+extern void paging_loaddir(page_dir_t dir);
 extern void paging_invalidate_tlb();
 
 int phys_isused(unsigned int addr, unsigned int count);
@@ -58,6 +62,8 @@ unsigned int virt2phys(page_dir_t* dir, unsigned int vaddr);
 int virt_map(page_dir_t* dir, unsigned int vaddr, unsigned int paddr, unsigned int count, int iswrite, int isuser);
 void virt_unmap(page_dir_t* dir, unsigned int vaddr, unsigned int count);
 
-unsigned int mem_allocident(page_dir_t* dir, unsigned int count, int iswrite, int isuser);
+void mem_loadmmap(multiboot_info_t* mbi);
+void mem_init(multiboot_info_t* mbi);
 
-void paging_init();
+unsigned int mem_allocident(page_dir_t* dir, unsigned int count, int iswrite, int isuser);
+int mem_identmap(page_dir_t* dir, unsigned int addr, unsigned int count);

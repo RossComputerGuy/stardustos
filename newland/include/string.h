@@ -9,7 +9,7 @@
 
 #ifndef __TYPE_size_t
 #define __TYPE_size_t
-typedef unsigned short size_t;
+typedef unsigned int size_t;
 #endif
 
 size_t strlen(const char* str);

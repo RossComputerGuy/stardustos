@@ -3,6 +3,7 @@
   */
 #include <newland/arch/gdt.h>
 #include <newland/arch/idt.h>
+#include <newland/arch/irq.h>
 #include <newland/arch/mem.h>
 #include <newland/arch/misc.h>
 #include <newland/arch/texcon.h>
@@ -21,6 +22,7 @@ void bootstrap_main(uint32_t magic, uint32_t mbaddr) {
 
   gdt_init();
   idt_init();
+  irq_disable();
   timer_init(50);
-  paging_init();
+  mem_init(mbi);
 }

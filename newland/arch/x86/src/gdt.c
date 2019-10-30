@@ -6,7 +6,7 @@
 static gdt_entry_t gdt_entries[5];
 static gdt_t gdt;
 
-extern void gdt_flush(uint32_t gdt);
+extern void gdt_flush(gdt_t gdt);
 
 static void gdt_set_gate(uint32_t num, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran) {
   gdt_entry_t* entry = &gdt_entries[num];
@@ -31,5 +31,5 @@ void gdt_init() {
   gdt_set_gate(3, 0, 0xFFFFFFFF, 0xFA, 0xCF);
   gdt_set_gate(4, 0, 0xFFFFFFFF, 0xF2, 0xCF);
 
-  gdt_flush((uint32_t)&gdt);
+  gdt_flush(gdt);
 }

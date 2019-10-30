@@ -10,7 +10,7 @@ static isr_t idt_handlers[256];
 static idt_entry_t idt_entries[256];
 static idt_t idt;
 
-extern void idt_flush(uint32_t idt);
+extern void idt_flush(idt_t idt);
 
 static void idt_set_gate(uint8_t num, uint32_t base, uint16_t selector, uint8_t flags) {
   idt_entry_t* entry = &idt_entries[num];
@@ -146,5 +146,5 @@ void idt_init() {
   idt_set_gate(46, (uint32_t)irq14, 0x08, 0x8E);
   idt_set_gate(47, (uint32_t)irq15, 0x08, 0x8E);
 
-  idt_flush((uint32_t)&idt);
+  idt_flush(idt);
 }
