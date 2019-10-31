@@ -4,9 +4,12 @@
 #pragma once
 
 #define ENOMEM 1
-#define ECHLD 2
+#define ECHILD 2
 #define EEXIST 3
 #define ENODEV 4
 #define ENAMETOOLONG 5
 #define EIO 6
 #define EINVAL 7
+#define EINPROGRESS 8
+#define EINTR 9
+#define ENOSYS 10

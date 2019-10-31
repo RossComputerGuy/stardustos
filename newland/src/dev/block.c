@@ -44,18 +44,17 @@ blkdev_t* blkdev_fromname(const char* name) {
 }
 
 /** File Node Operations **/
-
 static size_t blkdev_read(fs_node_t* node, off_t offset, void* buff, size_t size) {
   blkdev_t* blkdev = blkdev_get(DEV_MINOR(node->rdev));
   if (blkdev == NULL) return -ENODEV;
-  if (blkdev->opts.read_block == NULL) return -EIO;
+  if (blkdev->opts.read_block == NULL) return -ENOSYS;
   return blkdev->opts.read_block(blkdev, offset / blkdev->size, buff, size);
 }
 
 static size_t blkdev_write(fs_node_t* node, off_t offset, const void* buff, size_t size) {
   blkdev_t* blkdev = blkdev_get(DEV_MINOR(node->rdev));
   if (blkdev == NULL) return -ENODEV;
-  if (blkdev->opts.write_block == NULL) return -EIO;
+  if (blkdev->opts.write_block == NULL) return -ENOSYS;
   return blkdev->opts.write_block(blkdev, offset / blkdev->size, buff, size);
 }
 
@@ -84,6 +83,7 @@ int register_blkdev(const char* name, blksize_t blksize, blkcnt_t blkcnt, blkdev
   if (blkdev_fromname(name) != NULL || device_fromname(name) != NULL) return -EEXIST;
   blkdev_t* blkdev = kmalloc(sizeof(blkdev_t));
   if (blkdev == NULL) return -ENOMEM;
+  strcpy((char*)blkdev->name, name);
   blkdev->size = blksize;
   blkdev->count = blkcnt;
   blkdev->opts = opts;

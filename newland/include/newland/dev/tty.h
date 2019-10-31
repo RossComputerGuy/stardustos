@@ -27,6 +27,7 @@ typedef struct tty {
 } tty_t;
 
 size_t tty_count();
+size_t tty_indexof(tty_t* tty1);
 tty_t* tty_get(size_t i);
 tty_t* tty_fromname(const char* name);
 
