@@ -21,6 +21,12 @@ SECTIONS {
     __data_end = .;
 	}
 
+  .modules BLOCK(4K) : ALIGN(4K) {
+    __modules_start = .;
+    *(.modinfo)
+    __modules_end = .;
+  }
+
 	.bss BLOCK(4K) : ALIGN(4K) {
     __bss_start = .;
 		*(COMMON)

@@ -11,6 +11,6 @@ include("${ARCH_DIR}/build.cmake")
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
 add_compile_options("-nostdinc" "-fno-builtin" "-Werror=implicit-function-declaration" "-fno-stack-protector")
-add_link_options("-nostdlib" "-nostartfiles")
+add_link_options("-T${ARCH_DIR}/linker.ld" "-nostdlib" "-nostartfiles")
 add_executable(kernel.elf ${ARCH_FILES}
   "${PROJECT_SOURCE_DIR}/src/string.c")
