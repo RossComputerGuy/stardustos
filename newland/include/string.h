@@ -12,6 +12,8 @@
 typedef unsigned int size_t;
 #endif
 
+int strcmp(const char* s1, const char* s2);
+char* strcpy(char* dst, const char* src);
 size_t strlen(const char* str);
 char* strncpy(char* dst, const char* src, size_t count);
 void* memcpy(void* dst, const void* src, size_t size);
