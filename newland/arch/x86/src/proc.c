@@ -6,6 +6,7 @@
 #include <newland/arch/proc.h>
 #include <newland/error.h>
 #include <newland/kalloc.h>
+#include <newland/signal.h>
 
 SLIST_HEAD(proc_list, proc_t);
 struct proc_list processes;
@@ -65,7 +66,7 @@ int proc_create(proc_t** procptr, proc_t* parent, const char* name, int isuser) 
     if (parent_index == -1) {
       if (parent->child_count + 1 > CHILD_MAX) {
         irq_restore(irqflgs);
-        return -ECHLD;
+        return -ECHILD;
       }
       parent_index = parent->child_count++;
     }
@@ -74,6 +75,7 @@ int proc_create(proc_t** procptr, proc_t* parent, const char* name, int isuser) 
   proc->id = next_pid++;
   strncpy((char*)proc->name, name, 256);
   proc->status = PROC_READY;
+  proc->isuser = isuser;
 
   if (parent == NULL) {
     strncpy((char*)proc->cwd, "/", PATH_MAX);
@@ -120,17 +122,57 @@ int proc_destroy(proc_t** procptr) {
   return 0;
 }
 
+int proc_sigenter(proc_t** procptr, uint8_t signum, void* data, size_t datasz) {
+  proc_t* proc = *procptr;
+  if (proc->issignaling) return -EINPROGRESS;
+  if (proc->signal_handler == NULL) {
+    if (signum == SIGKILL) {
+      proc->status = PROC_ZOMBIE;
+      return 0;
+    }
+    return -ENOSYS;
+  }
+
+  proc->issignaling = 1;
+  proc->signum = signum;
+  proc->sp -= sizeof(uint8_t);
+  memcpy((void*)proc->sp, &signum, sizeof(uint8_t));
+  if (datasz > 0 && data != NULL) {
+    proc->sp -= datasz;
+    memcpy((void*)proc->sp, data, datasz);
+  }
+  return 0;
+}
+
+int proc_sigleave(proc_t** procptr) {
+  proc_t* proc = *procptr;
+  if (!proc->issignaling) return -EINTR;
+  proc->issignaling = 0;
+  proc->signum = 0;
+  return 0;
+}
+
 void proc_go(proc_t** procptr) {
   proc_t* proc = *procptr;
   regs_t regs;
   regs.eflags = 0x202;
-  regs.eip = (uint32_t)proc->entry;
+  if (proc->issignaling) {
+    if (proc->signal_handler != NULL) regs.eip = (uint32_t)proc->signal_handler;
+  } else regs.eip = (uint32_t)proc->entry;
   regs.ebp = ((uint32_t)proc->stack + PROC_STACKSIZE);
-  regs.cs = 0x08;
-  regs.ds = 0x10;
-  regs.es = 0x10;
-  regs.fs = 0x10;
-  regs.gs = 0x10;
+  if (proc->isuser) {
+    regs.cs = 0x18;
+    regs.ds = 0x20;
+    regs.es = 0x20;
+    regs.fs = 0x20;
+    regs.gs = 0x20;
+  } else {
+    regs.cs = 0x08;
+    regs.ds = 0x10;
+    regs.es = 0x10;
+    regs.fs = 0x10;
+    regs.gs = 0x10;
+  }
   proc->sp -= sizeof(regs_t);
   memcpy((void*)proc->sp, &regs, sizeof(regs_t));
 }
@@ -163,6 +205,17 @@ int sched_getusage(pid_t pid) {
     if (sched_rec[i] == pid) count++;
   }
   return count;
+}
+
+static void proc_handle_interrrupt(regs_t regs) {
+  proc_t* curr_proc = process_curr();
+  if (curr_proc == NULL) return;
+  switch (regs.int_no) {
+    /* FPU */
+    case 0x10:
+      proc_sigenter(&curr_proc, SIGFPE, NULL, 0);
+      break;
+  }
 }
 
 void sched_init() {

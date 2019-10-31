@@ -3,6 +3,7 @@
   */
 #pragma once
 
+#include <newland/arch/idt.h>
 #include <newland/arch/mem.h>
 #include <newland/limits.h>
 #include <newland/list.h>
@@ -28,10 +29,13 @@ typedef struct proc {
   int status;
   int exitval;
   int isuser:1;
+  int issignaling:1;
 
   uint32_t sp;
+  uint8_t signum;
   int stack[PROC_STACKSIZE];
   void (*entry)();
+  void (*signal_handler)(uint8_t signum, void* data);
   page_dir_t* pgdir;
   char fpu_regs[512];
 
@@ -53,7 +57,10 @@ proc_t* process_next();
 
 int proc_create(proc_t** procptr, proc_t* parent, const char* name, int isuser);
 int proc_destroy(proc_t** procptr);
+int proc_sigenter(proc_t** procptr, uint8_t signum, void* data, size_t datasz);
+int proc_sigleave(proc_t** procptr);
 void proc_go(proc_t** procptr);
+
 void processes_cleanup();
 
 int sched_getusage(pid_t pid);
