@@ -156,7 +156,7 @@ void mem_loadmmap(multiboot_info_t* mbi) {
       }
     }
   }
-  used_mem = PAGE_ALIGN(__kernel_end);
+  used_mem = PAGE_ALIGN((uint32_t)&__kernel_end);
 }
 
 void mem_init(multiboot_info_t* mbi) {
