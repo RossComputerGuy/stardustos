@@ -9,6 +9,13 @@ size_t strlen(const char* str) {
   return len;
 }
 
+void* memcpy(void* dst, const void* src, size_t size) {
+	unsigned char* buffdst = (unsigned char*)dst;
+	const unsigned char* buffsrc = (const unsigned char*)src;
+	for (size_t i = 0; i < size; i++) buffdst[i] = buffsrc[i];
+	return buffdst;
+}
+
 void* memset(void* ptr, int val, size_t size) {
   unsigned char* buff = (unsigned char*)ptr;
   for (size_t i = 0; i < size; i++) buff[i] = val;

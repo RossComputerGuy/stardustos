@@ -66,4 +66,8 @@ void mem_loadmmap(multiboot_info_t* mbi);
 void mem_init(multiboot_info_t* mbi);
 
 unsigned int mem_allocident(page_dir_t* dir, unsigned int count, int iswrite, int isuser);
+unsigned int mem_alloc(page_dir_t* dir, unsigned int count, int iswrite, int isuser);
+void mem_free(page_dir_t* dir, unsigned int addr, unsigned int count);
 int mem_identmap(page_dir_t* dir, unsigned int addr, unsigned int count);
+
+page_dir_t* get_krnlpgdir();

@@ -196,8 +196,29 @@ unsigned int mem_allocident(page_dir_t* dir, unsigned int count, int iswrite, in
   return 0;
 }
 
+unsigned int mem_alloc(page_dir_t* dir, unsigned int count, int iswrite, int isuser) {
+  if (count == 0) return 0;
+  unsigned int paddr = phys_alloc(count);
+  if (paddr == 0) return 0;
+  unsigned int vaddr = virt_alloc(dir, paddr, count, iswrite, isuser);
+  if (vaddr == 0);
+  memset((void*)vaddr, 0, count * PAGE_SIZE);
+  return vaddr;
+}
+
+void mem_free(page_dir_t* dir, unsigned int addr, unsigned int count) {
+  if (virt_ispresent(dir, addr, count)) {
+    phys_free(virt2phys(dir, addr), count);
+    virt_unmap(dir, addr, count);
+  }
+}
+
 int mem_identmap(page_dir_t* dir, unsigned int addr, unsigned int count) {
   phys_setused(addr, count);
   virt_map(dir, addr, addr, count, 1, 0);
   return 0;
+}
+
+page_dir_t* get_krnlpgdir() {
+  return &krnl_pgdir;
 }

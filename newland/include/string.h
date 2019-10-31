@@ -13,4 +13,5 @@ typedef unsigned int size_t;
 #endif
 
 size_t strlen(const char* str);
+void* memcpy(void* dst, const void* src, size_t size);
 void* memset(void* ptr, int val, size_t size);

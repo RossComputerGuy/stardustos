@@ -13,4 +13,5 @@ include_directories("${PROJECT_SOURCE_DIR}/include")
 add_compile_options("-nostdinc" "-fno-builtin" "-Werror=implicit-function-declaration" "-fno-stack-protector")
 add_link_options("-T${ARCH_DIR}/linker.ld" "-nostdlib" "-nostartfiles")
 add_executable(kernel.elf ${ARCH_FILES}
+  "${ARCH_DIR}/src/kalloc.c"
   "${PROJECT_SOURCE_DIR}/src/string.c")
