@@ -4,3 +4,4 @@
 #pragma once
 
 #define ENOMEM 1
+#define ECHLD 2

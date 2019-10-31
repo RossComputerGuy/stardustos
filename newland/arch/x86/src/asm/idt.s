@@ -22,19 +22,23 @@
 
 isr_common_stub:
   pusha
-  mov %dx, %ax
-  push %eax
+  push %ds
+  push %es
+  push %fs
+  push %gs
   mov $0x10, %ax
   mov %ax, %dx
   mov %ax, %es
   mov %ax, %fs
   mov %ax, %gs
+  mov %esp, %eax
+  push %esp
   call isr_handler
-  pop %eax
-  mov %ax, %ds
-  mov %ax, %es
-  mov %ax, %fs
-  mov %ax, %gs
+  mov %eax, %esp
+  pop %gs
+  pop %fs
+  pop %es
+  pop %ds
   popa
   add 8, %esp
   iret

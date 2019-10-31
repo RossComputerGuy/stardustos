@@ -7,6 +7,7 @@
 #include <newland/arch/irq.h>
 #include <newland/arch/mem.h>
 #include <newland/arch/misc.h>
+#include <newland/arch/proc.h>
 #include <newland/arch/texcon.h>
 #include <newland/arch/timer.h>
 #include <newland/boot/multiboot.h>
@@ -26,4 +27,5 @@ void bootstrap_main(uint32_t magic, uint32_t mbaddr) {
   timer_init(50);
   fpu_init();
   mem_init(mbi);
+  sched_init();
 }

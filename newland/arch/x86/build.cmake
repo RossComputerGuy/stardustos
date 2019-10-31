@@ -11,6 +11,7 @@ set(ARCH_FILES "${ARCH_DIR}/src/asm/entry.s"
   "${ARCH_DIR}/src/irq.c"
   "${ARCH_DIR}/src/mem.c"
   "${ARCH_DIR}/src/misc.c"
+  "${ARCH_DIR}/src/proc.c"
   "${ARCH_DIR}/src/texcon.c"
   "${ARCH_DIR}/src/timer.c")
 include_directories("${ARCH_DIR}/include")

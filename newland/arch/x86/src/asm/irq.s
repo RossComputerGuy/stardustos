@@ -12,19 +12,23 @@
 
 irq_common_stub:
   pusha
-  mov %ds, %ax
-  push %eax
+  push %ds
+  push %es
+  push %fs
+  push %gs
   mov $0x10, %ax
   mov %ax, %ds
   mov %ax, %es
   mov %ax, %fs
   mov %ax, %gs
+  mov %esp, %eax
+  push %esp
   call irq_handler
-  pop %ebx
-  mov %bx, %ds
-  mov %bx, %es
-  mov %bx, %fs
-  mov %bx, %gs
+  mov %eax, %esp
+  pop %gs
+  pop %fs
+  pop %es
+  pop %ds
   popa
   add $8, %esp
   iret

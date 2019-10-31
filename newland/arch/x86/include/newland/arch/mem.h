@@ -71,3 +71,5 @@ void mem_free(page_dir_t* dir, unsigned int addr, unsigned int count);
 int mem_identmap(page_dir_t* dir, unsigned int addr, unsigned int count);
 
 page_dir_t* get_krnlpgdir();
+page_dir_t* mem_alloc_pgdir();
+void mem_free_pgdir(page_dir_t* dir);

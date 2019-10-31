@@ -3,4 +3,8 @@
   */
 #pragma once
 
+#include <newland/arch/proc.h>
+
+void fpu_savectx(proc_t* proc);
+void fpu_loadctx(proc_t* proc);
 void fpu_init();

@@ -222,3 +222,32 @@ int mem_identmap(page_dir_t* dir, unsigned int addr, unsigned int count) {
 page_dir_t* get_krnlpgdir() {
   return &krnl_pgdir;
 }
+
+page_dir_t* mem_alloc_pgdir() {
+  page_dir_t* pgdir = (page_dir_t*)mem_allocident(&krnl_pgdir, 1, 1, 0);
+  if (pgdir == NULL) return NULL;
+  memset(pgdir, 0, sizeof(page_dir_t));
+  for (unsigned int i = 0; i < 256; i++) {
+    page_dir_entry_t* pde = &pgdir->entries[i];
+    pde->user = 0;
+    pde->write = 1;
+    pde->present = 1;
+    pde->frame = (unsigned int)&krnl_pgtbl[i] / PAGE_SIZE;
+  }
+  return pgdir;
+}
+
+void mem_free_pgdir(page_dir_t* dir) {
+  for (size_t i = 256; i < 1024; i++) {
+    page_dir_entry_t* pde = &dir->entries[i];
+    if (pde->present) {
+      page_table_t* pt = (page_table_t*)(pde->frame * PAGE_SIZE);
+      for (size_t i = 0; i < 1024; i++) {
+        page_t* pg = &pt->entries[i];
+        if (pg->present) phys_free(pg->frame * PAGE_SIZE, 1);
+      }
+      mem_free(&krnl_pgdir, (unsigned int)pt, 1);
+    }
+  }
+  mem_free(&krnl_pgdir, (unsigned int)dir, 1);
+}
