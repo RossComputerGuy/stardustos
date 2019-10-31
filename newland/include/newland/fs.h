@@ -26,15 +26,18 @@ typedef struct {
   off_t offset;
 } fd_t;
 
-typedef struct fs_node {
+typedef struct {
   int (*open)(struct fs_node* node, fd_t* fd);
   int (*close)(struct fs_node* node, fd_t* fd);
   int (*get_child)(struct fs_node* node, struct fs_node** childptr, size_t index);
   int (*mknode)(struct fs_node* node, struct fs_node** childptr, const char* name, mode_t mode);
   int (*rmnode)(struct fs_node* node, struct fs_node** childptr);
+  size_t (*read)(struct fs_node* node, off_t offset, void* buff, size_t size);
+  size_t (*write)(struct fs_node* node, off_t offset, const void* buff, size_t size);
+  int (*ioctl)(struct fs_node* node, int req, size_t argcount, void** args);
 } fs_node_opts_t;
 
-typedef struct {
+typedef struct fs_node {
   const char name[NAME_MAX];
   dev_t dev;
   ino_t ino;

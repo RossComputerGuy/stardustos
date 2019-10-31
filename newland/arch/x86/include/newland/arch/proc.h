@@ -21,7 +21,7 @@
 typedef struct proc {
   SLIST_ENTRY(struct proc) proc_list;
   pid_t id;
-  
+
   const char name[256];
   const char cwd[PATH_MAX];
 
@@ -37,7 +37,7 @@ typedef struct proc {
 
   gid_t gid;
   uid_t uid;
-  
+
   pid_t parent;
   pid_t child[CHILD_MAX];
   size_t child_count;
@@ -45,6 +45,8 @@ typedef struct proc {
 
 #define proc_getcpuusage(procptr) ((sched_getusage((*(procptr))->id) * 100) / SCHED_RECCOUNT)
 
+size_t process_count();
+proc_t* process_get(size_t i);
 proc_t* process_frompid(pid_t pid);
 proc_t* proccess_curr();
 proc_t* process_next();

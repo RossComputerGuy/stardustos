@@ -11,6 +11,9 @@
 #define DEV_MINOR(dev) ((dev) & 0xFF)
 #define MKDEV(ma, mi) ((ma) << 8 | (mi))
 
+#define DEVMAJ_BLOCK 1
+#define DEVMAJ_TTY 2
+
 typedef struct device {
   SLIST_ENTRY(struct device) dev_list;
   dev_t dev;

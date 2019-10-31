@@ -11,8 +11,23 @@ SLIST_HEAD(proc_list, proc_t);
 struct proc_list processes;
 static pid_t next_pid = 1;
 static pid_t curr_pid = 0;
+static size_t proc_count = 0;
 static uint32_t ticks = 0;
 static int sched_rec[SCHED_RECCOUNT] = { 0 };
+
+size_t process_count() {
+  return proc_count;
+}
+
+proc_t* process_get(size_t i) {
+  proc_t* proc = NULL;
+  size_t index = 0;
+  SLIST_FOREACH(proc, &processes, proc_list) {
+    if (index == i) return proc;
+    index++;
+  }
+  return NULL;
+}
 
 proc_t* process_frompid(pid_t pid) {
   proc_t* proc = NULL;
@@ -79,6 +94,7 @@ int proc_create(proc_t** procptr, proc_t* parent, const char* name, int isuser) 
   fpu_savectx(proc);
 
   SLIST_INSERT_HEAD(&processes, proc, proc_list);
+  proc_count++;
   irq_restore(irqflgs);
   return proc->id;
 }
@@ -99,6 +115,7 @@ int proc_destroy(proc_t** procptr) {
   }
   kfree(proc);
   SLIST_REMOVE(&processes, proc, proc_t, proc_list);
+  proc_count--;
   irq_restore(irqflgs);
   return 0;
 }

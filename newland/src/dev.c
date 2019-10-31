@@ -58,5 +58,6 @@ int unregister_device(dev_t dev) {
   if (device == NULL) return -ENODEV;
   SLIST_REMOVE(&devices, device, device_t, dev_list);
   dev_count--;
+  kfree(device);
   return 0;
 }
