@@ -62,7 +62,7 @@ unsigned int phys_alloc(unsigned int count) {
 #define PT_INDEX(vaddr) (((vaddr) >> 12) & 0x03ff)
 
 static page_dir_t krnl_pgdir __attribute__((aligned(PAGE_SIZE))) = { 0 };
-static page_table_t krnl_pgtbl __attribute__((aligned(PAGE_SIZE))) = { 0 };
+static page_table_t krnl_pgtbl[256] __attribute__((aligned(PAGE_SIZE))) = { 0 };
 
 int page_ispresent(page_dir_t* dir, unsigned int vaddr) {
   unsigned int pdi = PD_INDEX(vaddr);
@@ -167,12 +167,12 @@ void mem_init(multiboot_info_t* mbi) {
     pde->user = 0;
     pde->write = 1;
     pde->present = 1;
-    pde->frame = (unsigned int)&krnl_pgtbl.entries[i] / PAGE_SIZE;
+    pde->frame = (unsigned int)&krnl_pgtbl[i] / PAGE_SIZE;
   }
 
   mem_loadmmap(mbi);
   mem_identmap(&krnl_pgdir, 0, PAGE_ALIGN(used_mem) / PAGE_SIZE + 1);
-  paging_loaddir(krnl_pgdir);
+  paging_loaddir(&krnl_pgdir);
   paging_enable();
 }
 

@@ -48,7 +48,7 @@ typedef struct {
 
 extern void paging_enable();
 extern void paging_disable();
-extern void paging_loaddir(page_dir_t dir);
+extern void paging_loaddir(page_dir_t* dir);
 extern void paging_invalidate_tlb();
 
 int phys_isused(unsigned int addr, unsigned int count);

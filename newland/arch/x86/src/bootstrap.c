@@ -1,6 +1,7 @@
 /**
   * NewLand Kernel - (C) 2019 Tristan Ross
   */
+#include <newland/arch/fpu.h>
 #include <newland/arch/gdt.h>
 #include <newland/arch/idt.h>
 #include <newland/arch/irq.h>
@@ -23,5 +24,6 @@ void bootstrap_main(uint32_t magic, uint32_t mbaddr) {
   gdt_init();
   idt_init();
   timer_init(50);
+  fpu_init();
   mem_init(mbi);
 }
