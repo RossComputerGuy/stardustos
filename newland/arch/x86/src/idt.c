@@ -17,7 +17,7 @@ static void idt_set_gate(uint8_t num, uint32_t base, uint16_t selector, uint8_t 
   entry->base_high = (base >> 16) & 0xFFFF;
   entry->selector = selector;
   entry->always0 = 0;
-  entry->flags = flags;
+  entry->flags = flags | 0x60;
 }
 
 void register_int_handler(uint8_t i, isr_t handler) {
