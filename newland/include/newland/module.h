@@ -19,9 +19,9 @@ typedef struct {
 #ifdef NEWLAND_MODULE
 #define MODULE_INIT(id) static int init()
 #define MODULE_FINI(id) static void fini()
-#define MODULE(id, author, license, modver) modinfo_t modinfo __attribute__((section(".modinfo")) = { id, author, license, modver, "0.1.0", init, fini }
+#define MODULE(id, author, license, modver) modinfo_t modinfo __attribute__((section(".modinfo"))) = { #id, author, license, modver, "0.1.0", init, fini }
 #else
 #define MODULE_INIT(id) static int kmod_## id ##_init()
 #define MODULE_FINI(id) static void kmod_## id ##_fini()
-#define MODULE(id, author, license, modver) modinfo_t kmod_## id __attribute__((section(".modinfo")) = { id, author, license, modver, "0.1.0", kmod_## id ##_init, kmod_## id ##_fini }
+#define MODULE(id, author, license, modver) modinfo_t kmod_## id __attribute__((section(".modinfo"))) = { #id, author, license, modver, "0.1.0", kmod_## id ##_init, kmod_## id ##_fini }
 #endif

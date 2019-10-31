@@ -10,7 +10,7 @@ SECTIONS {
     *(.rodata)
   }
 
-  .module BLOCK(4K) : ALIGN(4K) {
+  .modinfo BLOCK(4K) : ALIGN(4K) {
     __modules_start = .;
     *(.modinfo)
     __modules_end = .;
