@@ -126,7 +126,7 @@ int proc_sigenter(proc_t** procptr, uint8_t signum, void* data, size_t datasz) {
   proc_t* proc = *procptr;
   if (proc->issignaling) return -EINPROGRESS;
   if (proc->signal_handler == NULL) {
-    if (signum == SIGKILL) {
+    if (signum == SIGKILL || signum == SIGSEGV || signum == SIGSTKFLT || signum == SIGILL) {
       proc->status = PROC_ZOMBIE;
       return 0;
     }
@@ -211,13 +211,29 @@ static void proc_handle_interrrupt(regs_t regs) {
   proc_t* curr_proc = process_curr();
   if (curr_proc == NULL) return;
   switch (regs.int_no) {
+    /* Invalid Opcode */
+    case 0x06:
+      proc_sigenter(&curr_proc, SIGILL, NULL, 0);
+      break;
     /* FPU */
     case 0x10:
       proc_sigenter(&curr_proc, SIGFPE, NULL, 0);
+      break;
+    /* Stack Fault */
+    case 0x0C:
+      proc_sigenter(&curr_proc, SIGSTKFLT, NULL, 0);
+      break;
+    /* Page Fault */
+    case 0x0E:
+      proc_sigenter(&curr_proc, SIGSEGV, NULL, 0);
       break;
   }
 }
 
 void sched_init() {
-  register_irq_handler(0, schedule);
+  register_int_handler(0x06, proc_handle_interrrupt);
+  register_int_handler(0x10, proc_handle_interrrupt);
+  register_int_handler(0x0C, proc_handle_interrrupt);
+  register_int_handler(0x0E, proc_handle_interrrupt);
+  register_irq_handler(0x00, schedule);
 }
