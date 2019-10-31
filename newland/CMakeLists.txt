@@ -15,5 +15,6 @@ add_link_options("-T${ARCH_DIR}/linker.ld" "-nostdlib" "-nostartfiles")
 add_executable(kernel.elf ${ARCH_FILES}
   "${ARCH_DIR}/src/kalloc.c"
   "${PROJECT_SOURCE_DIR}/src/dev/block.c"
+  "${PROJECT_SOURCE_DIR}/src/dev/tty.c"
   "${PROJECT_SOURCE_DIR}/src/dev.c"
   "${PROJECT_SOURCE_DIR}/src/string.c")
