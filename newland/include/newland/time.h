@@ -36,3 +36,4 @@ struct tm {
 typedef long time_t;
 
 time_t time(time_t* t);
+time_t boottime(time_t* t);

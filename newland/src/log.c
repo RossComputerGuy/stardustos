@@ -39,7 +39,7 @@ static int print(const char* str, size_t len) {
     buff[0] = '\n';
     buff[1] = '[';
     memset(buff + 2, ' ', TIME_STRLEN);
-    time_t t = time(NULL);
+    time_t t = boottime(NULL);
     itoa(buff + 2, 10, t);
     buff += 2 + TIME_STRLEN;
     buff[0] = ']';

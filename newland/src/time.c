@@ -27,6 +27,7 @@ static time_t dt2t(datetime_t dt) {
 time_t time(time_t* t) {
   datetime_t dt;
   arch_clock(&dt);
-  if (t != NULL) *t = dt2t(dt);
-  return dt2t(dt);
+  time_t i = dt2t(dt);
+  if (t != NULL) *t = i;
+  return i;
 }

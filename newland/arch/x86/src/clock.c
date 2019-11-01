@@ -4,6 +4,7 @@
 #include <newland/arch/clock.h>
 #include <newland/arch/io.h>
 #include <newland/time.h>
+#include <string.h>
 
 time_t boot_time = 0;
 
@@ -39,4 +40,10 @@ int arch_clock(datetime_t* dt) {
   dt->mon = from_bcd(get_realtime_reg(T_MONTH));
   dt->yr = from_bcd(get_realtime_reg(T_YEAR));
   return 0;
+}
+
+time_t boottime(time_t* t) {
+  time_t i = time(NULL) - boot_time;
+  if (t != NULL) *t = i;
+  return i;
 }
