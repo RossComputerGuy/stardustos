@@ -43,9 +43,10 @@ static int print(const char* str, size_t len, int inmsg) {
     buff += 1 + TIME_STRLEN;
     buff[0] = ']';
     buff[1] = ' ';
-    buff += 3;
+    buff += 2;
   } else buff++;
   strcpy(buff, str);
+  buff[len] = 0;
   buff = klog_buffer + klog_pos;
   for (size_t i = 0; i < len; i++) {
     arch_logc(buff[i]);
