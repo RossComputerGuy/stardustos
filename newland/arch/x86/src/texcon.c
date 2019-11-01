@@ -22,6 +22,11 @@ void arch_logc(const char c) {
 }
 
 int texcon_putc(const char c) {
+  if (c == '\n') {
+    cursor_x = 0;
+    if (cursor_y++ > 25) cursor_y = 0;
+    return 0;
+  }
   const uint16_t index = cursor_y * 80 + cursor_x;
   texbuff[index] = TEXCON_ENTRY(c, texcolor);
   if (cursor_x++ > 80) {
