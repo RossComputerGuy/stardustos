@@ -34,21 +34,22 @@ static int print(const char* str, size_t len) {
     memmove(klog_buffer, klog_buffer + l, NEWLAND_KLOG_SIZE - l);
     klog_pos -= l;
   }
-  char* buff = klog_buffer + klog_pos - 1;
-  if (klog_pos == 0) buff++;
+  char* buff = klog_buffer + klog_pos;
   if (!inmsg) {
-    buff[0] = '\n';
-    buff[1] = '[';
-    memset(buff + 2, ' ', TIME_STRLEN);
+    buff[0] = '[';
+    memset(buff + 1, ' ', TIME_STRLEN);
     time_t t = boottime(NULL);
     t /= 10000.0;
-    ultoa(t, buff + 2, 10);
-    buff += 2 + TIME_STRLEN;
+    ultoa(t, buff + 1, 10);
+    buff += 1 + TIME_STRLEN;
     buff[0] = ']';
     buff[1] = ' ';
     buff += 2;
   } else buff++;
   strcpy(buff, str);
+  buff[len] = '\n';
+  buff[len + 1] = 0;
+  len++;
   buff = klog_buffer + klog_pos;
   for (size_t i = 0; i < len; i++) {
     arch_logc(buff[i]);
