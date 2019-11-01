@@ -88,13 +88,11 @@ int printk(const char* fmt, ...) {
       fmt++;
       char c = (char)va_arg(ap, int);
       if (!maxrem) {
-        inmsg = 0;
         va_end(ap);
         return -EOVERFLOW;
       }
       int r = print(&c, sizeof(c), hasprinted);
       if (r < 0) {
-        inmsg = 0;
         va_end(ap);
         return r;
       }
@@ -105,13 +103,11 @@ int printk(const char* fmt, ...) {
       const char* str = va_arg(ap, const char*);
       size_t l = strlen(str);
       if (maxrem < len) {
-        inmsg = 0;
         va_end(ap);
         return -EOVERFLOW;
       }
       int r = print(str, l, hasprinted);
       if (r < 0) {
-        inmsg = 0;
         va_end(ap);
         return r;
       }
@@ -122,7 +118,6 @@ int printk(const char* fmt, ...) {
       itoa(buff, 10, va_arg(ap, int));
       int r = print(buff, strlen(buff), hasprinted);
       if (r < 0) {
-        inmsg = 0;
         va_end(ap);
         return r;
       }
@@ -131,13 +126,11 @@ int printk(const char* fmt, ...) {
       fmt = fmtbeg;
       size_t l = strlen(fmt);
       if (maxrem < len) {
-        inmsg = 0;
         va_end(ap);
         return -EOVERFLOW;
       }
       int r = print(fmt, l, hasprinted);
       if (r < 0) {
-        inmsg = 0;
         va_end(ap);
         return r;
       }
