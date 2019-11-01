@@ -40,7 +40,8 @@ static int print(const char* str, size_t len) {
     buff[1] = '[';
     memset(buff + 2, ' ', TIME_STRLEN);
     time_t t = boottime(NULL);
-    itoa(buff + 2, 10, t);
+    t /= 10000.0;
+    ultoa(t, buff + 2, 10);
     buff += 2 + TIME_STRLEN;
     buff[0] = ']';
     buff[1] = ' ';
