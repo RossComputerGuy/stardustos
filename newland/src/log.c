@@ -36,17 +36,15 @@ static int print(const char* str, size_t len) {
   }
   char* buff = klog_buffer + klog_pos;
   if (!inmsg) {
-    char prefbuff[TIME_STRLEN + 4];
-    prefbuff[0] = '[';
-    memset(prefbuff + 1, ' ', TIME_STRLEN);
+    buff[0] = '[';
+    memset(buff + 1, ' ', TIME_STRLEN);
     time_t t = boottime(NULL);
     t /= 10000.0;
-    ultoa(t, prefbuff + 1, 10);
-    prefbuff[1 + TIME_STRLEN] = ']';
-    prefbuff[2 + TIME_STRLEN] = ' ';
-    prefbuff[3 + TIME_STRLEN] = 0;
-    strcpy(buff, prefbuff);
-    buff += TIME_STRLEN + 3;
+    ultoa(t, buff + 1, 10);
+    buff += 1 + TIME_STRLEN;
+    buff[0] = ']';
+    buff[1] = ' ';
+    buff += 3 + TIME_STRLEN;
   } else buff++;
   strcpy(buff, str);
   buff = klog_buffer + klog_pos;
