@@ -11,7 +11,6 @@
 
 static char klog_buffer[NEWLAND_KLOG_SIZE] = { 0 };
 static size_t klog_pos = 0;
-static int inmsg = 0;
 
 extern void arch_logc(const char c);
 
@@ -20,7 +19,7 @@ static int getlevel(const char* msg) {
   return KLEVEL_NOTICE;
 }
 
-static int print(const char* str, size_t len) {
+static int print(const char* str, size_t len, int inmsg) {
   int level = getlevel(str);
   if (str[0] == KLOG_SOH_ASCII) {
     str += 2;
@@ -44,7 +43,7 @@ static int print(const char* str, size_t len) {
     buff += 1 + TIME_STRLEN;
     buff[0] = ']';
     buff[1] = ' ';
-    buff += 3 + TIME_STRLEN;
+    buff += 3;
   } else buff++;
   strcpy(buff, str);
   buff = klog_buffer + klog_pos;
@@ -56,7 +55,7 @@ static int print(const char* str, size_t len) {
 }
 
 int putk(const char* str) {
-  return print(str, strlen(str));
+  return print(str, strlen(str), 0);
 }
 
 int printk(const char* fmt, ...) {
@@ -71,17 +70,15 @@ int printk(const char* fmt, ...) {
       size_t am = 1;
       while (fmt[am] && fmt[am] != '%') am++;
       if (maxrem < am) {
-        inmsg = 0;
         va_end(ap);
         return -EOVERFLOW;
       }
-      int r = print(fmt, am);
+      int r = print(fmt, am, hasprinted);
       if (r < 0) {
-        inmsg = 0;
         va_end(ap);
         return r;
       }
-      if (!hasprinted) inmsg = 1;
+      if (!hasprinted) hasprinted = 1;
       fmt += am;
       len += am;
       continue;
@@ -95,13 +92,13 @@ int printk(const char* fmt, ...) {
         va_end(ap);
         return -EOVERFLOW;
       }
-      int r = print(&c, sizeof(c));
+      int r = print(&c, sizeof(c), hasprinted);
       if (r < 0) {
         inmsg = 0;
         va_end(ap);
         return r;
       }
-      if (!hasprinted) inmsg = 1;
+      if (!hasprinted) hasprinted = 1;
       len++;
     } else if (*fmt == 's') {
       fmt++;
@@ -112,23 +109,24 @@ int printk(const char* fmt, ...) {
         va_end(ap);
         return -EOVERFLOW;
       }
-      int r = print(str, l);
+      int r = print(str, l, hasprinted);
       if (r < 0) {
         inmsg = 0;
         va_end(ap);
         return r;
       }
-      if (!hasprinted) inmsg = 1;
+      if (!hasprinted) hasprinted = 1;
       len += l;
     } else if (*fmt == 'd') {
       char buff[20];
       itoa(buff, 10, va_arg(ap, int));
-      int r = print(buff, strlen(buff));
+      int r = print(buff, strlen(buff), hasprinted);
       if (r < 0) {
         inmsg = 0;
         va_end(ap);
         return r;
       }
+      if (!hasprinted) hasprinted = 1;
     } else {
       fmt = fmtbeg;
       size_t l = strlen(fmt);
@@ -137,13 +135,13 @@ int printk(const char* fmt, ...) {
         va_end(ap);
         return -EOVERFLOW;
       }
-      int r = print(fmt, l);
+      int r = print(fmt, l, hasprinted);
       if (r < 0) {
         inmsg = 0;
         va_end(ap);
         return r;
       }
-      if (!hasprinted) inmsg = 1;
+      if (!hasprinted) hasprinted = 1;
       len += l;
       fmt += l;
     }
