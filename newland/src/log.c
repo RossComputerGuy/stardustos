@@ -32,6 +32,7 @@ static int print(const char* str, size_t len) {
     size_t l = 0;
     while (klog_buffer[l] != '\n') l++;
     memmove(klog_buffer, klog_buffer + l, NEWLAND_KLOG_SIZE - l);
+    klog_pos -= l;
   }
   char* buff = klog_buffer + klog_pos - 1;
   if (klog_pos == 0) buff++;

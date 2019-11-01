@@ -5,6 +5,7 @@
 #include <newland/dev.h>
 #include <newland/error.h>
 #include <newland/kalloc.h>
+#include <newland/log.h>
 
 SLIST_HEAD(tty_list, tty_t);
 static struct tty_list ttys = { NULL };
@@ -58,6 +59,7 @@ int register_tty(const char* name, tty_opts_t opts) {
     kfree(tty);
     return r;
   }
+  printk(KLOG_INFO "tty: registered %s", name);
   SLIST_INSERT_HEAD(&ttys, tty, tty_list);
   tty_cnt++;
   return 0;
@@ -69,6 +71,7 @@ int unregister_tty(const char* name) {
   size_t idx = tty_indexof(tty);
   int r = unregister_device(MKDEV(DEVMAJ_TTY, idx));
   if (r < 0) return r;
+  printk(KLOG_INFO "tty: unregistered %s", name);
   SLIST_REMOVE(&ttys, tty, tty_t, tty_list);
   tty_cnt--;
   kfree(tty);

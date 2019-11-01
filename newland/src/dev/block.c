@@ -5,6 +5,7 @@
 #include <newland/dev.h>
 #include <newland/error.h>
 #include <newland/kalloc.h>
+#include <newland/log.h>
 
 SLIST_HEAD(blkdev_list, blkdev_t);
 static struct blkdev_list block_devices = { NULL };
@@ -92,6 +93,7 @@ int register_blkdev(const char* name, blksize_t blksize, blkcnt_t blkcnt, blkdev
     kfree(blkdev);
     return r;
   }
+  printk(KLOG_INFO "blkdev: registered %s", name);
   SLIST_INSERT_HEAD(&block_devices, blkdev, blkdev_list);
   block_device_count++;
   return 0;
@@ -103,6 +105,7 @@ int unregister_blkdev(const char* name) {
   size_t idx = blkdev_indexof(blkdev);
   int r = unregister_device(MKDEV(DEVMAJ_BLOCK, idx));
   if (r < 0) return r;
+  printk(KLOG_INFO "blkdev: unregistered %s", name);
   SLIST_REMOVE(&block_devices, blkdev, blkdev_t, blkdev_list);
   block_device_count--;
   kfree(blkdev);
