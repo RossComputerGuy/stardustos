@@ -16,3 +16,4 @@
 #define EOVERFLOW 11
 #define EISDIR 12
 #define EBUSY 13
+#define ENOENT 14

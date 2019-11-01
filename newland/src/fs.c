@@ -57,6 +57,26 @@ int fs_node_ioctl(fs_node_t** nodeptr, int req, ...) {
   return r;
 }
 
+int fs_node_resolve(fs_node_t** nodeptr, fs_node_t** foundptr, const char* path) {
+  if (path[0] == '/') path++;
+  if (path[strlen(path) - 1] == '/') memset((void*)(path + (strlen(path) - 1)), 0, sizeof(char));
+  size_t plen = 0;
+  for (size_t i = 0; i < strlen(path); i++) {
+    if (path[i] == '/') {
+      plen = i;
+      break;
+    }
+  }
+  fs_node_t* node = *nodeptr;
+  fs_node_t* tmpnode = NULL;
+  size_t i = 0;
+  int r;
+  while ((r = node->opts.get_child(node, &tmpnode, i++)) == 0) {
+    if (!strncmp(tmpnode->name, path, plen)) return fs_node_resolve(&tmpnode, foundptr, path + plen + 1);
+  }
+  return -ENOENT;
+}
+
 /** Filesystem stuff **/
 
 /** Mount Points **/
@@ -65,7 +85,7 @@ SLIST_HEAD(mp_list, mountpoint_t);
 static struct mp_list mountpoints = { NULL };
 static size_t mp_count = 0;
 
-int fs_resolve_node(fs_node_t** nodeptr, const char* path) {
+int fs_resolve(fs_node_t** nodeptr, const char* path) {
   if (path[0] == '/') path++;
   if (path[strlen(path) - 1] == '/') memset((void*)(path + (strlen(path) - 1)), 0, sizeof(char));
   mountpoint_t* mp = NULL;
@@ -82,8 +102,8 @@ int fs_resolve_node(fs_node_t** nodeptr, const char* path) {
     root = mp->rootnode;
   }
   if (root == NULL) return -EINVAL;
-  // TODO: find a path using the node
-  return 0;
+  path += strlen(mp->target);
+  return fs_node_resolve(&root, nodeptr, path);
 }
 
 size_t mountpoint_count() {
@@ -115,17 +135,26 @@ int mountpoint_create(fs_t** fsptr, const char* src, const char* target, unsigne
   if (mp == NULL) return -ENOMEM;
   strcpy((char*)mp->source, src);
   strcpy((char*)mp->target, target);
+  fs_node_t* targetnode = NULL;
+  int r = fs_resolve(&targetnode, target);
+  if (r < 0) {
+    kfree(mp);
+    return r;
+  }
   mp->flags = flags;
   if (!(flags & MS_BIND)) {
     strcpy((char*)mp->fsname, (*fsptr)->name);
-    // TODO: resolve the path of the target inode
-    int r = (*fsptr)->mount(&mp->rootnode, NULL, flags, data);
+    r = (*fsptr)->mount(&mp->rootnode, targetnode, flags, data);
     if (r < 0) {
       kfree(mp);
       return r;
     }
   } else {
-    // TODO: set the root node to the resolved source inode
+    r = fs_resolve(&mp->rootnode, src);
+    if (r < 0) {
+      kfree(mp);
+      return r;
+    }
   }
   SLIST_INSERT_HEAD(&mountpoints, mp, mp_list);
   mp_count++;

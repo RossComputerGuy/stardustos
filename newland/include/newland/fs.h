@@ -87,7 +87,9 @@ size_t fs_node_read(fs_node_t** nodeptr, off_t offset, void* buff, size_t size);
 size_t fs_node_write(fs_node_t** nodeptr, off_t offset, const void* buff, size_t size);
 int fs_node_vioctl(fs_node_t** nodeptr, int req, va_list ap);
 int fs_node_ioctl(fs_node_t** nodeptr, int req, ...);
+int fs_node_resolve(fs_node_t** nodeptr, fs_node_t** foundptr, const char* path);
 
+int fs_resolve(fs_node_t** nodeptr, const char* path);
 size_t mountpoint_count();
 mountpoint_t* mountpoint_fromsrc(const char* src);
 mountpoint_t* mountpoint_fromtarget(const char* target);
