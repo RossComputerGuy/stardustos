@@ -59,15 +59,21 @@ static size_t blkdev_write(fs_node_t* node, off_t offset, const void* buff, size
   return blkdev->opts.write_block(blkdev, offset / blkdev->size, buff, size);
 }
 
-static int blkdev_ioctl(fs_node_t* node, int req, size_t argcount, void** args) {
+static int blkdev_ioctl(fs_node_t* node, int req, va_list ap) {
   blkdev_t* blkdev = blkdev_get(DEV_MINOR(node->rdev));
   if (blkdev == NULL) return -ENODEV;
   switch (req) {
     case BLKDEV_SIZE:
-      *((blksize_t*)*args) = blkdev->size;
+      {
+        blksize_t* ptr = va_arg(ap, blksize_t*);
+        *ptr = blkdev->size;
+      }
       return 0;
     case BLKDEV_COUNT:
-      *((blkcnt_t*)*args) = blkdev->count;
+      {
+        blkcnt_t* ptr = va_arg(ap, blkcnt_t*);
+        *ptr = blkdev->count;
+      }
       return 0;
   }
   return -EINVAL;

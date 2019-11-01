@@ -16,6 +16,7 @@ void itoa(char* buf, int base, int d);
 int strcmp(const char* s1, const char* s2);
 char* strcpy(char* dst, const char* src);
 size_t strlen(const char* str);
+int strncmp(const char* s1, const char* s2, size_t n);
 char* strncpy(char* dst, const char* src, size_t count);
 void* memcpy(void* dst, const void* src, size_t size);
 void* memmove(void* dst, const void* src, size_t size);
