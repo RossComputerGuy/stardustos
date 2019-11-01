@@ -158,7 +158,7 @@ void mem_loadmmap(multiboot_info_t* mbi) {
     }
   }
   used_mem = PAGE_ALIGN((uint32_t)&__kernel_end);
-  printk(KLOG_INFO "mem: memory map loaded (t: %dKib, u: %dKib)", total_mem / 1024, used_mem / 1024);
+  printk(KLOG_INFO "mem: memory map loaded (t: %dKib, u: %dKib)\n", total_mem / 1024, used_mem / 1024);
 }
 
 void mem_init(multiboot_info_t* mbi) {

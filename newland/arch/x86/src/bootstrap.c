@@ -34,5 +34,5 @@ void bootstrap_main(uint32_t magic, uint32_t mbaddr) {
   mem_init(mbi);
   sched_init();
 
-  printk(KLOG_NOTICE "Bootstrapping has completed.");
+  printk(KLOG_NOTICE "Bootstrapping has completed.\n");
 }

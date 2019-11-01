@@ -47,14 +47,10 @@ static int print(const char* str, size_t len) {
     buff += 2;
   } else buff++;
   strcpy(buff, str);
-  buff[len] = '\n';
-  buff[len + 1] = 0;
-  len++;
   buff = klog_buffer + klog_pos;
   for (size_t i = 0; i < len; i++) {
     arch_logc(buff[i]);
   }
-  if (!inmsg) arch_logc('\n');
   klog_pos += len;
   return len;
 }

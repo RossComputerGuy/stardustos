@@ -11,6 +11,6 @@ void halt() {
 }
 
 void panic(const char* msg) {
-  printk(KLOG_FATAL "panic: %s", msg);
+  printk(KLOG_FATAL "panic: %s\n", msg);
   halt();
 }
