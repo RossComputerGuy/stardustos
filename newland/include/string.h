@@ -18,4 +18,5 @@ char* strcpy(char* dst, const char* src);
 size_t strlen(const char* str);
 char* strncpy(char* dst, const char* src, size_t count);
 void* memcpy(void* dst, const void* src, size_t size);
+void* memmove(void* dst, const void* src, size_t size);
 void* memset(void* ptr, int val, size_t size);

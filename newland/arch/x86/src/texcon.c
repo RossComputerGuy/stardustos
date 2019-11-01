@@ -17,6 +17,10 @@ void texcon_clear() {
   }
 }
 
+void arch_logc(const char c) {
+  texcon_putc(c);
+}
+
 int texcon_putc(const char c) {
   const uint16_t index = cursor_y * 80 + cursor_x;
   texbuff[index] = TEXCON_ENTRY(c, texcolor);

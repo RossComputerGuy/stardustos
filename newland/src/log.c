@@ -6,9 +6,13 @@
 #include <newland/log.h>
 #include <stdarg.h>
 
+#define TIME_STRLEN 12
+
 static char klog_buffer[NEWLAND_KLOG_SIZE] = { 0 };
 static size_t klog_pos = 0;
 static int inmsg = 0;
+
+extern void arch_logc(const char c);
 
 static int getlevel(const char* msg) {
   if (msg[0] == KLOG_SOH_ASCII && msg[1] >= 0 && msg[1] < 7) return msg[1];
@@ -22,17 +26,29 @@ static int print(const char* str, size_t len) {
     len -= 2;
   }
   size_t freesize = NEWLAND_KLOG_SIZE - klog_pos;
-  // TODO: calculate log info stuff into msglen
+  if (!inmsg) len += TIME_STRLEN + 3;
   if (freesize < len) {
-    // TODO: move messages up
+    size_t l = 0;
+    while (klog_buffer[l] != '\n') l++;
+    memmove(klog_buffer, klog_buffer + l, NEWLAND_KLOG_SIZE - l);
   }
   char* buff = klog_buffer + klog_pos - 1;
   if (!inmsg) {
     buff[0] = '\n';
-    buff++;
+    buff[1] = '[';
+    memset(buff + 2, ' ', TIME_STRLEN);
+    // TODO: print time
+    buff += 2 + TIME_STRLEN;
+    buff[0] = ']';
+    buff[1] = ' ';
+    buff += 2;
   } else buff++;
-  // TODO: print log info stuff
   strcpy(buff, str);
+  buff = klog_buffer + klog_pos;
+  for (size_t i = 0; i < len; i++) {
+    arch_logc(buff[i]);
+  }
+  if (!inmsg) arch_logc('\n');
   klog_pos += len;
   return len;
 }
@@ -104,8 +120,8 @@ int printk(const char* fmt, ...) {
       len += l;
     } else if (*fmt == 'd') {
       char buff[20];
-      itoa(buff, 10, va_arg(ap, const char*));
-      int r = print(str, strlen(buff));
+      itoa(buff, 10, va_arg(ap, int));
+      int r = print(buff, strlen(buff));
       if (r < 0) {
         inmsg = 0;
         va_end(ap);

@@ -11,6 +11,7 @@
 #include <newland/arch/texcon.h>
 #include <newland/arch/timer.h>
 #include <newland/boot/multiboot.h>
+#include <newland/log.h>
 #include <newland/types.h>
 
 void bootstrap_main(uint32_t magic, uint32_t mbaddr) {
@@ -28,4 +29,6 @@ void bootstrap_main(uint32_t magic, uint32_t mbaddr) {
   fpu_init();
   mem_init(mbi);
   sched_init();
+
+  printk(KLOG_NOTICE "Bootstrapping has completed.");
 }

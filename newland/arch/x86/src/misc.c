@@ -11,6 +11,6 @@ void halt() {
 }
 
 void panic(const char* msg) {
-  // TODO: use kernel log
+  printk(KLOG_FATAL "panic: %s", msg);
   halt();
 }

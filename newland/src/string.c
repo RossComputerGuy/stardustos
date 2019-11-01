@@ -8,7 +8,7 @@ void itoa(char* buf, int base, int d) {
   char* p1, *p2;
   unsigned long ud = d;
   int divisor = 10;
-  
+
   /* If %d is specified and D is minus, put `-' in the head.  */
   if (base == 'd' && d < 0) {
     *p++ = '-';
@@ -24,7 +24,7 @@ void itoa(char* buf, int base, int d) {
 
   /* Terminate BUF.  */
   *p = 0;
-  
+
   /* Reverse BUF.  */
   p1 = buf;
   p2 = p - 1;
@@ -73,6 +73,17 @@ void* memcpy(void* dst, const void* src, size_t size) {
 	const unsigned char* buffsrc = (const unsigned char*)src;
 	for (size_t i = 0; i < size; i++) buffdst[i] = buffsrc[i];
 	return buffdst;
+}
+
+void* memmove(void* dst, const void* src, size_t size) {
+	unsigned char* dstbuff = (unsigned char*)dst;
+	const unsigned char* srcbuff = (const unsigned char*)src;
+	if (dstbuff < srcbuff) {
+		for (size_t i = 0; i < size; i++) dstbuff[i] = srcbuff[i];
+	} else {
+		for (size_t i = size; i != 0; i--) dstbuff[i-1] = srcbuff[i-1];
+	}
+	return dstbuff;
 }
 
 void* memset(void* ptr, int val, size_t size) {
