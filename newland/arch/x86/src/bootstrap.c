@@ -12,9 +12,13 @@
 #include <newland/arch/timer.h>
 #include <newland/boot/multiboot.h>
 #include <newland/log.h>
+#include <newland/time.h>
 #include <newland/types.h>
 
+extern time_t boot_time;
+
 void bootstrap_main(uint32_t magic, uint32_t mbaddr) {
+  boot_time = time(NULL);
   multiboot_info_t* mbi = (multiboot_info_t*)mbaddr;
 
   texcon_clear();

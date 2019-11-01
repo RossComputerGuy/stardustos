@@ -18,9 +18,11 @@ add_compile_definitions("NEWLAND_KLOG_SIZE=${NEWLAND_KLOG_SIZE}")
 add_compile_options("-nostdinc" "-fno-builtin" "-Werror=implicit-function-declaration" "-fno-stack-protector")
 add_link_options("-T${ARCH_DIR}/linker.ld" "-nostdlib" "-nostartfiles")
 add_executable(kernel.elf ${ARCH_FILES}
+  "${ARCH_DIR}/src/clock.c"
   "${ARCH_DIR}/src/kalloc.c"
   "${PROJECT_SOURCE_DIR}/src/dev/block.c"
   "${PROJECT_SOURCE_DIR}/src/dev/tty.c"
   "${PROJECT_SOURCE_DIR}/src/dev.c"
   "${PROJECT_SOURCE_DIR}/src/log.c"
-  "${PROJECT_SOURCE_DIR}/src/string.c")
+  "${PROJECT_SOURCE_DIR}/src/string.c"
+  "${PROJECT_SOURCE_DIR}/src/time.c")

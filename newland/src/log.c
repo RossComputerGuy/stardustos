@@ -4,6 +4,7 @@
 #include <newland/error.h>
 #include <newland/limits.h>
 #include <newland/log.h>
+#include <newland/time.h>
 #include <stdarg.h>
 
 #define TIME_STRLEN 12
@@ -38,7 +39,8 @@ static int print(const char* str, size_t len) {
     buff[0] = '\n';
     buff[1] = '[';
     memset(buff + 2, ' ', TIME_STRLEN);
-    // TODO: print time
+    time_t t = time(NULL);
+    itoa(buff + 2, 10, t);
     buff += 2 + TIME_STRLEN;
     buff[0] = ']';
     buff[1] = ' ';
