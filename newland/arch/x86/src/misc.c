@@ -3,6 +3,7 @@
   */
 #include <newland/arch/misc.h>
 #include <newland/arch/texcon.h>
+#include <newland/log.h>
 #include <string.h>
 
 void halt() {
@@ -10,6 +11,6 @@ void halt() {
 }
 
 void panic(const char* msg) {
-  texcon_write(msg, strlen(msg));
+  // TODO: use kernel log
   halt();
 }

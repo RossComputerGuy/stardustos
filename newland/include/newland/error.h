@@ -13,3 +13,4 @@
 #define EINPROGRESS 8
 #define EINTR 9
 #define ENOSYS 10
+#define EOVERFLOW 11
