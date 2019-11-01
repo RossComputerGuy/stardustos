@@ -139,7 +139,6 @@ int printk(const char* fmt, ...) {
       fmt += l;
     }
   }
-  inmsg = 1;
   va_end(ap);
   return len;
 }
