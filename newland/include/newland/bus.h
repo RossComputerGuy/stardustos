@@ -8,10 +8,15 @@
 #include <newland/list.h>
 #include <string.h>
 
+#define BUSDEV_INT (1 << 0)
+
 typedef struct bus_dev {
   SLIST_ENTRY(struct bus_dev) dev_list;
   const char name[NAME_MAX];
   const char dname[NAME_MAX];
+
+  uint8_t flags;
+  uint16_t interrupt;
 } bus_dev_t;
 
 SLIST_HEAD(bus_dev_list, bus_dev_t);
