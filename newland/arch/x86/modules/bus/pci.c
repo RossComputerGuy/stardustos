@@ -60,9 +60,6 @@ static void scan_func(int type, int bus, int slot, int func) {
     }
     printk(KLOG_INFO "pci: added device %s\n", name);
   }
-  if (pci_findtype(dev) == PCI_TYPE_BRIDGE) {
-    scan_bus(type, pci_readfield(dev, PCI_SECONDARY_BUS, 1));
-  }
 }
 
 static void scan_slot(int type, int bus, int slot) {
@@ -80,12 +77,6 @@ static void scan_slot(int type, int bus, int slot) {
 static void scan_bus(int type, int bus) {
   for (int slot = 0; slot < 32; slot++) {
     scan_slot(type, bus, slot);
-  }
-}
-
-static void scan(int type) {
-  for (uint8_t b = 0; b < 255; b++) {
-    scan_bus(type, b);
   }
 }
 
@@ -118,7 +109,9 @@ int pci_getint(uint32_t dev) {
 MODULE_INIT(bus_pci) {
   int r = register_bus(NULL, "pci");
   if (r < 0) return r;
-  scan(-1);
+  for (uint8_t b = 0; b < 255; b++) {
+    scan_bus(-1, b);
+  }
   return 0;
 }
 
