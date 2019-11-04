@@ -65,6 +65,8 @@ static uint32_t read_field(uint32_t dev, int field, int size) {
 }
 
 /** Scanning **/
+static void scan_bus(int type, int bus);
+
 static void scan_func(int type, int bus, int slot, int func) {
   uint32_t dev = pci_boxdev(bus, slot, func);
   if (type == -1 || type == pci_findtype(dev)) {
@@ -74,12 +76,20 @@ static void scan_func(int type, int bus, int slot, int func) {
     memset(name, 0, 13);
     strcpy(name, "000.000.000");
     itoa(name, 10, bus);
-    name[4] = '.';
-    itoa(name + 5, 10, slot);
-    name[9] = '.';
-    itoa(name + 10, 10, func);
+    if (name[1] == 0) name[1] = '0';
+    if (name[2] == 0) name[2] = '0';
+    name[3] = '.';
+    itoa(name + 4, 10, slot);
+    if (name[5] == 0) name[5] = '0';
+    if (name[6] == 0) name[6] = '0';
+    name[7] = '.';
+    itoa(name + 8, 10, func);
     bus_adddev(bus_fromname("pci"), name);
     printk(KLOG_INFO "pci: found device %s\n", name);
+  }
+  if (pci_findtype(dev) == (0x06 >> 8) | 0x04) {
+    uint16_t b = read_field(dev, PCI_SECONDARY_BUS, 2);
+    scan_bus(pci_findtype(dev), b);
   }
 }
 
