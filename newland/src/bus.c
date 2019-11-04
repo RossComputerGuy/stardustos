@@ -32,43 +32,59 @@ bus_t* bus_fromname(const char* name) {
   return NULL;
 }
 
-device_t* bus_getdev(bus_t* bus, size_t i) {
+int bus_regdev(bus_t* bus, const char* name, const char* dname) {
+  if (bus_getdev(bus, dname) != NULL) return -EEXIST;
+  bus_dev_t* bdev = bus_getdevbyname(bus, name);
+  if (bdev == NULL) return -ENOENT;
+  strcpy((char*)bdev->dname, dname);
+  // TODO: maybe the bus should have a function call for handling the registration
+  return 0;
+}
+
+int bus_unregdev(bus_t* bus, const char* name, const char* dname) {
+  if (bus_getdev(bus, dname) == NULL) return -ENOENT;
+  bus_dev_t* bdev = bus_getdevbyname(bus, name);
+  if (bdev == NULL) return -ENOENT;
+  memset((void*)bdev->dname, 0, NAME_MAX);
+  // TODO: maybe the bus should have a function call for handling the unregistring
+  return 0;
+}
+
+device_t* bus_getdev(bus_t* bus, const char* name) {
   device_t* dev = NULL;
-  size_t index = 0;
-  SLIST_FOREACH(dev, &bus->dev_list, bus_list) {
-    if (index == i) return dev;
-    index++;
+  bus_dev_t* bdev = NULL;
+  SLIST_FOREACH(bdev, &bus->dev_list, dev_list) {
+    if (strlen(bdev->dname) == 0) continue;
+    dev = device_fromname(bdev->dname);
+    if (dev == NULL) continue;
+    if (!strcmp(dev->name, name)) return dev;
   }
   return NULL;
 }
 
-device_t* bus_getdevbyname(bus_t* bus, const char* name) {
-  device_t* dev = NULL;
-  SLIST_FOREACH(dev, &bus->dev_list, bus_list) {
+bus_dev_t* bus_getdevbyname(bus_t* bus, const char* name) {
+  bus_dev_t* dev = NULL;
+  SLIST_FOREACH(dev, &bus->dev_list, dev_list) {
     if (!strcmp(dev->name, name)) return dev;
   }
   return NULL;
 }
 
 int bus_adddev(bus_t* bus, const char* name) {
-  if (strlen(name) > NAME_MAX) return -ENAMETOOLONG;
-  device_t* dev = device_fromname(name);
-  if (dev == NULL) return -ENOENT;
-  if (bus_getdevbyname(bus, dev->name) != NULL) return -EEXIST;
-  SLIST_INSERT_HEAD(&bus->dev_list, dev, bus_list);
+  if (bus_getdevbyname(bus, name) != NULL) return -EEXIST;
+  bus_dev_t* dev = kmalloc(sizeof(bus_dev_t));
+  if (dev == NULL) return -ENOMEM;
+  strcpy((char*)dev->name, name);
+  SLIST_INSERT_HEAD(&bus->dev_list, dev, dev_list);
   bus->dev_count++;
-  printk(KLOG_INFO "Attached device (%s) to bus (%s)\n", dev->name, bus->name);
   return 0;
 }
 
 int bus_remdev(bus_t* bus, const char* name) {
-  if (strlen(name) > NAME_MAX) return -ENAMETOOLONG;
-  device_t* dev = device_fromname(name);
+  bus_dev_t* dev = bus_getdevbyname(bus, name);
   if (dev == NULL) return -ENOENT;
-  if (bus_getdevbyname(bus, dev->name) == NULL) return -ENOENT;
-  SLIST_REMOVE(&bus->dev_list, dev, device_t, bus_list);
+  SLIST_REMOVE(&bus->dev_list, dev, bus_dev_t, dev_list);
   bus->dev_count--;
-  printk(KLOG_INFO "Detached device (%s) to bus (%s)\n", dev->name, bus->name);
   return 0;
 }
 

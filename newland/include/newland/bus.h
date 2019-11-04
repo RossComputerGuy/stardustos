@@ -8,13 +8,19 @@
 #include <newland/list.h>
 #include <string.h>
 
-SLIST_HEAD(dev_list, device_t);
+typedef struct bus_dev {
+  SLIST_ENTRY(struct bus_dev) dev_list;
+  const char name[NAME_MAX];
+  const char dname[NAME_MAX];
+} bus_dev_t;
+
+SLIST_HEAD(bus_dev_list, bus_dev_t);
 
 typedef struct bus {
   SLIST_ENTRY(struct bus) bus_list;
   const char name[NAME_MAX];
   const char type[NAME_MAX];
-  struct dev_list dev_list;
+  struct bus_dev_list dev_list;
   size_t dev_count;
 } bus_t;
 
@@ -22,8 +28,10 @@ size_t bus_count();
 bus_t* bus_get(size_t i);
 bus_t* bus_fromname(const char* name);
 
-device_t* bus_getdev(bus_t* bus, size_t i);
-device_t* bus_getdevbyname(bus_t* bus, const char* name);
+int bus_regdev(bus_t* bus, const char* name, const char* dname);
+int bus_unregdev(bus_t* bus, const char* name, const char* dname);
+device_t* bus_getdev(bus_t* bus, const char* name);
+bus_dev_t* bus_getdevbyname(bus_t* bus, const char* name);
 int bus_adddev(bus_t* bus, const char* name);
 int bus_remdev(bus_t* bus, const char* name);
 
