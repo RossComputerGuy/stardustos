@@ -111,14 +111,15 @@ static void scan_bus(int type, int bus) {
 }
 
 static void scan(int type) {
-  if ((read_field(0, PCI_HEADER_TYPE, 1) & 0x80) == 0) scan_bus(type, 0);
+  for (int bus = 0; bus < 256; bus++) scan_bus(type, bus);
+  /*if ((read_field(0, PCI_HEADER_TYPE, 1) & 0x80) == 0) scan_bus(type, 0);
   else {
     for (int func = 0; func < 8; func++) {
       uint32_t dev = pci_boxdev(0, 0, func);
       if (read_field(dev, PCI_VENDOR_ID, 2) != 0xFFFF) scan_bus(type, func);
       else break;
     }
-  }
+  }*/
 }
 
 /** Module Stuff **/
