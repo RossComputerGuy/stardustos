@@ -6,6 +6,7 @@
 #include <newland/log.h>
 #include <newland/module.h>
 #include <newland/types.h>
+#include <string.h>
 
 #define PCI_ADDR_PORT 0xCF8
 #define PCI_VAL_PORT 0xCFC
@@ -63,10 +64,48 @@ static uint32_t read_field(uint32_t dev, int field, int size) {
   }
 }
 
+/** Scanning **/
+static void scan_func(int type, int bus, int slot, int func) {
+  uint32_t dev = pci_boxdev(bus, slot, func);
+  if (type == -1 || type == pci_findtype(dev)) {
+    uint16_t vid = read_field(dev, PCI_VENDOR_ID, 2);
+    uint16_t did = read_field(dev, PCI_DEVICE_ID, 2);
+    // TODO: register device with bus
+  }
+}
+
+static int scan_slot(int type, int bus, int slot) {
+  uint32_t dev = pci_boxdev(bus, slot, 0);
+  if (read_field(dev, PCI_VENDOR_ID, 2) == 0xFFFF) return 0;
+  scan_func(type, bus, slot, 0);
+  if (!read_field(dev, PCI_HEADER_TYPE, 1)) return 1;
+  for (int func = 1; func < 8; func++) {
+    dev = pci_boxdev(bus, slot, func);
+    if (read_field(dev, PCI_VENDOR_ID, 2) != 0xFFFF) scan_func(type, bus, slot, func);
+  }
+  return 1;
+}
+
+static void scan_bus(int type, int bus) {
+  for (int slot = 0; slot < 32; slot++) {
+    if (scan_slot(type, bus, slot) == 0) break;
+  }
+}
+
+static void scan(int type) {
+  if ((read_field(0, PCI_HEADER_TYPE, 1) & 0x80) == 0) scan_bus(type, 0);
+  for (int func = 0; func < 8; func++) {
+    uint32_t dev = pci_boxdev(0, 0, func);
+    if (read_field(dev, PCI_VENDOR_ID, 2) != 0xFFFF) scan_bus(type, func);
+    else break;
+  }
+}
+
 /** Module Stuff **/
 MODULE_INIT(bus_pci) {
   int r = register_bus(NULL, "pci");
   if (r < 0) return r;
+  scan(-1);
   return 0;
 }
 
