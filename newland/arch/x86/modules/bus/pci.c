@@ -70,8 +70,16 @@ static void scan_func(int type, int bus, int slot, int func) {
   if (type == -1 || type == pci_findtype(dev)) {
     uint16_t vid = read_field(dev, PCI_VENDOR_ID, 2);
     uint16_t did = read_field(dev, PCI_DEVICE_ID, 2);
-    printk(KLOG_INFO "pci: found device %d:%d:%d\n", bus, slot, func);
-    // TODO: register device with bus
+    char name[13];
+    memset(name, 0, 13);
+    strcpy(name, "000.000.000");
+    itoa(name, 10, bus);
+    name[4] = '.';
+    itoa(name + 5, 10, slot);
+    name[9] = '.';
+    itoa(name + 10, 10, func);
+    bus_adddev(bus_fromname("pci"), name);
+    printk(KLOG_INFO "pci: found device %s\n", name);
   }
 }
 
