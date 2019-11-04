@@ -19,11 +19,8 @@ SECTIONS {
     __data_start = .;
 		*(.data)
     __data_end = .;
-	}
-
-  .modules BLOCK(4K) : ALIGN(4K) {
     __modules_start = .;
-    *(.modinfo)
+    KEEP(*(modinfo*))
     __modules_end = .;
   }
 

@@ -9,10 +9,13 @@ SECTIONS {
   .rodata BLOCK(4K) : ALIGN(4K) {
     *(.rodata)
   }
-
-  .modinfo BLOCK(4K) : ALIGN(4K) {
+  
+  .data BLOCK(4K) : ALIGN(4K) {
+    __data_start = .;
+		*(.data)
+    __data_end = .;
     __modules_start = .;
-    *(.modinfo)
+    KEEP(*(modinfo*))
     __modules_end = .;
   }
 
