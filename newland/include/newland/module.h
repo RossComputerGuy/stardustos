@@ -3,6 +3,8 @@
   */
 #pragma once
 
+#include <string.h>
+
 typedef int (*modinit_t)();
 typedef void (*modfini_t)();
 
@@ -26,4 +28,6 @@ typedef struct {
 #define MODULE(id, author, license, modver) modinfo_t kmod_## id __attribute__((section("modinfo"))) = { #id, author, license, modver, "0.1.0", kmod_## id ##_init, kmod_## id ##_fini }
 #endif
 
+size_t module_count();
+modinfo_t* module_fromid(const char* id);
 int modules_init();
