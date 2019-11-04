@@ -89,10 +89,10 @@ int bus_remdev(bus_t* bus, const char* name) {
 }
 
 int register_bus(const char* type, const char* name) {
-  if (strlen(type) > NAME_MAX || strlen(name) > NAME_MAX) return -ENAMETOOLONG;
+  if ((type != NULL && strlen(type) > NAME_MAX) || strlen(name) > NAME_MAX) return -ENAMETOOLONG;
   bus_t* bus = kmalloc(sizeof(bus_t));
   if (bus == NULL) return -ENOMEM;
-  strcpy((char*)bus->type, type);
+  if (type != NULL) strcpy((char*)bus->type, type);
   strcpy((char*)bus->name, name);
   bus->dev_count = 0;
   SLIST_INSERT_HEAD(&buses, bus, bus_list);

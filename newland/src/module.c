@@ -10,22 +10,24 @@ extern uint32_t __modules_start;
 extern uint32_t __modules_end;
 
 size_t module_count() {
-  return (((uint32_t)&__modules_start) - ((uint32_t)&__modules_end)) / sizeof(modinfo_t);
+  return (((uint32_t)&__modules_end) - ((uint32_t)&__modules_start)) / sizeof(modinfo_t);
 }
 
 modinfo_t* module_fromid(const char* id) {
-  for (size_t i = (uint32_t)&__modules_start; i < (uint32_t)&__modules_end; i += sizeof(modinfo_t)) {
-    modinfo_t* modinfo = (modinfo_t*)i;
-    if (!strcmp(modinfo->id, id)) return modinfo;
+  size_t modcount = module_count();
+  for (size_t i = 0; i < modcount; i++) {
+    modinfo_t* mod = (modinfo_t*)((uint32_t)&__modules_start + (i * sizeof(modinfo_t)));
+    if (!strcmp(mod->id, id)) return mod;
   }
   return NULL;
 }
 
 int modules_init() {
-  for (size_t i = (uint32_t)&__modules_start; i < (uint32_t)&__modules_end; i += sizeof(modinfo_t)) {
-    modinfo_t* modinfo = (modinfo_t*)i;
-    printk(KLOG_INFO "Loading kernel module: %s\n", modinfo->id);
-    int r = modinfo->init();
+  size_t modcount = module_count();
+  printk(KLOG_INFO "Loading %d kernel modules\n", modcount);
+  for (size_t i = modcount; i != 0; i--) {
+    modinfo_t* mod = (modinfo_t*)((uint32_t)&__modules_end - (i * sizeof(modinfo_t)));
+    int r = mod->init();
     if (r < 0) return r;
   }
   return 0;

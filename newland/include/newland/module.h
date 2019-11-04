@@ -16,7 +16,7 @@ typedef struct {
   const char krnlver[24];
   modinit_t init;
   modfini_t fini;
-} modinfo_t;
+} __attribute__((packed)) modinfo_t;
 
 #ifdef NEWLAND_MODULE
 #define MODULE_INIT(id) static int init()
