@@ -8,12 +8,27 @@
 #include <newland/list.h>
 #include <string.h>
 
+#define BUSDEVRES_PORT 1
+#define BUSDEVRES_MEM 2
+
+typedef struct bus_dev_res {
+  SLIST_ENTRY(struct bus_dev_res) res_list;
+  uint64_t value;
+  size_t size;
+  int type;
+} bus_dev_res_t;
+
+SLIST_HEAD(bus_dev_res_list, bus_dev_res_t);
+
 #define BUSDEV_INT (1 << 0)
 
 typedef struct bus_dev {
   SLIST_ENTRY(struct bus_dev) dev_list;
   const char name[NAME_MAX];
   const char dname[NAME_MAX];
+
+  struct bus_dev_res_list res_list;
+  size_t res_count;
 
   uint8_t flags;
   uint16_t interrupt;

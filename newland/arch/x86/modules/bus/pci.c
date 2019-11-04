@@ -59,9 +59,9 @@ static void scan_func(int type, int bus, int slot, int func) {
       bdev->interrupt = interrupt;
     }
   }
-  if (pci_findtype(dev) == PCI_TYPE_BRIDGE) {
+  /*if (pci_findtype(dev) == PCI_TYPE_BRIDGE) {
     scan_bus(type, pci_readfield(dev, PCI_SECONDARY_BUS, 1));
-  }
+  }*/
 }
 
 static void scan_slot(int type, int bus, int slot) {
@@ -122,7 +122,16 @@ int pci_getint(uint32_t dev) {
 MODULE_INIT(bus_pci) {
   int r = register_bus(NULL, "pci");
   if (r < 0) return r;
-  scan(-1);
+  for (uint8_t b = 0; b < 255; b++) {
+    for (uint8_t s = 0; s < 32; s++) {
+      uint32_t dev = pci_boxdev(bus, slot, 0);
+      if (pci_readfield(dev, PCI_VENDOR_ID, 2) == 0xFFFF) continue;
+      scan_func(-1, b, s, 0);
+      if ((pci_readfield(dev, PCI_HEADER_TYPE, 1) & 0x80) != 0) {
+        for (uint8_t f = 1; f < 8; f++) scan_func(-1, b, s, f);
+      }
+    }
+  }
   return 0;
 }
 
