@@ -70,34 +70,37 @@ static void scan_func(int type, int bus, int slot, int func) {
   if (type == -1 || type == pci_findtype(dev)) {
     uint16_t vid = read_field(dev, PCI_VENDOR_ID, 2);
     uint16_t did = read_field(dev, PCI_DEVICE_ID, 2);
+    printk(KLOG_INFO "pci: found device %d:%d:%d\n", bus, slot, func);
     // TODO: register device with bus
   }
 }
 
-static int scan_slot(int type, int bus, int slot) {
+static void scan_slot(int type, int bus, int slot) {
   uint32_t dev = pci_boxdev(bus, slot, 0);
-  if (read_field(dev, PCI_VENDOR_ID, 2) == 0xFFFF) return 0;
+  if (read_field(dev, PCI_VENDOR_ID, 2) == 0xFFFF) return;
   scan_func(type, bus, slot, 0);
-  if (!read_field(dev, PCI_HEADER_TYPE, 1)) return 1;
-  for (int func = 1; func < 8; func++) {
-    dev = pci_boxdev(bus, slot, func);
-    if (read_field(dev, PCI_VENDOR_ID, 2) != 0xFFFF) scan_func(type, bus, slot, func);
+  if ((read_field(dev, PCI_HEADER_TYPE, 1) & 0x80) != 0) {
+    for (int func = 1; func < 8; func++) {
+      dev = pci_boxdev(bus, slot, func);
+      if (read_field(dev, PCI_VENDOR_ID, 2) != 0xFFFF) scan_func(type, bus, slot, func);
+    }
   }
-  return 1;
 }
 
 static void scan_bus(int type, int bus) {
   for (int slot = 0; slot < 32; slot++) {
-    if (scan_slot(type, bus, slot) == 0) break;
+    scan_slot(type, bus, slot);
   }
 }
 
 static void scan(int type) {
   if ((read_field(0, PCI_HEADER_TYPE, 1) & 0x80) == 0) scan_bus(type, 0);
-  for (int func = 0; func < 8; func++) {
-    uint32_t dev = pci_boxdev(0, 0, func);
-    if (read_field(dev, PCI_VENDOR_ID, 2) != 0xFFFF) scan_bus(type, func);
-    else break;
+  else {
+    for (int func = 0; func < 8; func++) {
+      uint32_t dev = pci_boxdev(0, 0, func);
+      if (read_field(dev, PCI_VENDOR_ID, 2) != 0xFFFF) scan_bus(type, func);
+      else break;
+    }
   }
 }
 
