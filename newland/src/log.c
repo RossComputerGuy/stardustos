@@ -115,14 +115,21 @@ int printk(const char* fmt, ...) {
       if (!hasprinted) hasprinted = 1;
       len += l;
     } else if (*fmt == 'd') {
+      fmt++;
       char buff[20];
       itoa(buff, 10, va_arg(ap, int));
-      int r = print(buff, strlen(buff), hasprinted);
+      size_t l = strlen(buff);
+      if (maxrem < len) {
+        va_end(ap);
+        return -EOVERFLOW;
+      }
+      int r = print(buff, l, hasprinted);
       if (r < 0) {
         va_end(ap);
         return r;
       }
       if (!hasprinted) hasprinted = 1;
+      len += l;
     } else {
       fmt = fmtbeg;
       size_t l = strlen(fmt);
