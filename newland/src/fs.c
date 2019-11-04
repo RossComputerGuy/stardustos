@@ -22,30 +22,50 @@ int fs_node_create(fs_node_t** nodeptr, const char* name, mode_t mode) {
 size_t fs_node_read(fs_node_t** nodeptr, off_t offset, void* buff, size_t size) {
   fs_node_t* node = *nodeptr;
   int type = FS_NODE_TYPE_GET(node->mode);
-  if (type == FS_NODE_LINK) {
-    // TODO: find the parent and use it
-  } else if (type == FS_NODE_DIR) return -EISDIR;
   if (node->opts.read == NULL) return -ENOSYS;
+  if (type == FS_NODE_LINK) {
+    char path[PATH_MAX];
+    size_t r = node->opts.read(node, 0, path, node->size);
+    if (r < 0) return r;
+    fs_node_t* parentnode;
+    r = fs_resolve(&parentnode, path);
+    if (r < 0) return r;
+    return fs_node_read(&parentnode, offset, buff, size);
+  } else if (type == FS_NODE_DIR) return -EISDIR;
   return node->opts.read(node, offset, buff, size);
 }
 
 size_t fs_node_write(fs_node_t** nodeptr, off_t offset, const void* buff, size_t size) {
   fs_node_t* node = *nodeptr;
   int type = FS_NODE_TYPE_GET(node->mode);
-  if (type == FS_NODE_LINK) {
-    // TODO: find the parent and use it
-  } else if (type == FS_NODE_DIR) return -EISDIR;
   if (node->opts.read == NULL) return -ENOSYS;
+  if (node->opts.write == NULL) return -ENOSYS;
+  if (type == FS_NODE_LINK) {
+    char path[PATH_MAX];
+    size_t r = node->opts.read(node, 0, path, node->size);
+    if (r < 0) return r;
+    fs_node_t* parentnode;
+    r = fs_resolve(&parentnode, path);
+    if (r < 0) return r;
+    return fs_node_write(&parentnode, offset, buff, size);
+  } else if (type == FS_NODE_DIR) return -EISDIR;
   return node->opts.write(node, offset, buff, size);
 }
 
 int fs_node_vioctl(fs_node_t** nodeptr, int req, va_list ap) {
   fs_node_t* node = *nodeptr;
   int type = FS_NODE_TYPE_GET(node->mode);
-  if (type == FS_NODE_LINK) {
-    // TODO: find the parent and use it
-  } else if (type == FS_NODE_DIR) return -EISDIR;
+  if (node->opts.read == NULL) return -ENOSYS;
   if (node->opts.ioctl == NULL) return -ENOSYS;
+  if (type == FS_NODE_LINK) {
+    char path[PATH_MAX];
+    size_t r = node->opts.read(node, 0, path, node->size);
+    if (r < 0) return r;
+    fs_node_t* parentnode;
+    r = fs_resolve(&parentnode, path);
+    if (r < 0) return r;
+    return fs_node_vioctl(&parentnode, req, ap);
+  } else if (type == FS_NODE_DIR) return -EISDIR;
   return node->opts.ioctl(node, req, ap);
 }
 
@@ -176,7 +196,7 @@ mountpoint_t* mountpoint_fromtarget(const char* target) {
 
 int mountpoint_create(fs_t** fsptr, const char* src, const char* target, unsigned long flags, const void* data) {
   if (!(flags & MS_BIND) && (fsptr == NULL || *fsptr == NULL)) return -EINVAL;
-  if (mountpoint_fromsrc(src) != NULL || mountpoint_fromtarget(target) != NULL) return -EBUSY;
+  if ((src != NULL && mountpoint_fromsrc(src) != NULL) || mountpoint_fromtarget(target) != NULL) return -EBUSY;
   if (target[0] == '/') target++;
   if (target[strlen(target) - 1] == '/') memset((void*)(target + (strlen(target) - 1)), 0, sizeof(char));
   mountpoint_t* mp = kmalloc(sizeof(mountpoint_t));
@@ -206,5 +226,14 @@ int mountpoint_create(fs_t** fsptr, const char* src, const char* target, unsigne
   }
   SLIST_INSERT_HEAD(&mountpoints, mp, mp_list);
   mp_count++;
+  return 0;
+}
+
+int mountpoint_destroy(const char* target) {
+  mountpoint_t* mp = mountpoint_fromtarget(target);
+  if (mp == NULL) return -EINVAL;
+  SLIST_REMOVE(&mountpoints, mp, mountpoint_t, mp_list);
+  mp_count--;
+  kfree(mp);
   return 0;
 }

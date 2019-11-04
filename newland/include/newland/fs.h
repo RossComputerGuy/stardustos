@@ -104,3 +104,4 @@ size_t mountpoint_count();
 mountpoint_t* mountpoint_fromsrc(const char* src);
 mountpoint_t* mountpoint_fromtarget(const char* target);
 int mountpoint_create(fs_t** fsptr, const char* src, const char* target, unsigned long flags, const void* data);
+int mountpoint_destroy(const char* target);
