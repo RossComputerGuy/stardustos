@@ -13,11 +13,5 @@ function(add_kmodule name sources)
   add_compile_definitions("NEWLAND_MODULE")
   add_compile_options("-nostdinc" "-fno-builtin" "-Werror=implicit-function-declaration" "-fno-stack-protector")
   add_link_options("-T${NEWLAND_SOURCE}/arch/${NEWLAND_ARCH}/module.ld" "-nostdlib")
-  add_library("${name}-module" SHARED EXCLUDE_FROM_ALL ${sources})
-  set_target_properties("${name}-module" PROPERTIES PREFIX "")
-  add_custom_command(OUTPUT "${name}.nlm"
-    COMMAND ${NEWLAND_CROSS_COMPILER}objcopy -O binary "${name}-module.so" "${name}.nlm"
-    DEPENDS "${name}-module"
-    COMMENT "Generating binary for kernel module ${name}")
-  add_custom_target("${name}" DEPENDS "${name}.nlm")
+  add_library("${name}" SHARED EXCLUDE_FROM_ALL ${sources})
 endfunction()

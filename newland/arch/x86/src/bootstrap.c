@@ -12,6 +12,7 @@
 #include <newland/arch/timer.h>
 #include <newland/boot/multiboot.h>
 #include <newland/log.h>
+#include <newland/module.h>
 #include <newland/time.h>
 #include <newland/types.h>
 
@@ -33,6 +34,9 @@ void bootstrap_main(uint32_t magic, uint32_t mbaddr) {
   fpu_init();
   mem_init(mbi);
   sched_init();
+  
+  int r = modules_init();
+  if (r < 0) panic("Failed to load kernel modules");
 
   printk(KLOG_NOTICE "Bootstrapping has completed.\n");
 }

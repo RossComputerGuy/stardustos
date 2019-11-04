@@ -25,3 +25,5 @@ typedef struct {
 #define MODULE_FINI(id) static void kmod_## id ##_fini()
 #define MODULE(id, author, license, modver) modinfo_t kmod_## id __attribute__((section("modinfo"))) = { #id, author, license, modver, "0.1.0", kmod_## id ##_init, kmod_## id ##_fini }
 #endif
+
+int modules_init();

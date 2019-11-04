@@ -25,5 +25,6 @@ add_executable(kernel.elf ${ARCH_FILES}
   "${PROJECT_SOURCE_DIR}/src/dev.c"
   "${PROJECT_SOURCE_DIR}/src/fs.c"
   "${PROJECT_SOURCE_DIR}/src/log.c"
+  "${PROJECT_SOURCE_DIR}/src/module.c"
   "${PROJECT_SOURCE_DIR}/src/string.c"
   "${PROJECT_SOURCE_DIR}/src/time.c")
