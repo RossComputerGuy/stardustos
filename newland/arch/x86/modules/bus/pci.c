@@ -58,6 +58,7 @@ static void scan_func(int type, int bus, int slot, int func) {
       bdev->flags |= BUSDEV_INT;
       bdev->interrupt = interrupt;
     }
+    printk(KLOG_INFO "pci: added device %s\n", name);
   }
   /*if (pci_findtype(dev) == PCI_TYPE_BRIDGE) {
     scan_bus(type, pci_readfield(dev, PCI_SECONDARY_BUS, 1));
