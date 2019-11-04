@@ -63,11 +63,15 @@ typedef struct fs_node {
 #define FS_VIRT 1
 #define FS_PHYS 2
 
-typedef struct fs {
-  SLIST_ENTRY(struct fs) fs_list;
+typedef struct {
   int (*mount)(fs_node_t** targetptr, fs_node_t* source, unsigned long flags, const void* data);
   int (*umount)(fs_node_t** targetptr);
+} fs_opts_t;
+
+typedef struct fs {
+  SLIST_ENTRY(struct fs) fs_list;
   const char name[NAME_MAX];
+  fs_opts_t opts;
   int type;
 } fs_t;
 
@@ -88,6 +92,12 @@ size_t fs_node_write(fs_node_t** nodeptr, off_t offset, const void* buff, size_t
 int fs_node_vioctl(fs_node_t** nodeptr, int req, va_list ap);
 int fs_node_ioctl(fs_node_t** nodeptr, int req, ...);
 int fs_node_resolve(fs_node_t** nodeptr, fs_node_t** foundptr, const char* path);
+
+size_t fs_count();
+fs_t* fs_get(size_t i);
+fs_t* fs_fromname(const char* name);
+int register_fs(const char* name, int type, fs_opts_t opts);
+int unregister_fs(const char* name);
 
 int fs_resolve(fs_node_t** nodeptr, const char* path);
 size_t mountpoint_count();

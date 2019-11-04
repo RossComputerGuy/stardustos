@@ -79,6 +79,54 @@ int fs_node_resolve(fs_node_t** nodeptr, fs_node_t** foundptr, const char* path)
 
 /** Filesystem stuff **/
 
+SLIST_HEAD(fs_list, fs_t);
+static struct fs_list filesystems = { NULL };
+static size_t filesystem_count = 0;
+
+size_t fs_count() {
+  return filesystem_count;
+}
+
+fs_t* fs_get(size_t i) {
+  fs_t* fs = NULL;
+  size_t index = 0;
+  SLIST_FOREACH(fs, &filesystems, fs_list) {
+    if (index == i) return fs;
+    index++;
+  }
+  return NULL;
+}
+
+fs_t* fs_fromname(const char* name) {
+  fs_t* fs = NULL;
+  SLIST_FOREACH(fs, &filesystems, fs_list) {
+    if (!strcmp(fs->name, name)) return fs;
+  }
+  return NULL;
+}
+
+int register_fs(const char* name, int type, fs_opts_t opts) {
+  if (fs_fromname(name) != NULL) return -EEXIST;
+  if (strlen(name) > NAME_MAX) return -ENAMETOOLONG;
+  fs_t* fs = kmalloc(sizeof(fs_t));
+  if (fs == NULL) return -ENOMEM;
+  strcpy((char*)fs->name, name);
+  fs->type = type;
+  fs->opts = opts;
+  SLIST_INSERT_HEAD(&filesystems, fs, fs_list);
+  filesystem_count++;
+  return 0;
+}
+
+int unregister_fs(const char* name) {
+  fs_t* fs = fs_fromname(name);
+  if (fs == NULL) return -ENOENT;
+  SLIST_REMOVE(&filesystems, fs, fs_t, fs_list);
+  filesystem_count--;
+  kfree(fs);
+  return 0;
+}
+
 /** Mount Points **/
 
 SLIST_HEAD(mp_list, mountpoint_t);
@@ -144,7 +192,7 @@ int mountpoint_create(fs_t** fsptr, const char* src, const char* target, unsigne
   mp->flags = flags;
   if (!(flags & MS_BIND)) {
     strcpy((char*)mp->fsname, (*fsptr)->name);
-    r = (*fsptr)->mount(&mp->rootnode, targetnode, flags, data);
+    r = (*fsptr)->opts.mount(&mp->rootnode, targetnode, flags, data);
     if (r < 0) {
       kfree(mp);
       return r;
