@@ -1,11 +1,11 @@
 /**
   * NewLand Kernel - (C) 2019 Tristan Ross
   */
+#include <newland/bus.h>
 #include <newland/dev.h>
-#include <newland/kalloc.h>
 #include <newland/error.h>
+#include <newland/kalloc.h>
 
-SLIST_HEAD(dev_list, device_t);
 static struct dev_list devices = { NULL };
 static size_t dev_count = 0;
 

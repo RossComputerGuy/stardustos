@@ -22,6 +22,7 @@ add_executable(kernel.elf ${ARCH_FILES}
   "${ARCH_DIR}/src/kalloc.c"
   "${PROJECT_SOURCE_DIR}/src/dev/block.c"
   "${PROJECT_SOURCE_DIR}/src/dev/tty.c"
+  "${PROJECT_SOURCE_DIR}/src/bus.c"
   "${PROJECT_SOURCE_DIR}/src/dev.c"
   "${PROJECT_SOURCE_DIR}/src/fs.c"
   "${PROJECT_SOURCE_DIR}/src/log.c"

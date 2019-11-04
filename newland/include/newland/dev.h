@@ -16,6 +16,7 @@
 
 typedef struct device {
   SLIST_ENTRY(struct device) dev_list;
+  SLIST_ENTRY(struct device) bus_list;
   dev_t dev;
   const char name[NAME_MAX];
   fs_node_opts_t opts;
