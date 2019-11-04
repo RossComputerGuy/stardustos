@@ -48,7 +48,7 @@ static int print(const char* str, size_t len, int inmsg) {
   strcpy(buff, str);
   buff[len] = 0;
   buff = klog_buffer + klog_pos;
-  for (size_t i = 0; i < len; i++) {
+  for (size_t i = 0; i < len + 1; i++) {
     arch_logc(buff[i]);
   }
   klog_pos += len;
