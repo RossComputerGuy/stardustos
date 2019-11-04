@@ -87,7 +87,7 @@ static void scan_func(int type, int bus, int slot, int func) {
     bus_adddev(bus_fromname("pci"), name);
     printk(KLOG_INFO "pci: found device %s\n", name);
   }
-  if (pci_findtype(dev) == (0x06 >> 8) | 0x04) {
+  if (pci_findtype(dev) == PCI_TYPE_BRIDGE) {
     scan_bus(type, read_field(dev, PCI_SECONDARY_BUS, 1));
   }
 }
