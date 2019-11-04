@@ -124,7 +124,7 @@ MODULE_INIT(bus_pci) {
   if (r < 0) return r;
   for (uint8_t b = 0; b < 255; b++) {
     for (uint8_t s = 0; s < 32; s++) {
-      uint32_t dev = pci_boxdev(bus, slot, 0);
+      uint32_t dev = pci_boxdev(b, s, 0);
       if (pci_readfield(dev, PCI_VENDOR_ID, 2) == 0xFFFF) continue;
       scan_func(-1, b, s, 0);
       if ((pci_readfield(dev, PCI_HEADER_TYPE, 1) & 0x80) != 0) {
