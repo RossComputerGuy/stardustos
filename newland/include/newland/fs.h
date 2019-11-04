@@ -4,7 +4,10 @@
 #pragma once
 
 #include <newland/limits.h>
+#include <newland/list.h>
+#include <newland/time.h>
 #include <newland/types.h>
+#include <stdarg.h>
 #include <string.h>
 
 #define FS_NODE_FILE 1
@@ -34,7 +37,7 @@ typedef struct {
   int (*rmnode)(struct fs_node* node, struct fs_node** childptr);
   size_t (*read)(struct fs_node* node, off_t offset, void* buff, size_t size);
   size_t (*write)(struct fs_node* node, off_t offset, const void* buff, size_t size);
-  int (*ioctl)(struct fs_node* node, int req, size_t argcount, void** args);
+  int (*ioctl)(struct fs_node* node, int req, va_list ap);
 } fs_node_opts_t;
 
 typedef struct fs_node {
@@ -49,7 +52,9 @@ typedef struct fs_node {
   size_t size;
   blksize_t blksize;
   blkcnt_t blkcnt;
-  // TODO: add time stuff
+  time_t atime;
+  time_t mtime;
+  time_t ctime;
   fs_node_opts_t opts;
   void* impl;
 } fs_node_t;
@@ -58,9 +63,34 @@ typedef struct fs_node {
 #define FS_VIRT 1
 #define FS_PHYS 2
 
-typedef struct {
+typedef struct fs {
+  SLIST_ENTRY(struct fs) fs_list;
   int (*mount)(fs_node_t** targetptr, fs_node_t* source, unsigned long flags, const void* data);
   int (*umount)(fs_node_t** targetptr);
   const char name[NAME_MAX];
   int type;
 } fs_t;
+
+#define MS_BIND (1 << 0)
+
+typedef struct mountpoint {
+  SLIST_ENTRY(struct mountpoint) mp_list;
+  fs_node_t* rootnode;
+  const char fsname[NAME_MAX];
+  const char source[PATH_MAX];
+  const char target[PATH_MAX];
+  unsigned long flags;
+} mountpoint_t;
+
+int fs_node_create(fs_node_t** nodeptr, const char* name, mode_t mode);
+size_t fs_node_read(fs_node_t** nodeptr, off_t offset, void* buff, size_t size);
+size_t fs_node_write(fs_node_t** nodeptr, off_t offset, const void* buff, size_t size);
+int fs_node_vioctl(fs_node_t** nodeptr, int req, va_list ap);
+int fs_node_ioctl(fs_node_t** nodeptr, int req, ...);
+int fs_node_resolve(fs_node_t** nodeptr, fs_node_t** foundptr, const char* path);
+
+int fs_resolve(fs_node_t** nodeptr, const char* path);
+size_t mountpoint_count();
+mountpoint_t* mountpoint_fromsrc(const char* src);
+mountpoint_t* mountpoint_fromtarget(const char* target);
+int mountpoint_create(fs_t** fsptr, const char* src, const char* target, unsigned long flags, const void* data);

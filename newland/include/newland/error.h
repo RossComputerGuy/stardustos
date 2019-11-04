@@ -14,3 +14,6 @@
 #define EINTR 9
 #define ENOSYS 10
 #define EOVERFLOW 11
+#define EISDIR 12
+#define EBUSY 13
+#define ENOENT 14

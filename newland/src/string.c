@@ -57,6 +57,16 @@ size_t strlen(const char* str) {
   return len;
 }
 
+int strncmp(const char* s1, const char* s2, size_t n) {
+  if (n == 0) return 0;
+  while (n-- != 0 && *s1 == *s2) {
+    if (n == 0 || *s1 == '\0') break;
+    s1++;
+    s2++;
+  }
+  return (*(unsigned char*)s1) - (*(unsigned char*)s2);
+}
+
 char* strncpy(char* dst, const char* src, size_t count) {
   char* ds = dst;
   char* ss = (char*)src;
