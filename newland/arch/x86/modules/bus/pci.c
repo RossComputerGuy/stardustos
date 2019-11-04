@@ -72,8 +72,8 @@ static void scan_func(int type, int bus, int slot, int func) {
   if (type == -1 || type == pci_findtype(dev)) {
     uint16_t vid = read_field(dev, PCI_VENDOR_ID, 2);
     uint16_t did = read_field(dev, PCI_DEVICE_ID, 2);
-    char name[13];
-    memset(name, 0, 13);
+    char name[11];
+    memset(name, 0, 11);
     strcpy(name, "000.000.000");
     itoa(name, 10, bus);
     if (name[1] == 0) name[1] = '0';
@@ -84,8 +84,9 @@ static void scan_func(int type, int bus, int slot, int func) {
     if (name[6] == 0) name[6] = '0';
     name[7] = '.';
     itoa(name + 8, 10, func);
+    if (name[9] == 0) name[9] = '0';
+    if (name[10] == 0) name[10] = '0';
     bus_adddev(bus_fromname("pci"), name);
-    printk(KLOG_INFO "pci: found device %s\n", name);
   }
   if (pci_findtype(dev) == PCI_TYPE_BRIDGE) {
     scan_bus(type, read_field(dev, PCI_SECONDARY_BUS, 1));
@@ -111,15 +112,14 @@ static void scan_bus(int type, int bus) {
 }
 
 static void scan(int type) {
-  for (int bus = 0; bus < 256; bus++) scan_bus(type, bus);
-  /*if ((read_field(0, PCI_HEADER_TYPE, 1) & 0x80) == 0) scan_bus(type, 0);
+  if ((read_field(0, PCI_HEADER_TYPE, 1) & 0x80) == 0) scan_bus(type, 0);
   else {
     for (int func = 0; func < 8; func++) {
       uint32_t dev = pci_boxdev(0, 0, func);
       if (read_field(dev, PCI_VENDOR_ID, 2) != 0xFFFF) scan_bus(type, func);
       else break;
     }
-  }*/
+  }
 }
 
 /** Module Stuff **/
