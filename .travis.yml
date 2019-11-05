@@ -2,8 +2,9 @@ language: c
 dist: xenial
 compiler:
   - gcc
-before_install:
-  - sudo apt-get update
-  - sudo apt-get -y upgrade cmake
-  - sudo apt-get -y install qemu
+addons:
+  apt:
+    update: true
+    packages:
+      - qemu
 script: mkdir build && cd build && cmake .. && make && make test
