@@ -3,6 +3,7 @@ compiler:
   - gcc
 addons:
   apt:
+    update: true
     packages:
       - qemu
 script: mkdir build && cd build && cmake .. && make && make test
