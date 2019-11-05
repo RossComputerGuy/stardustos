@@ -62,6 +62,7 @@ void pci_write8(pci_dev_t* dev, uint8_t reg, uint8_t value) {
 
 /** Scanning **/
 static pci_dev_t isa;
+static int hasisa = 0;
 
 static void check_bus(uint8_t bus);
 
@@ -86,7 +87,16 @@ static void found_dev(pci_dev_t* addr) {
   name[11] = 0;
   bus_t* bus = bus_fromname("pci");
   bus_adddev(bus, name);
-  if (vid == 0x8086 && (did == 0x7000 || did == 0x7110)) isa = (pci_dev_t){ addr->bus, addr->slot, addr->func };
+  bus_dev_t* bdev = bus_getdevbyname(bus, name);
+  uint8_t intr = pci_getint(addr);
+  if (intr != 0) {
+    bdev->flags |= BUSDEV_INT;
+    bdev->interrupt = intr;
+  }
+  if (vid == 0x8086 && (did == 0x7000 || did == 0x7110)) {
+    isa = (pci_dev_t){ addr->bus, addr->slot, addr->func };
+    hasisa = 1;
+  }
 }
 
 static void check_func(uint8_t bus, uint8_t dev, uint8_t func) {
@@ -134,6 +144,25 @@ static void scan_buses() {
 
 /** Interrupt stuff **/
 static uint32_t remaps[4] = { 0 };
+
+uint8_t pci_getint(pci_dev_t* addr) {
+  if (hasisa) {
+    uint8_t irqpin = pcidev_getintpin(addr);
+    if (irqpin == 0) return pcidev_getintline(addr);
+    int pirq = (irqpin + addr->slot - 2) % 4;
+    uint8_t intline = pcidev_getintline(addr);
+    if (remaps[pirq] >= 0x80) {
+      if (intline == 0xFF) {
+        intline = 10;
+        pci_write32(addr, 60, (intline | 0xFF) << 16);
+        remaps[pirq] = intline;
+      }
+      return intline;
+    }
+    pci_write32(addr, 60, (remaps[pirq] | 0xFF) << 16);
+    return remaps[pirq];
+  }
+}
 
 /** Module Stuff **/
 MODULE_INIT(bus_pci) {
