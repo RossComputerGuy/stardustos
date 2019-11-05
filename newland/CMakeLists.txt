@@ -14,6 +14,8 @@ set(ARCH_DIR "${PROJECT_SOURCE_DIR}/arch/${NEWLAND_ARCH}")
 include("${ARCH_DIR}/build.cmake")
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
+configure_file("${PROJECT_SOURCE_DIR}/data/gdbinit.in" "${PROJECT_BINARY_DIR}/.gdbinit")
+
 add_compile_definitions("NEWLAND_KLOG_SIZE=${NEWLAND_KLOG_SIZE}")
 add_compile_options("-nostdinc" "-fno-builtin" "-Werror=implicit-function-declaration" "-fno-stack-protector")
 add_link_options("-T${ARCH_DIR}/linker.ld" "-nostdlib" "-nostartfiles")

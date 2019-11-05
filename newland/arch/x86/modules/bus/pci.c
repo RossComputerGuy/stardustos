@@ -10,112 +10,97 @@
 #include <string.h>
 
 /** Read & Write **/
-void pci_writefield(uint32_t dev, int field, uint32_t value) {
-  outl(PCI_ADDR_PORT, pci_getaddr(dev, field));
-  outl(PCI_VAL_PORT, value);
+#define ADDR_CREATE(dev, reg) { .enabled = 1, .busno = ((dev)->bus), .slotno = ((dev)->func), .regno = ((reg) & 0xFC) }
+
+typedef union {
+  uint32_t addr;
+  struct {
+    uint32_t regno:8;
+    uint32_t funcno:3;
+    uint32_t slotno:5;
+    uint32_t busno:8;
+    uint32_t reserved:7;
+    uint32_t enabled:1;
+  };
+} pci_addr_t;
+
+uint32_t pci_read32(pci_dev_t* dev, uint8_t reg) {
+  pci_addr_t addr = ADDR_CREATE(dev, reg);
+  outl(PCI_ADDR, addr.addr);
+  return inl(PCI_VAL);
 }
 
-uint32_t pci_readfield(uint32_t dev, int field, int size) {
-  outl(PCI_ADDR_PORT, pci_getaddr(dev, field));
-  switch (size) {
-    case 1: return inb(PCI_VAL_PORT + (field & 3));
-    case 2: return inw(PCI_VAL_PORT + (field & 2));
-    case 4: return inl(PCI_VAL_PORT);
-    default: return 0xFFFF;
-  }
+uint16_t pci_read16(pci_dev_t* dev, uint8_t reg) {
+  pci_addr_t addr = ADDR_CREATE(dev, reg);
+  outl(PCI_ADDR, addr.addr);
+  return inw(PCI_VAL + (reg & 3));
+}
+
+uint8_t pci_read8(pci_dev_t* dev, uint8_t reg) {
+  pci_addr_t addr = ADDR_CREATE(dev, reg);
+  outl(PCI_ADDR, addr.addr);
+  return inb(PCI_VAL + (reg & 3));
+}
+
+void pci_write32(pci_dev_t* dev, uint8_t reg, uint32_t value) {
+  pci_addr_t addr = ADDR_CREATE(dev, reg);
+  outl(PCI_ADDR, addr.addr);
+  outl(PCI_VAL, value);
+}
+
+void pci_write16(pci_dev_t* dev, uint8_t reg, uint16_t value) {
+  pci_addr_t addr = ADDR_CREATE(dev, reg);
+  outl(PCI_ADDR, addr.addr);
+  outw(PCI_VAL + (reg & 3), value);
+}
+
+void pci_write8(pci_dev_t* dev, uint8_t reg, uint8_t value) {
+  pci_addr_t addr = ADDR_CREATE(dev, reg);
+  outl(PCI_ADDR, addr.addr);
+  outb(PCI_VAL + (reg & 3), value);
 }
 
 /** Scanning **/
-static uint32_t isa = 0;
+static pci_dev_t isa;
 
-static void scan_bus(int type, int bus);
-
-static void scan_func(int type, int bus, int slot, int func) {
-  uint32_t dev = pci_boxdev(bus, slot, func);
-  if (type == -1 || type == pci_findtype(dev)) {
-    uint16_t vid = pci_readfield(dev, PCI_VENDOR_ID, 2);
-    uint16_t did = pci_readfield(dev, PCI_DEVICE_ID, 2);
-    char name[11];
-    memset(name, 0, 11);
-    strcpy(name, "000.000.000");
-    itoa(name, 10, bus);
-    if (name[1] == 0) name[1] = '0';
-    if (name[2] == 0) name[2] = '0';
-    name[3] = '.';
-    itoa(name + 4, 10, slot);
-    if (name[5] == 0) name[5] = '0';
-    if (name[6] == 0) name[6] = '0';
-    name[7] = '.';
-    itoa(name + 8, 10, func);
-    if (name[9] == 0) name[9] = '0';
-    if (name[10] == 0) name[10] = '0';
-    bus_t* bus = bus_fromname("pci");
-    bus_adddev(bus, name);
-    if (vid == 0x8086 && (did == 0x7000 || did == 0x7110)) isa = dev;
-    bus_dev_t* bdev = bus_getdevbyname(bus, name);
-    int interrupt = pci_getint(dev);
-    if (interrupt != 0) {
-      bdev->flags |= BUSDEV_INT;
-      bdev->interrupt = interrupt;
-    }
-    printk(KLOG_INFO "pci: added device %s\n", name);
-  }
-  if (pci_findtype(dev) == PCI_TYPE_BRIDGE) scan_bus(type, pci_readfield(dev, PCI_SECONDARY_BUS, 1));
-}
-
-static void scan_slot(int type, int bus, int slot) {
-  uint32_t dev = pci_boxdev(bus, slot, 0);
-  if (pci_readfield(dev, PCI_VENDOR_ID, 2) == 0xFFFF) return;
-  scan_func(type, bus, slot, 0);
-  if ((pci_readfield(dev, PCI_HEADER_TYPE, 1) & 0x80) != 0) {
-    for (int func = 1; func < 8; func++) {
-      dev = pci_boxdev(bus, slot, func);
-      if (pci_readfield(dev, PCI_VENDOR_ID, 2) != 0xFFFF) scan_func(type, bus, slot, func);
-    }
-  }
-}
-
-static void scan_bus(int type, int bus) {
-  if ((pci_readfield(0, PCI_HEADER_TYPE, 1) & 0x80) == 0) scan_bus(type, 0);
-  else {
-    for (int func = 0; func < 8; func++) {
-      uint32_t dev = pci_boxdev(0, 0, func);
-      if (pci_readfield(dev, PCI_VENDOR_ID, 2) != 0xFFFF) scan_bus(type, func);
-      else break;
-    }
-  }
+static void found_dev(pci_dev_t* addr) {
+  uint16_t did = pcidev_getdevice(addr);
+  uint16_t vid = pcidev_getvendor(addr);
+  if (vid == 0xFFFF) return;
+  char name[11];
+  memset(name, 0, 11);
+  strcpy(name, "000.000.000");
+  itoa(name, 10, addr->bus);
+  if (name[1] == 0) name[1] = '0';
+  if (name[2] == 0) name[2] = '0';
+  name[3] = '.';
+  itoa(name + 4, 10, addr->slot);
+  if (name[5] == 0) name[5] = '0';
+  if (name[6] == 0) name[6] = '0';
+  name[7] = '.';
+  itoa(name + 8, 10, addr->func);
+  if (name[9] == 0) name[9] = '0';
+  if (name[10] == 0) name[10] = '0';
+  bus_t* bus = bus_fromname("pci");
+  bus_adddev(bus, name);
+  if (vid == 0x8086 && (did == 0x7000 || did == 0x7110)) isa = (pci_dev_t){ addr->bus, addr->slot, addr->func };
 }
 
 /** Interrupt stuff **/
 static uint32_t remaps[4] = { 0 };
 
-int pci_getint(uint32_t dev) {
-  if (isa) {
-    uint32_t irqpin = pci_readfield(dev, 0x3D, 1);
-    if (irqpin == 0) return pci_readfield(dev, PCI_INTERRUPT_LINE, 1);
-    int pirq = (irqpin + pci_extract_slot(dev) - 2) % 4;
-    int intline = pci_readfield(dev, PCI_INTERRUPT_LINE, 1);
-    if (remaps[pirq] >= 0x80) {
-      if (intline == 0xFF) {
-        intline = 10;
-        pci_writefield(dev, PCI_INTERRUPT_LINE, intline);
-      }
-      remaps[pirq] = intline;
-      uint32_t out = 0;
-      memcpy(&out, &remaps, 4);
-      pci_writefield(isa, 0x60, out);
-      return intline;
-    }
-    pci_writefield(dev, PCI_INTERRUPT_LINE, remaps[pirq]);
-    return remaps[pirq];
-  } else return pci_readfield(dev, PCI_INTERRUPT_LINE, 1);
-}
-
 /** Module Stuff **/
 MODULE_INIT(bus_pci) {
   int r = register_bus(NULL, "pci");
   if (r < 0) return r;
-  scan(-1);
+  for (uint8_t bus = 0; bus < 256; bus++) {
+    for (uint8_t slot = 0; slot < 32; slot++) {
+      for (uint8_t func = 0; func < 8; func++) {
+        pci_dev_t addr = { bus, slot, func };
+        if (pcidev_getvendor(&addr) != 0xFFFF) found_dev(&addr);
+      }
+    }
+  }
   return 0;
 }
 
