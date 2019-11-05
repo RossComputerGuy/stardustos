@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
+include("version.cmake")
 project(newland C ASM)
 
 if(NOT NEWLAND_ARCH)
@@ -13,11 +14,11 @@ set(ARCH_DIR "${PROJECT_SOURCE_DIR}/arch/${NEWLAND_ARCH}")
 
 include(CTest)
 include("${ARCH_DIR}/build.cmake")
-include_directories("${PROJECT_SOURCE_DIR}/include")
+include_directories("${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
 
+configure_file("${PROJECT_SOURCE_DIR}/data/config.h.in" "${PROJECT_BINARY_DIR}/newland-config.h")
 configure_file("${PROJECT_SOURCE_DIR}/data/gdbinit.in" "${PROJECT_BINARY_DIR}/.gdbinit")
 
-add_compile_definitions("NEWLAND_KLOG_SIZE=${NEWLAND_KLOG_SIZE}")
 add_compile_options("-nostdinc" "-fno-builtin" "-Werror=implicit-function-declaration" "-fno-stack-protector")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -T${ARCH_DIR}/linker.ld -nostdlib -nostartfiles")
 add_executable(kernel.elf ${ARCH_FILES}

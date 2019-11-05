@@ -5,6 +5,7 @@
 #include <newland/limits.h>
 #include <newland/log.h>
 #include <newland/time.h>
+#include <newland-config.h>
 #include <stdarg.h>
 
 #define TIME_STRLEN 12
