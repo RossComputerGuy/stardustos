@@ -118,7 +118,7 @@ static void scan_buses() {
     for (uint8_t func = 0; func < 8; func++) {
       addr.func = func;
       uint16_t vid = pcidev_getvendor(&addr);
-      if (vid != 0xFFFF) break;
+      if (vid == 0xFFFF) break;
       check_bus(func);
     }
   }
