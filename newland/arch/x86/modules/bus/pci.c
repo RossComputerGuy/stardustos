@@ -84,11 +84,13 @@ static void found_dev(pci_dev_t* addr) {
   bus_t* bus = bus_fromname("pci");
   bus_adddev(bus, name);
   if (vid == 0x8086 && (did == 0x7000 || did == 0x7110)) isa = (pci_dev_t){ addr->bus, addr->slot, addr->func };
+  printk(KLOG_INFO "pci: found device %s\n", name);
 }
 
 static void check_func(uint8_t bus, uint8_t dev, uint8_t func) {
   pci_dev_t addr = { bus, dev, func };
   found_dev(&addr);
+  // TODO: secondary bus scanning
 }
 
 static void check_dev(uint8_t bus, uint8_t dev) {
@@ -118,7 +120,7 @@ static void scan_buses() {
     for (uint8_t func = 0; func < 8; func++) {
       addr.func = func;
       uint16_t vid = pcidev_getvendor(&addr);
-      if (vid == 0xFFFF) break;
+      if (vid != 0xFFFF) break;
       check_bus(func);
     }
   }
