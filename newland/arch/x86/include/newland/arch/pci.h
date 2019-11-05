@@ -14,6 +14,7 @@ typedef struct {
 
 #define pcidev_getdevice(dev) (pci_read32(dev, 0) >> 16)
 #define pcidev_getvendor(dev) (pci_read32(dev, 0) & 0xFFFF)
+#define pcidev_gethdrtype(dev) ((pci_read32(dev, 12) >> 16) & 0xFF)
 
 uint32_t pci_read32(pci_dev_t* dev, uint8_t reg);
 uint16_t pci_read16(pci_dev_t* dev, uint8_t reg);

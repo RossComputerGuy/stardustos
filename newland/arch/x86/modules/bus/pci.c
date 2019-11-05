@@ -86,6 +86,44 @@ static void found_dev(pci_dev_t* addr) {
   if (vid == 0x8086 && (did == 0x7000 || did == 0x7110)) isa = (pci_dev_t){ addr->bus, addr->slot, addr->func };
 }
 
+static void check_func(uint8_t bus, uint8_t dev, uint8_t func) {
+  pci_dev_t addr = { bus, dev, func };
+  found_dev(&addr);
+}
+
+static void check_dev(uint8_t bus, uint8_t dev) {
+  pci_dev_t addr = { bus, dev, 0 };
+  uint16_t vid = pcidev_getvendor(&addr);
+  if (vid == 0xFFFF) return;
+  check_func(bus, dev, 0);
+  uint8_t header_type = pcidev_gethdrtype(&addr);
+  if ((header_type & 0x80) != 0) {
+    for (uint8_t func = 1; func < 8; func++) {
+      addr.func = func;
+      vid = pcidev_getvendor(&addr);
+      if (vid != 0xFFFF) check_func(bus, dev, func);
+    }
+  }
+}
+
+static void check_bus(uint8_t bus) {
+  for (uint8_t dev = 0; dev < 32; dev++) check_dev(bus, dev);
+}
+
+static void scan_buses() {
+  pci_dev_t addr = { 0, 0, 0 };
+  uint8_t header_type = pcidev_gethdrtype(&addr);
+  if ((header_type & 0x80) == 0) check_bus(0);
+  else {
+    for (uint8_t func = 0; func < 8; func++) {
+      addr.func = func;
+      uint16_t vid = pcidev_getvendor(&addr);
+      if (vid != 0xFFFF) break;
+      check_bus(func);
+    }
+  }
+}
+
 /** Interrupt stuff **/
 static uint32_t remaps[4] = { 0 };
 
@@ -93,14 +131,7 @@ static uint32_t remaps[4] = { 0 };
 MODULE_INIT(bus_pci) {
   int r = register_bus(NULL, "pci");
   if (r < 0) return r;
-  for (uint8_t bus = 0; bus < 256; bus++) {
-    for (uint8_t slot = 0; slot < 32; slot++) {
-      for (uint8_t func = 0; func < 8; func++) {
-        pci_dev_t addr = { bus, slot, func };
-        if (pcidev_getvendor(&addr) != 0xFFFF) found_dev(&addr);
-      }
-    }
-  }
+  scan_buses();
   return 0;
 }
 
