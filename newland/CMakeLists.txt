@@ -35,4 +35,4 @@ add_executable(kernel.elf ${ARCH_FILES}
 
 find_program(EMULATOR ${EMULATOR})
 add_test(NAME kernel
-  COMMAND timeout 30s ${EMULATOR} -kernel ${PROJECT_BINARY_DIR}/kernel.elf -nographic -display none -serial stdio)
+  COMMAND ${PROJECT_SOURCE_DIR}/scripts/test.sh ${EMULATOR} ${PROJECT_BINARY_DIR})
