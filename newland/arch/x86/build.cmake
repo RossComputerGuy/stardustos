@@ -18,3 +18,4 @@ set(ARCH_FILES "${ARCH_DIR}/modules/bus/pci.c"
 include_directories("${ARCH_DIR}/include")
 add_link_options("-m32")
 add_compile_options("-m32")
+set(EMULATOR "qemu-system-i386")

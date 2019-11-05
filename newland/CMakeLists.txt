@@ -11,6 +11,7 @@ endif()
 
 set(ARCH_DIR "${PROJECT_SOURCE_DIR}/arch/${NEWLAND_ARCH}")
 
+include(CTest)
 include("${ARCH_DIR}/build.cmake")
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
@@ -31,3 +32,7 @@ add_executable(kernel.elf ${ARCH_FILES}
   "${PROJECT_SOURCE_DIR}/src/module.c"
   "${PROJECT_SOURCE_DIR}/src/string.c"
   "${PROJECT_SOURCE_DIR}/src/time.c")
+
+find_program(EMULATOR ${EMULATOR})
+add_test(NAME boots
+  COMMAND ${EMULATOR} -kernel ${PROJECT_BINARY_DIR}/kernel.elf)
