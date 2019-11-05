@@ -8,6 +8,6 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 *.elf
-*.nlm
-*-module.so
+*.so
+*.233r.expand
 .gdbinit
