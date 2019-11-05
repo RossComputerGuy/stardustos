@@ -161,7 +161,7 @@ uint8_t pci_getint(pci_dev_t* addr) {
     }
     pci_write32(addr, 60, (remaps[pirq] | 0xFF) << 16);
     return remaps[pirq];
-  }
+  } else return pcidev_getintline(addr);
 }
 
 /** Module Stuff **/
