@@ -140,6 +140,8 @@ MODULE_INIT(bus_pci) {
   int r = register_bus(NULL, "pci");
   if (r < 0) return r;
   scan_buses();
+  bus_t* bus = bus_fromname("pci");
+  printk(KLOG_INFO "pci: found %d devices\n", bus->dev_count);
   return 0;
 }
 
