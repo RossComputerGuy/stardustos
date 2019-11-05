@@ -34,5 +34,5 @@ add_executable(kernel.elf ${ARCH_FILES}
   "${PROJECT_SOURCE_DIR}/src/time.c")
 
 find_program(EMULATOR ${EMULATOR})
-add_test(NAME boots
-  COMMAND ${EMULATOR} -kernel ${PROJECT_BINARY_DIR}/kernel.elf)
+add_test(NAME kernel
+  COMMAND ${EMULATOR} -kernel ${PROJECT_BINARY_DIR}/kernel.elf -nographic)

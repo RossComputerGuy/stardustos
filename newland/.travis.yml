@@ -1,0 +1,9 @@
+language: c
+compiler:
+  - gcc
+addons:
+  apt:
+    packages:
+      - qemu
+      - cmake
+script: cmake -S . -B build && make && make test
