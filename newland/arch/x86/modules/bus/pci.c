@@ -67,8 +67,8 @@ static void found_dev(pci_dev_t* addr) {
   uint16_t did = pcidev_getdevice(addr);
   uint16_t vid = pcidev_getvendor(addr);
   if (vid == 0xFFFF) return;
-  char name[11];
-  memset(name, 0, 11);
+  char name[12];
+  memset(name, 0, 12);
   strcpy(name, "000.000.000");
   itoa(name, 10, addr->bus);
   if (name[1] == 0) name[1] = '0';
@@ -81,10 +81,10 @@ static void found_dev(pci_dev_t* addr) {
   itoa(name + 8, 10, addr->func);
   if (name[9] == 0) name[9] = '0';
   if (name[10] == 0) name[10] = '0';
+  name[11] = 0;
   bus_t* bus = bus_fromname("pci");
   bus_adddev(bus, name);
   if (vid == 0x8086 && (did == 0x7000 || did == 0x7110)) isa = (pci_dev_t){ addr->bus, addr->slot, addr->func };
-  printk(KLOG_INFO "pci: found device %s\n", name);
 }
 
 static void check_func(uint8_t bus, uint8_t dev, uint8_t func) {
