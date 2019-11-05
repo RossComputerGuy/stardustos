@@ -63,6 +63,8 @@ void pci_write8(pci_dev_t* dev, uint8_t reg, uint8_t value) {
 /** Scanning **/
 static pci_dev_t isa;
 
+static void check_bus(uint8_t bus);
+
 static void found_dev(pci_dev_t* addr) {
   uint16_t did = pcidev_getdevice(addr);
   uint16_t vid = pcidev_getvendor(addr);
@@ -89,8 +91,12 @@ static void found_dev(pci_dev_t* addr) {
 
 static void check_func(uint8_t bus, uint8_t dev, uint8_t func) {
   pci_dev_t addr = { bus, dev, func };
+  uint16_t vid = pcidev_getvendor(&addr);
+  if (vid == 0xFFFF) return;
   found_dev(&addr);
-  // TODO: secondary bus scanning
+  uint8_t class = (pci_read32(&addr, 8) >> 24) & 0xFF;
+  uint8_t subclass = (pci_read32(&addr, 8) >> 16) & 0xFF;
+  if (class == 0x06 && subclass == 0x04) check_bus(pcidev_get2ndbus(&addr));
 }
 
 static void check_dev(uint8_t bus, uint8_t dev) {
