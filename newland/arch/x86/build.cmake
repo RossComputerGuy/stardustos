@@ -17,7 +17,6 @@ set(ARCH_FILES "${ARCH_DIR}/modules/bus/pci.c"
   "${ARCH_DIR}/src/texcon.c"
   "${ARCH_DIR}/src/timer.c")
 include_directories("${ARCH_DIR}/include")
-set(CMAKE_SHARED_LINKER_FLAGS "-m32")
 set(CMAKE_EXEC_LINKER_FLAGS "-m32")
 add_compile_options("-m32")
 set(EMULATOR "qemu-system-i386")

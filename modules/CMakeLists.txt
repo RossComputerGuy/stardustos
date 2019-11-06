@@ -7,4 +7,4 @@ endif()
 set(NEWLAND_SOURCE "${PROJECT_SOURCE_DIR}/newland")
 include("${PROJECT_SOURCE_DIR}/newland/module.cmake")
 
-add_kmodule(example "${PROJECT_SOURCE_DIR}/misc/example.c")
+add_kmodule("misc/example.c")
