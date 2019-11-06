@@ -7,8 +7,4 @@ addons:
     update: true
     packages:
       - qemu
-before_script:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - sleep 3
 script: mkdir build && cd build && cmake .. && make && make test
