@@ -104,6 +104,7 @@ static int found_dev(pci_dev_t* addr) {
     bdev->flags |= BUSDEV_INT;
     bdev->interrupt = intr;
   }
+  bdev->addr = (uint32_t)((addr->bus << 16) | (addr->slot << 11) | (addr->func << 8));
   if ((pcidev_gethdrtype(addr) & 0x80) == 0) {
     for (uint8_t i = 0; i < 6; i++) {
       int r = genres(addr, &bdev, i);

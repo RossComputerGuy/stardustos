@@ -27,6 +27,8 @@ typedef struct bus_dev {
   const char name[NAME_MAX];
   const char dname[NAME_MAX];
 
+  uint32_t addr;
+
   struct bus_dev_res_list res_list;
   size_t res_count;
 
