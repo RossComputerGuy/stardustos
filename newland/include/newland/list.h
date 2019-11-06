@@ -3,6 +3,8 @@
   */
 #pragma once
 
+#include <string.h>
+
 #define SLIST_HEAD(name, type) struct name { type* slh_first; }
 #define SLIST_HEAD_INIT(head) { NULL }
 #define SLIST_ENTRY(type) struct { type* sle_next; }
@@ -30,3 +32,17 @@
     SLIST_NEXT(currlm, field) = SLIST_NEXT(SLIST_NEXT(currlm, field), field); \
   } \
 } while (0)
+
+typedef struct list_node {
+  SLIST_ENTRY(struct list_node) list;
+  void* value;
+} list_node_t;
+
+SLIST_HEAD(list, list_node_t);
+typedef struct list list_t;
+
+size_t list_indexof(list_t* list, void* value);
+size_t list_length(list_t* list);
+void* list_get(list_t* list, size_t i);
+int list_add(list_t* list, void* value);
+void list_remove(list_t* list, void* value);

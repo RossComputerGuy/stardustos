@@ -87,6 +87,7 @@ typedef struct mountpoint {
 } mountpoint_t;
 
 int fs_node_create(fs_node_t** nodeptr, const char* name, mode_t mode);
+int fs_node_close(fs_node_t** nodeptr, fd_t* fd);
 size_t fs_node_read(fs_node_t** nodeptr, off_t offset, void* buff, size_t size);
 size_t fs_node_write(fs_node_t** nodeptr, off_t offset, const void* buff, size_t size);
 int fs_node_vioctl(fs_node_t** nodeptr, int req, va_list ap);

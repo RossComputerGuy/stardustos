@@ -5,6 +5,7 @@
 
 #include <newland/arch/idt.h>
 #include <newland/arch/mem.h>
+#include <newland/fs.h>
 #include <newland/limits.h>
 #include <newland/list.h>
 #include <newland/types.h>
@@ -25,6 +26,7 @@ typedef struct proc {
 
   const char name[256];
   const char cwd[PATH_MAX];
+  const char tty[NAME_MAX];
 
   int status;
   int exitval;
@@ -38,6 +40,8 @@ typedef struct proc {
   void (*signal_handler)(uint8_t signum, void* data);
   page_dir_t* pgdir;
   char fpu_regs[512];
+
+  fd_t fd[OPEN_MAX];
 
   gid_t gid;
   uid_t uid;

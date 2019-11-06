@@ -4,6 +4,7 @@
 #include <newland/arch/fpu.h>
 #include <newland/arch/irq.h>
 #include <newland/arch/proc.h>
+#include <newland/dev/tty.h>
 #include <newland/error.h>
 #include <newland/kalloc.h>
 #include <newland/signal.h>
@@ -79,6 +80,7 @@ int proc_create(proc_t** procptr, proc_t* parent, const char* name, int isuser) 
 
   if (parent == NULL) {
     strncpy((char*)proc->cwd, "/", PATH_MAX);
+    if (tty_get(0) != NULL) strncpy((char*)proc->tty, tty_get(0)->name, NAME_MAX);
     proc->gid = proc->uid = proc->parent = 0;
   } else {
     strncpy((char*)proc->cwd, parent->cwd, PATH_MAX);
@@ -86,6 +88,11 @@ int proc_create(proc_t** procptr, proc_t* parent, const char* name, int isuser) 
     proc->uid = parent->uid;
     proc->parent = parent->id;
     parent->child[parent_index] = proc->id;
+    strncpy((char*)proc->tty, parent->tty, NAME_MAX);
+  }
+
+  for (size_t i = 0; i < OPEN_MAX; i++) {
+    proc->fd[i].node = NULL;
   }
 
   if ((proc->isuser = isuser)) proc->pgdir = mem_alloc_pgdir();
@@ -104,6 +111,10 @@ int proc_create(proc_t** procptr, proc_t* parent, const char* name, int isuser) 
 int proc_destroy(proc_t** procptr) {
   uint32_t irqflgs = irq_disable();
   proc_t* proc = *procptr;
+  for (size_t i = 0; i < OPEN_MAX; i++) {
+    if (proc->fd[i].node == NULL) continue;
+    fs_node_close(&proc->fd[i].node, &proc->fd[i]);
+  }
   if (proc->pgdir != get_krnlpgdir()) mem_free_pgdir(proc->pgdir);
   if (proc->parent != 0) {
     proc_t* parent = process_frompid(proc->parent);

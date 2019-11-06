@@ -10,6 +10,7 @@
 #include <newland/arch/proc.h>
 #include <newland/arch/texcon.h>
 #include <newland/arch/timer.h>
+#include <newland/fs/procfs.h>
 #include <newland/boot/multiboot.h>
 #include <newland/log.h>
 #include <newland/module.h>
@@ -34,8 +35,11 @@ void bootstrap_main(uint32_t magic, uint32_t mbaddr) {
   fpu_init();
   mem_init(mbi);
   sched_init();
-  
-  int r = modules_init();
+
+  int r = procfs_init();
+  if (r < 0) panic("Failed to initialize procfs");
+
+  r = modules_init();
   if (r < 0) panic("Failed to load kernel modules");
 
   printk(KLOG_NOTICE "Bootstrapping has completed.\n");

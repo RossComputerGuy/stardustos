@@ -19,6 +19,12 @@ int fs_node_create(fs_node_t** nodeptr, const char* name, mode_t mode) {
   return node->ino;
 }
 
+int fs_node_close(fs_node_t** nodeptr, fd_t* fd) {
+  fs_node_t* node = *nodeptr;
+  if (node->opts.close == NULL) return -ENOSYS;
+  return node->opts.close(node, fd);
+}
+
 size_t fs_node_read(fs_node_t** nodeptr, off_t offset, void* buff, size_t size) {
   fs_node_t* node = *nodeptr;
   int type = FS_NODE_TYPE_GET(node->mode);
