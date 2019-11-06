@@ -1,7 +1,5 @@
 language: c
 dist: xenial
-services:
-  - xvfb
 compiler:
   - gcc
 addons:
@@ -9,4 +7,8 @@ addons:
     update: true
     packages:
       - qemu
-script: mkdir build && cd build && cmake .. && make && xvfb-run --server-args="-screen 0 1024x768x24" make test
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3
+script: mkdir build && cd build && cmake .. && make && make test
