@@ -10,53 +10,33 @@
 #include <string.h>
 
 /** Read & Write **/
-#define ADDR_CREATE(dev, reg) { .enabled = 1, .busno = ((dev)->bus), .slotno = ((dev)->func), .regno = ((reg) & 0xFC) }
-
-typedef union {
-  uint32_t addr;
-  struct {
-    uint32_t regno:8;
-    uint32_t funcno:3;
-    uint32_t slotno:5;
-    uint32_t busno:8;
-    uint32_t reserved:7;
-    uint32_t enabled:1;
-  };
-} pci_addr_t;
-
 uint32_t pci_read32(pci_dev_t* dev, uint8_t reg) {
-  pci_addr_t addr = ADDR_CREATE(dev, reg);
-  outl(PCI_ADDR, addr.addr);
+  outl(PCI_ADDR, (uint32_t)((dev->bus << 16) | (dev->slot << 11) | (dev->func << 8) | ((uint32_t)0x80000000)));
   return inl(PCI_VAL);
 }
 
 uint16_t pci_read16(pci_dev_t* dev, uint8_t reg) {
-  pci_addr_t addr = ADDR_CREATE(dev, reg);
-  outl(PCI_ADDR, addr.addr);
+  outl(PCI_ADDR, (uint32_t)((dev->bus << 16) | (dev->slot << 11) | (dev->func << 8) | ((uint32_t)0x80000000)));
   return inw(PCI_VAL + (reg & 3));
 }
 
 uint8_t pci_read8(pci_dev_t* dev, uint8_t reg) {
-  pci_addr_t addr = ADDR_CREATE(dev, reg);
-  outl(PCI_ADDR, addr.addr);
+  outl(PCI_ADDR, (uint32_t)((dev->bus << 16) | (dev->slot << 11) | (dev->func << 8) | ((uint32_t)0x80000000)));
   return inb(PCI_VAL + (reg & 3));
 }
 
 void pci_write32(pci_dev_t* dev, uint8_t reg, uint32_t value) {
-  pci_addr_t addr = ADDR_CREATE(dev, reg);
-  outl(PCI_ADDR, addr.addr);
+  outl(PCI_ADDR, (uint32_t)((dev->bus << 16) | (dev->slot << 11) | (dev->func << 8) | ((uint32_t)0x80000000)));
   outl(PCI_VAL, value);
 }
 
 void pci_write16(pci_dev_t* dev, uint8_t reg, uint16_t value) {
-  pci_addr_t addr = ADDR_CREATE(dev, reg);
-  outl(PCI_ADDR, addr.addr);
+  outl(PCI_ADDR, (uint32_t)((dev->bus << 16) | (dev->slot << 11) | (dev->func << 8) | ((uint32_t)0x80000000)));
   outw(PCI_VAL + (reg & 3), value);
 }
 
 void pci_write8(pci_dev_t* dev, uint8_t reg, uint8_t value) {
-  pci_addr_t addr = ADDR_CREATE(dev, reg);
-  outl(PCI_ADDR, addr.addr);
+  outl(PCI_ADDR, (uint32_t)((dev->bus << 16) | (dev->slot << 11) | (dev->func << 8) | ((uint32_t)0x80000000)));
   outb(PCI_VAL + (reg & 3), value);
 }
 
@@ -136,7 +116,7 @@ static void scan_buses() {
     for (uint8_t func = 0; func < 8; func++) {
       addr.func = func;
       uint16_t vid = pcidev_getvendor(&addr);
-      if (vid == 0xFFFF) break;
+      if (vid != 0xFFFF) break;
       check_bus(func);
     }
   }
@@ -171,6 +151,7 @@ MODULE_INIT(bus_pci) {
   scan_buses();
   bus_t* bus = bus_fromname("pci");
   printk(KLOG_INFO "pci: found %d devices\n", bus->dev_count);
+  bus_dev_t* dev = NULL;
   return 0;
 }
 
