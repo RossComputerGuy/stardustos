@@ -115,7 +115,7 @@ static int found_dev(pci_dev_t* addr) {
     isa = (pci_dev_t){ addr->bus, addr->slot, addr->func };
     hasisa = 1;
   }
-  printk(KLOG_INFO "pci: found device %s (resources: %d)\n", name, bdev->res_count);
+  printk(KLOG_INFO "pci: found device %s\n", name);
   return 0;
 }
 

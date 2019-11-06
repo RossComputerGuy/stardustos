@@ -1,4 +1,5 @@
 set(ARCH_FILES "${ARCH_DIR}/modules/bus/pci.c"
+  "${ARCH_DIR}/modules/tty/serial.c"
   "${ARCH_DIR}/src/asm/entry.s"
   "${ARCH_DIR}/src/asm/gdt.s"
   "${ARCH_DIR}/src/asm/idt.s"
