@@ -7,4 +7,4 @@ addons:
     update: true
     packages:
       - qemu
-script: mkdir build && cd build && cmake .. && make && travis_wait make test
+script: mkdir build && cd build && cmake .. && make
