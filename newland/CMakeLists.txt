@@ -20,7 +20,7 @@ configure_file("${PROJECT_SOURCE_DIR}/data/config.h.in" "${PROJECT_BINARY_DIR}/n
 configure_file("${PROJECT_SOURCE_DIR}/data/gdbinit.in" "${PROJECT_BINARY_DIR}/.gdbinit")
 
 add_compile_options("-nostdinc" "-fno-builtin" "-Werror=implicit-function-declaration" "-fno-stack-protector")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -T${ARCH_DIR}/linker.ld -nostdlib -nostartfiles")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXEC_LINKER_FLAGS} -T${ARCH_DIR}/linker.ld -nostdlib -nostartfiles")
 add_executable(kernel.elf ${ARCH_FILES}
   "${ARCH_DIR}/src/clock.c"
   "${ARCH_DIR}/src/kalloc.c"
