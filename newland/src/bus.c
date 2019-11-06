@@ -106,6 +106,14 @@ int unregister_bus(const char* name) {
   if (bus == NULL) return -ENOENT;
   SLIST_REMOVE(&buses, bus, bus_t, bus_list);
   buses_count--;
+  bus_dev_t* dev = NULL;
+  SLIST_FOREACH(dev, &bus->dev_list, dev_list) {
+    bus_dev_res_t* res = NULL;
+    SLIST_FOREACH(res, &dev->res_list, res_list) {
+      kfree(res);
+    }
+    kfree(dev);
+  }
   kfree(bus);
   printk(KLOG_INFO "Unregistered bus: %s\n", name);
   return 0;
