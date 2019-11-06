@@ -50,21 +50,18 @@ static void found_dev(pci_dev_t* addr) {
   uint16_t did = pcidev_getdevice(addr);
   uint16_t vid = pcidev_getvendor(addr);
   if (vid == 0xFFFF) return;
-  char name[12];
-  memset(name, 0, 12);
-  strcpy(name, "000.000.000");
+  char name[9];
+  memset(name, 0, 9);
+  strcpy(name, "000.00.0");
   itoa(name, 10, addr->bus);
   if (name[1] == 0) name[1] = '0';
   if (name[2] == 0) name[2] = '0';
   name[3] = '.';
   itoa(name + 4, 10, addr->slot);
   if (name[5] == 0) name[5] = '0';
-  if (name[6] == 0) name[6] = '0';
-  name[7] = '.';
-  itoa(name + 8, 10, addr->func);
-  if (name[9] == 0) name[9] = '0';
-  if (name[10] == 0) name[10] = '0';
-  name[11] = 0;
+  name[6] = '.';
+  itoa(name + 7, 10, addr->func);
+  name[9] = 0;
   bus_t* bus = bus_fromname("pci");
   bus_adddev(bus, name);
   bus_dev_t* bdev = bus_getdevbyname(bus, name);
@@ -77,6 +74,7 @@ static void found_dev(pci_dev_t* addr) {
     isa = (pci_dev_t){ addr->bus, addr->slot, addr->func };
     hasisa = 1;
   }
+  printk(KLOG_INFO "pci: found device %s\n", name);
 }
 
 static void check_func(uint8_t bus, uint8_t dev, uint8_t func) {
@@ -93,14 +91,10 @@ static void check_dev(uint8_t bus, uint8_t dev) {
   pci_dev_t addr = { bus, dev, 0 };
   uint16_t vid = pcidev_getvendor(&addr);
   if (vid == 0xFFFF) return;
-  check_func(bus, dev, 0);
-  uint8_t header_type = pcidev_gethdrtype(&addr);
-  if ((header_type & 0x80) != 0) {
-    for (uint8_t func = 1; func < 8; func++) {
-      addr.func = func;
-      vid = pcidev_getvendor(&addr);
-      if (vid != 0xFFFF) check_func(bus, dev, func);
-    }
+  for (uint8_t func = 0; func < 8; func++) {
+    addr.func = func;
+    vid = pcidev_getvendor(&addr);
+    if (vid != 0xFFFF) check_func(bus, dev, func);
   }
 }
 
@@ -116,8 +110,7 @@ static void scan_buses() {
     for (uint8_t func = 0; func < 8; func++) {
       addr.func = func;
       uint16_t vid = pcidev_getvendor(&addr);
-      if (vid != 0xFFFF) break;
-      check_bus(func);
+      if (vid != 0xFFFF) check_bus(func);
     }
   }
 }
