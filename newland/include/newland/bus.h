@@ -8,7 +8,7 @@
 #include <newland/list.h>
 #include <string.h>
 
-#define BUSDEVRES_PORT 1
+#define BUSDEVRES_IO 1
 #define BUSDEVRES_MEM 2
 
 typedef struct bus_dev_res {
