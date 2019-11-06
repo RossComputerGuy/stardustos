@@ -12,3 +12,4 @@ DartConfiguration.tcl
 *.so
 *.233r.expand
 .gdbinit
+newland-config.h
