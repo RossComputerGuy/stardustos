@@ -26,7 +26,7 @@ modinfo_t* module_fromid(const char* id) {
 int modules_init() {
   size_t modcount = module_count();
   printk(KLOG_INFO "Loading %d kernel modules\n", modcount);
-  modinfo_t* mods = (modinfo_t*)(&__modules_end);
+  modinfo_t* mods = (modinfo_t*)(&__modules_start);
   for (size_t i = 0; i < modcount; i++) {
     modinfo_t* mod = &mods[i];
     int r = mod->init();
