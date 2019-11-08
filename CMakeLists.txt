@@ -3,5 +3,6 @@ project(newland NONE)
 
 add_subdirectory(newland)
 add_subdirectory(modules)
+add_subdirectory(libc)
 
 include(CTest)

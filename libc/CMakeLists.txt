@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 3.12)
+project(libc)
+
+if(NOT ARCH)
+  if(NOT NEWLAND_ARCH)
+    set(ARCH "x86")
+  else()
+    set(ARCH "${NEWLAND_ARCH}")
+  endif()
+endif()
+
+include("${PROJECT_SOURCE_DIR}/build.cmake")
+add_compile_options("-nostdlib" "-fno-builtin")
+add_library(libc ${LIBC_SOURCES})
+set_target_properties(libc PROPERTIES PREFIX "")

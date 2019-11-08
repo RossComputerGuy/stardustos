@@ -3,7 +3,7 @@
   */
 #include <newland/bus.h>
 #include <newland/error.h>
-#include <newland/kalloc.h>
+#include <newland/alloc.h>
 #include <newland/log.h>
 
 SLIST_HEAD(bus_list, bus_t);

@@ -10,6 +10,8 @@ CTestTestfile.cmake
 DartConfiguration.tcl
 *.elf
 *.so
+*.o
+*.a
 *.233r.expand
 .gdbinit
 newland-config.h

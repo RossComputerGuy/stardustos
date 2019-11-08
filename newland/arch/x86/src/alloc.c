@@ -2,7 +2,7 @@
   * NewLand Kernel - (C) 2019 Tristan Ross
   */
 #include <newland/arch/mem.h>
-#include <newland/kalloc.h>
+#include <newland/alloc.h>
 
 struct block_meta {
   size_t size;

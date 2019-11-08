@@ -4,7 +4,7 @@
 #include <newland/dev/tty.h>
 #include <newland/dev.h>
 #include <newland/error.h>
-#include <newland/kalloc.h>
+#include <newland/alloc.h>
 #include <newland/log.h>
 
 SLIST_HEAD(tty_list, tty_t);

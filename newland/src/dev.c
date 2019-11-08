@@ -3,7 +3,7 @@
   */
 #include <newland/dev.h>
 #include <newland/error.h>
-#include <newland/kalloc.h>
+#include <newland/alloc.h>
 
 SLIST_HEAD(dev_list, device_t);
 static struct dev_list devices = { NULL };

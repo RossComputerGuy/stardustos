@@ -3,7 +3,7 @@
   */
 #include <newland/error.h>
 #include <newland/fs.h>
-#include <newland/kalloc.h>
+#include <newland/alloc.h>
 #include <newland/limits.h>
 
 /** Filesystem Node **/

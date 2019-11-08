@@ -15,15 +15,19 @@ set(ARCH_DIR "${PROJECT_SOURCE_DIR}/arch/${NEWLAND_ARCH}")
 include(CTest)
 include("${ARCH_DIR}/build.cmake")
 include_directories("${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
+set(libc_SOURCE_DIR "${PROJECT_SOURCE_DIR}/libc")
+include("${PROJECT_SOURCE_DIR}/libc/build.cmake")
 
 configure_file("${PROJECT_SOURCE_DIR}/data/config.h.in" "${PROJECT_BINARY_DIR}/newland-config.h")
 configure_file("${PROJECT_SOURCE_DIR}/data/gdbinit.in" "${PROJECT_BINARY_DIR}/.gdbinit")
 
 add_compile_options("-nostdinc" "-fno-builtin" "-Werror=implicit-function-declaration" "-fno-stack-protector")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXEC_LINKER_FLAGS} -T${ARCH_DIR}/linker.ld -nostdlib -nostartfiles")
-add_executable(kernel.elf ${ARCH_FILES}
+add_executable(kernel.elf
+  ${LIBC_SOURCES}
+  ${ARCH_FILES}
+  "${ARCH_DIR}/src/alloc.c"
   "${ARCH_DIR}/src/clock.c"
-  "${ARCH_DIR}/src/kalloc.c"
   "${PROJECT_SOURCE_DIR}/src/dev/block.c"
   "${PROJECT_SOURCE_DIR}/src/dev/tty.c"
   "${PROJECT_SOURCE_DIR}/src/fs/procfs.c"
@@ -33,7 +37,6 @@ add_executable(kernel.elf ${ARCH_FILES}
   "${PROJECT_SOURCE_DIR}/src/list.c"
   "${PROJECT_SOURCE_DIR}/src/log.c"
   "${PROJECT_SOURCE_DIR}/src/module.c"
-  "${PROJECT_SOURCE_DIR}/src/string.c"
   "${PROJECT_SOURCE_DIR}/src/time.c")
 
 find_program(EMULATOR ${EMULATOR})

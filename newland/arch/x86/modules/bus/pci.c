@@ -5,7 +5,7 @@
 #include <newland/arch/pci.h>
 #include <newland/bus.h>
 #include <newland/error.h>
-#include <newland/kalloc.h>
+#include <newland/alloc.h>
 #include <newland/log.h>
 #include <newland/module.h>
 #include <newland/types.h>

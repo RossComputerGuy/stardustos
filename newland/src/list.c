@@ -2,7 +2,7 @@
   * NewLand Kernel - (C) 2019 Tristan Ross
   */
 #include <newland/error.h>
-#include <newland/kalloc.h>
+#include <newland/alloc.h>
 #include <newland/list.h>
 
 size_t list_indexof(list_t* list, void* value) {

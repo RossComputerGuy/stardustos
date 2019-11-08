@@ -4,7 +4,7 @@
 #include <newland/arch/proc.h>
 #include <newland/fs/procfs.h>
 #include <newland/fs.h>
-#include <newland/kalloc.h>
+#include <newland/alloc.h>
 #include <newland/error.h>
 #include <string.h>
 
