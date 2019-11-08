@@ -15,8 +15,9 @@ size_t module_count() {
 
 modinfo_t* module_fromid(const char* id) {
   size_t modcount = module_count();
+  modinfo_t* mods = (modinfo_t*)(&__modules_end);
   for (size_t i = 0; i < modcount; i++) {
-    modinfo_t* mod = (modinfo_t*)((uintptr_t)&__modules_start + (i * sizeof(modinfo_t)));
+    modinfo_t* mod = &mods[i];
     if (!strcmp(mod->id, id)) return mod;
   }
   return NULL;
@@ -25,8 +26,9 @@ modinfo_t* module_fromid(const char* id) {
 int modules_init() {
   size_t modcount = module_count();
   printk(KLOG_INFO "Loading %d kernel modules\n", modcount);
+  modinfo_t* mods = (modinfo_t*)(&__modules_end);
   for (size_t i = 0; i < modcount; i++) {
-    modinfo_t* mod = (modinfo_t*)(((uintptr_t)&__modules_start) + (i * sizeof(modinfo_t)));
+    modinfo_t* mod = &mods[i];
     int r = mod->init();
     if (r < 0) return r;
   }
