@@ -2,10 +2,10 @@
   * NewLand Kernel - (C) 2019 Tristan Ross
   */
 #include <newland/dev/tty.h>
-#include <newland/dev.h>
-#include <newland/error.h>
 #include <newland/alloc.h>
+#include <newland/dev.h>
 #include <newland/log.h>
+#include <errno.h>
 
 SLIST_HEAD(tty_list, tty_t);
 static struct tty_list ttys = { NULL };

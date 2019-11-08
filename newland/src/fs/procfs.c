@@ -3,9 +3,9 @@
   */
 #include <newland/arch/proc.h>
 #include <newland/fs/procfs.h>
-#include <newland/fs.h>
 #include <newland/alloc.h>
-#include <newland/error.h>
+#include <newland/fs.h>
+#include <errno.h>
 #include <string.h>
 
 static list_t procs = { NULL };

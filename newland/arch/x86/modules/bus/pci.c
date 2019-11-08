@@ -3,12 +3,12 @@
   */
 #include <newland/arch/io.h>
 #include <newland/arch/pci.h>
-#include <newland/bus.h>
-#include <newland/error.h>
 #include <newland/alloc.h>
+#include <newland/bus.h>
 #include <newland/log.h>
 #include <newland/module.h>
 #include <newland/types.h>
+#include <errno.h>
 #include <string.h>
 
 /** Read & Write **/

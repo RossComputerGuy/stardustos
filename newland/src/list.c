@@ -1,9 +1,9 @@
 /**
   * NewLand Kernel - (C) 2019 Tristan Ross
   */
-#include <newland/error.h>
 #include <newland/alloc.h>
 #include <newland/list.h>
+#include <errno.h>
 
 size_t list_indexof(list_t* list, void* value) {
   list_node_t* node = NULL;

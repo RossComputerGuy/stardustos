@@ -1,11 +1,11 @@
 /**
   * NewLand Kernel - (C) 2019 Tristan Ross
   */
-#include <newland/error.h>
 #include <newland/limits.h>
 #include <newland/log.h>
 #include <newland/time.h>
 #include <newland-config.h>
+#include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>

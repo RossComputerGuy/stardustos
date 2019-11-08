@@ -3,7 +3,7 @@
   */
 #pragma once
 
-#include <newland/arch/types.h>
+#include <sys/types.h>
 
 typedef unsigned int pid_t;
 typedef unsigned int uid_t;

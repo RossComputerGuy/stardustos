@@ -3,10 +3,10 @@
   */
 #include <newland/arch/io.h>
 #include <newland/dev/tty.h>
-#include <newland/error.h>
 #include <newland/log.h>
 #include <newland/module.h>
 #include <newland/types.h>
+#include <errno.h>
 #include <string.h>
 
 static uint16_t comport[4] = { 0x3F8, 0x2F8, 0x3E8, 0x2E8 };

@@ -1,8 +1,14 @@
 cmake_minimum_required(VERSION 3.12)
-project(newland NONE)
+project(stardustos NONE)
 
+if(NOT ARCH)
+  set(ARCH "x86")
+endif()
+
+set(NEWLAND_ARCH "${ARCH}")
 add_subdirectory(newland)
 add_subdirectory(modules)
 add_subdirectory(libc)
+add_subdirectory(libfile)
 
 include(CTest)

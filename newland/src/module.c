@@ -1,10 +1,10 @@
 /**
   * NewLand Kernel - (C) 2019 Tristan Ross
   */
-#include <newland/error.h>
 #include <newland/log.h>
 #include <newland/module.h>
 #include <newland/types.h>
+#include <errno.h>
 
 extern uint32_t __modules_start;
 extern uint32_t __modules_end;

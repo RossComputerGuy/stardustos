@@ -3,8 +3,8 @@
   */
 #include <newland/arch/idt.h>
 #include <newland/arch/mem.h>
-#include <newland/error.h>
 #include <newland/log.h>
+#include <errno.h>
 #include <string.h>
 
 extern uint32_t __kernel_end;

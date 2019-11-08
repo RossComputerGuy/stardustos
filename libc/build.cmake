@@ -1,4 +1,4 @@
-include_directories("${libc_SOURCE_DIR}/include")
+include_directories("${libc_SOURCE_DIR}/arch/${ARCH}/include" "${libc_SOURCE_DIR}/include")
 set(LIBC_SOURCES
 # math
   "${libc_SOURCE_DIR}/src/math/pow.c"

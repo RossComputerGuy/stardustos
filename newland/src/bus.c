@@ -1,10 +1,10 @@
 /**
   * NewLand Kernel - (C) 2019 Tristan Ross
   */
-#include <newland/bus.h>
-#include <newland/error.h>
 #include <newland/alloc.h>
+#include <newland/bus.h>
 #include <newland/log.h>
+#include <errno.h>
 
 SLIST_HEAD(bus_list, bus_t);
 static struct bus_list buses = { NULL };

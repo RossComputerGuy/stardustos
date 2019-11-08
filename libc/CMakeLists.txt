@@ -2,11 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(libc)
 
 if(NOT ARCH)
-  if(NOT NEWLAND_ARCH)
-    set(ARCH "x86")
-  else()
-    set(ARCH "${NEWLAND_ARCH}")
-  endif()
+  set(ARCH "x86")
 endif()
 
 include("${PROJECT_SOURCE_DIR}/build.cmake")

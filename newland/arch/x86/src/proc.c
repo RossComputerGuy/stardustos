@@ -5,9 +5,9 @@
 #include <newland/arch/irq.h>
 #include <newland/arch/proc.h>
 #include <newland/dev/tty.h>
-#include <newland/error.h>
 #include <newland/alloc.h>
 #include <newland/signal.h>
+#include <errno.h>
 
 SLIST_HEAD(proc_list, proc_t);
 struct proc_list processes;

@@ -2,10 +2,10 @@
   * NewLand Kernel - (C) 2019 Tristan Ross
   */
 #include <newland/dev/block.h>
-#include <newland/dev.h>
-#include <newland/error.h>
 #include <newland/alloc.h>
+#include <newland/dev.h>
 #include <newland/log.h>
+#include <errno.h>
 
 SLIST_HEAD(blkdev_list, blkdev_t);
 static struct blkdev_list block_devices = { NULL };

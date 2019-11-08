@@ -1,10 +1,10 @@
 /**
   * NewLand Kernel - (C) 2019 Tristan Ross
   */
-#include <newland/error.h>
-#include <newland/fs.h>
 #include <newland/alloc.h>
+#include <newland/fs.h>
 #include <newland/limits.h>
+#include <errno.h>
 
 /** Filesystem Node **/
 static ino_t next_inode = 0;

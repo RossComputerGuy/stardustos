@@ -1,9 +1,9 @@
 /**
   * NewLand Kernel - (C) 2019 Tristan Ross
   */
-#include <newland/dev.h>
-#include <newland/error.h>
 #include <newland/alloc.h>
+#include <newland/dev.h>
+#include <errno.h>
 
 SLIST_HEAD(dev_list, device_t);
 static struct dev_list devices = { NULL };
