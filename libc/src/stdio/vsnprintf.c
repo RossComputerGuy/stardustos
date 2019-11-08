@@ -51,6 +51,7 @@ int vsnprintf(char* str, size_t size, const char* format, va_list ap) {
         break;
       case 's':
         s = va_arg(ap, char*);
+        if (s == NULL) s = "(null)";
         strncpy((char*)(str + wrote), s, strlen(s));
         wrote += strlen(s);
         break;
