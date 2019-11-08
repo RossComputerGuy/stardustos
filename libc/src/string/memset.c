@@ -1,6 +1,6 @@
 /**
- * StardustOS libc - (C) 2019 Tristan Ross
- */
+  * StardustOS libc - (C) 2019 Tristan Ross
+  */
 #include <string.h>
 
 void* memset(void* ptr, int val, size_t size) {

@@ -1,6 +1,6 @@
 /**
- * StardustOS libc - (C) 2019 Tristan Ross
- */
+  * StardustOS libc - (C) 2019 Tristan Ross
+  */
 #include <string.h>
 
 void* memmove(void* dst, const void* src, size_t size) {

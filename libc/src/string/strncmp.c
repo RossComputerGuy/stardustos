@@ -1,6 +1,6 @@
 /**
- * StardustOS libc - (C) 2019 Tristan Ross
- */
+  * StardustOS libc - (C) 2019 Tristan Ross
+  */
 #include <string.h>
 
 int strncmp(const char* s1, const char* s2, size_t n) {

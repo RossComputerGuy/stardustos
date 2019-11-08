@@ -1,8 +1,9 @@
 /**
- * StardustOS libc - (C) 2019 Tristan Ross
- */
+  * StardustOS libc - (C) 2019 Tristan Ross
+  */
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 static char* convert(unsigned int num, int base) {
@@ -60,6 +61,12 @@ int vsnprintf(char* str, size_t size, const char* format, va_list ap) {
         s = convert(i, 10);
         strncpy((char*)(str + wrote), s, strlen(s));
         wrote += strlen(s);
+        break;
+      case 'f':
+        wrote += ftoa(va_arg(ap, double), (char*)(str + wrote), va_arg(ap, int));
+        break;
+      case '%':
+        str[wrote++] = '%';
         break;
     }
   }

@@ -7,4 +7,5 @@
 #define NULL ((void*)0)
 #endif
 
+int ftoa(float value, char* ptr, int dig);
 char* ultoa(unsigned long value, char* ptr, int base);

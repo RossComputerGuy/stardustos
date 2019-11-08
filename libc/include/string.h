@@ -12,7 +12,7 @@
 typedef unsigned int size_t;
 #endif
 
-void itoa(char* buf, int base, int d);
+int itoa(char* buf, int base, int d);
 
 void* memcpy(void* dst, const void* src, size_t size);
 void* memmove(void* dst, const void* src, size_t size);

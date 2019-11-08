@@ -1,6 +1,6 @@
 /**
- * StardustOS libc - (C) 2019 Tristan Ross
- */
+  * StardustOS libc - (C) 2019 Tristan Ross
+  */
 #include <string.h>
 
 char* strncpy(char* dst, const char* src, size_t count) {

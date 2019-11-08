@@ -1,6 +1,6 @@
 /**
- * StardustOS libc - (C) 2019 Tristan Ross
- */
+  * StardustOS libc - (C) 2019 Tristan Ross
+  */
 #include <stdlib.h>
 
 char* ultoa(unsigned long value, char* ptr, int base) {

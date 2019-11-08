@@ -1,18 +1,20 @@
 /**
- * StardustOS libc - (C) 2019 Tristan Ross
- */
+  * StardustOS libc - (C) 2019 Tristan Ross
+  */
 #include <string.h>
 
-void itoa(char* buf, int base, int d) {
+int itoa(char* buf, int base, int d) {
   char* p = buf;
   char* p1, *p2;
   unsigned long ud = d;
   int divisor = 10;
+  int wrote = 0;
 
   /* If %d is specified and D is minus, put `-' in the head.  */
   if (base == 'd' && d < 0) {
     *p++ = '-';
     buf++;
+    wrote++;
     ud = -d;
   } else if (base == 'x') divisor = 16;
 
@@ -34,5 +36,7 @@ void itoa(char* buf, int base, int d) {
     *p2 = tmp;
     p1++;
     p2--;
+    wrote++;
   }
+  return wrote;
 }
