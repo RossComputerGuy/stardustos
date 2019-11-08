@@ -15,3 +15,5 @@ DartConfiguration.tcl
 *.233r.expand
 .gdbinit
 newland-config.h
+test.sh
+run.sh

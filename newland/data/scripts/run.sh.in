@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+set -e
+@EMULATOR@ -kernel @PROJECT_BINARY_DIR@/kernel.elf $@

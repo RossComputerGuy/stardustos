@@ -18,6 +18,8 @@ include_directories("${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
 set(libc_SOURCE_DIR "${PROJECT_SOURCE_DIR}/libc")
 include("${PROJECT_SOURCE_DIR}/libc/build.cmake")
 
+configure_file("${PROJECT_SOURCE_DIR}/data/scripts/run.sh.in" "${PROJECT_BINARY_DIR}/run.sh")
+configure_file("${PROJECT_SOURCE_DIR}/data/scripts/test.sh.in" "${PROJECT_BINARY_DIR}/test.sh")
 configure_file("${PROJECT_SOURCE_DIR}/data/config.h.in" "${PROJECT_BINARY_DIR}/newland-config.h")
 configure_file("${PROJECT_SOURCE_DIR}/data/gdbinit.in" "${PROJECT_BINARY_DIR}/.gdbinit")
 
@@ -41,4 +43,4 @@ add_executable(kernel.elf
 
 find_program(EMULATOR ${EMULATOR})
 add_test(NAME kernel
-  COMMAND ${PROJECT_SOURCE_DIR}/scripts/test.sh ${EMULATOR} ${PROJECT_BINARY_DIR})
+  COMMAND ${PROJECT_BINARY_DIR}/test.sh)

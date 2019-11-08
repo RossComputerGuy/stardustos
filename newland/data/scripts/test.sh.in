@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+set -e
+@PROJECT_BINARY_DIR@/run.sh -nographic -display none $@ & sleep 10 ; kill $!
