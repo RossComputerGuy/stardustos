@@ -45,6 +45,6 @@ add_executable(kernel.elf
   "${PROJECT_SOURCE_DIR}/src/module.c"
   "${PROJECT_SOURCE_DIR}/src/time.c")
 
-find_program(EMULATOR ${EMULATOR})
+find_program(EMULATOR qemu-system-${EMULATOR})
 add_test(NAME kernel
   COMMAND ${PROJECT_BINARY_DIR}/test.sh)

@@ -19,4 +19,4 @@ set(ARCH_FILES "${ARCH_DIR}/modules/bus/pci.c"
 include_directories("${ARCH_DIR}/include")
 set(CMAKE_EXEC_LINKER_FLAGS "-m32")
 add_compile_options("-m32")
-set(EMULATOR "qemu-system-i386")
+set(EMULATOR i386)
