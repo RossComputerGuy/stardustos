@@ -37,7 +37,7 @@ size_t tar_getcount(void* buff) {
     count++;
     size_t size = getfilesize(block);
     block = (struct rawblock*)(block + ((size / 512) + 1) * 512);
-    if (size % 512)  block = (struct rawblock*)(block + 512);
+    if (size % 512) block = (struct rawblock*)(block + 512);
   }
   return count;
 }
@@ -48,7 +48,7 @@ int tar_read(void* buff, tar_blk_t* blk, size_t index) {
     if (block->name[0] == 0) return -EINVAL;
     size_t size = getfilesize(block);
     block = (struct rawblock*)(block + ((size / 512) + 1) * 512);
-    if (size % 512)  block = (struct rawblock*)(block + 512);
+    if (size % 512) block = (struct rawblock*)(block + 512);
   }
   if (block->name[0] == 0) return -EINVAL;
   memcpy(blk->name, block->name, 100);
