@@ -14,6 +14,7 @@ typedef unsigned int size_t;
 
 int itoa(char* buf, int base, int d);
 
+int memcmp(const void *str1, const void *str2, size_t n);
 void* memcpy(void* dst, const void* src, size_t size);
 void* memmove(void* dst, const void* src, size_t size);
 void* memset(void* ptr, int val, size_t size);

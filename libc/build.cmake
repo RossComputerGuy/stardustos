@@ -8,5 +8,5 @@ set(LIBC_SOURCES
   "${libc_SOURCE_DIR}/src/stdio/vsnprintf.c"
 # string
   "${libc_SOURCE_DIR}/src/string/itoa.c"
-  "${libc_SOURCE_DIR}/src/string/memcpy.c" "${libc_SOURCE_DIR}/src/string/memmove.c" "${libc_SOURCE_DIR}/src/string/memset.c"
+  "${libc_SOURCE_DIR}/src/string/memcmp.c" "${libc_SOURCE_DIR}/src/string/memcpy.c" "${libc_SOURCE_DIR}/src/string/memmove.c" "${libc_SOURCE_DIR}/src/string/memset.c"
   "${libc_SOURCE_DIR}/src/string/strcmp.c" "${libc_SOURCE_DIR}/src/string/strcpy.c" "${libc_SOURCE_DIR}/src/string/strlen.c" "${libc_SOURCE_DIR}/src/string/strncmp.c" "${libc_SOURCE_DIR}/src/string/strncpy.c")
