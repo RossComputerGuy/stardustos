@@ -7,6 +7,7 @@
 #include <newland/time.h>
 #include <newland-config.h>
 #include <stdarg.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #define TIME_STRLEN 12
