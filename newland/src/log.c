@@ -64,91 +64,13 @@ int putk(const char* str) {
 int printk(const char* fmt, ...) {
   va_list ap;
   va_start(ap, fmt);
-  int len = 0;
-  int hasprinted = 0;
-  while (*fmt != '\0') {
-    size_t maxrem = INT_MAX - len;
-    if (fmt[0] != '%' || fmt[1] == '%') {
-      if (fmt[0] == '%') fmt++;
-      size_t am = 1;
-      while (fmt[am] && fmt[am] != '%') am++;
-      if (maxrem < am) {
-        va_end(ap);
-        return -EOVERFLOW;
-      }
-      int r = print(fmt, am, hasprinted);
-      if (r < 0) {
-        va_end(ap);
-        return r;
-      }
-      if (!hasprinted) hasprinted = 1;
-      fmt += am;
-      len += am;
-      continue;
-    }
-    const char* fmtbeg = fmt++;
-    if (*fmt == 'c') {
-      fmt++;
-      char c = (char)va_arg(ap, int);
-      if (!maxrem) {
-        va_end(ap);
-        return -EOVERFLOW;
-      }
-      int r = print(&c, sizeof(c), hasprinted);
-      if (r < 0) {
-        va_end(ap);
-        return r;
-      }
-      if (!hasprinted) hasprinted = 1;
-      len++;
-    } else if (*fmt == 's') {
-      fmt++;
-      const char* str = va_arg(ap, const char*);
-      size_t l = strlen(str);
-      if (maxrem < len) {
-        va_end(ap);
-        return -EOVERFLOW;
-      }
-      int r = print(str, l, hasprinted);
-      if (r < 0) {
-        va_end(ap);
-        return r;
-      }
-      if (!hasprinted) hasprinted = 1;
-      len += l;
-    } else if (*fmt == 'd') {
-      fmt++;
-      char buff[20];
-      itoa(buff, 10, va_arg(ap, int));
-      size_t l = strlen(buff);
-      if (maxrem < len) {
-        va_end(ap);
-        return -EOVERFLOW;
-      }
-      int r = print(buff, l, hasprinted);
-      if (r < 0) {
-        va_end(ap);
-        return r;
-      }
-      if (!hasprinted) hasprinted = 1;
-      len += l;
-    } else {
-      fmt = fmtbeg;
-      size_t l = strlen(fmt);
-      if (maxrem < len) {
-        va_end(ap);
-        return -EOVERFLOW;
-      }
-      int r = print(fmt, l, hasprinted);
-      if (r < 0) {
-        va_end(ap);
-        return r;
-      }
-      if (!hasprinted) hasprinted = 1;
-      len += l;
-      fmt += l;
-    }
+  char buff[512];
+  int wrote = vsnprintf(buff, sizeof(buff), fmt, ap);
+  if (wrote < 0) {
+    va_end(ap);
+    return wrote;
   }
+  wrote = print(buff, strlen(buff), 0);
   va_end(ap);
-  return len;
+  return wrote;
 }
