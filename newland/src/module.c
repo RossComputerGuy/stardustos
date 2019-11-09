@@ -6,7 +6,7 @@
 #include <newland/types.h>
 #include <errno.h>
 
-#define mod_get(i) (modinfo_t*)(((uintptr_t)&__modules_start) + (sizeof(uintptr_t) / 2) + (sizeof(modinfo_t) * i))
+#define mod_get(i) (modinfo_t*)(((uintptr_t)&__modules_start) + (sizeof(modinfo_t) * i))
 
 extern uintptr_t __modules_start;
 extern uintptr_t __modules_end;
