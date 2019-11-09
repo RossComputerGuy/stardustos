@@ -6,6 +6,8 @@
 #include <newland/types.h>
 #include <errno.h>
 
+#define mod_get(i) (modinfo_t*)(((uintptr_t)&__modules_start) + (sizeof(uintptr_t) / 2) + (sizeof(modinfo_t) * i))
+
 extern uintptr_t __modules_start;
 extern uintptr_t __modules_end;
 
@@ -15,9 +17,8 @@ size_t module_count() {
 
 modinfo_t* module_fromid(const char* id) {
   size_t modcount = module_count();
-  modinfo_t* mods = (modinfo_t*)(&__modules_end);
   for (size_t i = 0; i < modcount; i++) {
-    modinfo_t* mod = &mods[i];
+    modinfo_t* mod = mod_get(i);
     if (!strcmp(mod->id, id)) return mod;
   }
   return NULL;
@@ -26,9 +27,8 @@ modinfo_t* module_fromid(const char* id) {
 int modules_init() {
   size_t modcount = module_count();
   printk(KLOG_INFO "Loading %d kernel modules\n", modcount);
-  modinfo_t* mods = (modinfo_t*)(&__modules_start);
   for (size_t i = 0; i < modcount; i++) {
-    modinfo_t* mod = &mods[i];
+    modinfo_t* mod = mod_get(i);
     int r = mod->init();
     if (r < 0) return r;
   }
