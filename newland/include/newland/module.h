@@ -9,11 +9,11 @@ typedef int (*modinit_t)();
 typedef void (*modfini_t)();
 
 typedef struct {
-  const char id[128];
-  const char author[256];
-  const char license[256];
-  const char modver[24];
-  const char krnlver[24];
+  const char* id;
+  const char* author;
+  const char* license;
+  const char* modver;
+  const char* krnlver;
   modinit_t init;
   modfini_t fini;
 } __attribute__((packed)) modinfo_t;

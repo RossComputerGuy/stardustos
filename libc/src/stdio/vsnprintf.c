@@ -23,11 +23,12 @@ int vsnprintf(char* str, size_t size, const char* format, va_list ap) {
   char* traverse = (char*)format;
   unsigned int i = 0;
   char* s = NULL;
-  for (; *traverse != '\0'; traverse++) {
-    while (*traverse != '%') {
+  for (; *traverse != 0; traverse++) {
+    while (*traverse != '%' && *traverse != 0) {
       str[wrote++] = *traverse;
       traverse++;
     }
+    if (*traverse == 0) break;
     traverse++;
     switch (*traverse) {
       case 'c':
@@ -70,5 +71,6 @@ int vsnprintf(char* str, size_t size, const char* format, va_list ap) {
         break;
     }
   }
-  return wrote;
+  str[wrote] = 0;
+  return wrote - 1;
 }

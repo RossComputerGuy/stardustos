@@ -71,7 +71,7 @@ int printk(const char* fmt, ...) {
     va_end(ap);
     return wrote;
   }
-  wrote = print(buff, strlen(buff), 0);
+  wrote = print(buff, strlen(buff) - 1, 0);
   va_end(ap);
   return wrote;
 }
