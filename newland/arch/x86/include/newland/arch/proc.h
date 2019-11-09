@@ -7,8 +7,8 @@
 #include <newland/arch/mem.h>
 #include <newland/fs.h>
 #include <newland/limits.h>
-#include <newland/list.h>
 #include <newland/types.h>
+#include <liblist.h>
 #include <string.h>
 
 #define SCHED_RECCOUNT 128

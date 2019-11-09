@@ -5,7 +5,7 @@
 
 #include <newland/dev.h>
 #include <newland/limits.h>
-#include <newland/list.h>
+#include <liblist.h>
 #include <string.h>
 
 #define BUSDEVRES_IO 1

@@ -4,8 +4,8 @@
 #pragma once
 
 #include <newland/limits.h>
-#include <newland/list.h>
 #include <newland/types.h>
+#include <liblist.h>
 #include <string.h>
 
 struct blkdev;

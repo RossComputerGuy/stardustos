@@ -4,8 +4,8 @@
 #pragma once
 
 #include <newland/fs.h>
-#include <newland/list.h>
 #include <newland/types.h>
+#include <liblist.h>
 
 #define DEV_MAJOR(dev) ((dev) >> 8)
 #define DEV_MINOR(dev) ((dev) & 0xFF)

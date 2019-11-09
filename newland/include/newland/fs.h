@@ -4,9 +4,9 @@
 #pragma once
 
 #include <newland/limits.h>
-#include <newland/list.h>
 #include <newland/time.h>
 #include <newland/types.h>
+#include <liblist.h>
 #include <stdarg.h>
 #include <string.h>
 
