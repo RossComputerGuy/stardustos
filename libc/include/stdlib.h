@@ -24,5 +24,5 @@ void* realloc(void* ptr, size_t size);
 void free(void* ptr);
 #endif
 
-int ftoa(float value, char* ptr, int dig);
+int ftoa(float value, char* ptr);
 char* ultoa(unsigned long value, char* ptr, int base);

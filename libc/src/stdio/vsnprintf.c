@@ -64,7 +64,7 @@ int vsnprintf(char* str, size_t size, const char* format, va_list ap) {
         wrote += strlen(s);
         break;
       case 'f':
-        wrote += ftoa(va_arg(ap, double), (char*)(str + wrote), va_arg(ap, int));
+        wrote += ftoa(va_arg(ap, double), (char*)(str + wrote));
         break;
       case '%':
         str[wrote++] = '%';

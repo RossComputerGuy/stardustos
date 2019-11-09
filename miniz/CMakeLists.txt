@@ -8,7 +8,6 @@ endif()
 include("${PROJECT_SOURCE_DIR}/build.cmake")
 add_compile_options("-nostdlib" "-fno-builtin")
 add_library(miniz ${MINIZ_SOURCES})
-set_target_properties(miniz PROPERTIES PREFIX "")
 
 if(NOT CMAKE_PROJECT_NAME STREQUAL "stardustos")
   add_subdirectory(libc)
