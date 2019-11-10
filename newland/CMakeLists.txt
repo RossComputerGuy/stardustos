@@ -16,7 +16,7 @@ include(CTest)
 include("${ARCH_DIR}/build.cmake")
 include_directories("${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
 
-add_compile_definitions("NEWLAND_KERNEL")
+add_compile_definitions("NEWLAND_KERNEL" "MINIZ_NO_ARCHIVE_WRITING_APIS")
 add_compile_options("-nostdinc" "-fno-builtin" "-Werror=implicit-function-declaration" "-fno-stack-protector")
 
 set(libc_SOURCE_DIR "${PROJECT_SOURCE_DIR}/libc")

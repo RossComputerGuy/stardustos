@@ -7,6 +7,7 @@
 #include <newland/arch/irq.h>
 #include <newland/arch/mem.h>
 #include <newland/arch/misc.h>
+#include <newland/arch/multiboot.h>
 #include <newland/arch/proc.h>
 #include <newland/arch/timer.h>
 #include <newland/fs/initrd.h>
@@ -34,7 +35,10 @@ void bootstrap_main(uint32_t magic, uint32_t mbaddr) {
   mem_init(mbi);
   sched_init();
 
-  int r = procfs_init();
+  int r = mbi_modules_init(mbi);
+  if (r < 0) panic("Failed to create devices for multiboot modules");
+
+  r = procfs_init();
   if (r < 0) panic("Failed to initialize procfs");
 
   r = initrd_init();

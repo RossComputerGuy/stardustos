@@ -13,6 +13,7 @@
 
 #define DEVMAJ_BLOCK 1
 #define DEVMAJ_TTY 2
+#define DEVMAJ_MBMOD 3
 
 typedef struct device {
   SLIST_ENTRY(struct device) dev_list;
