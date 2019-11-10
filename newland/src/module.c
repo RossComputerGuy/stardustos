@@ -6,10 +6,10 @@
 #include <newland/types.h>
 #include <errno.h>
 
-#define mod_get(i) (modinfo_t*)((uintptr_t)&__modules_start + (sizeof(uintptr_t) * 5) + 1 + (sizeof(modinfo_t) * i) + (i > 0 ? 17 : 0))
+#define mod_get(i) (modinfo_t*)(((uintptr_t)&__modules_start) + (sizeof(modinfo_t) * i) + (i == 0 ? 0 : 17))
 
-extern uintptr_t __modules_start;
-extern uintptr_t __modules_end;
+extern modinfo_t __modules_start[] __attribute__((weak));
+extern modinfo_t __modules_end[] __attribute__((weak));
 
 size_t module_count() {
   return (((uintptr_t)&__modules_end) - ((uintptr_t)&__modules_start)) / sizeof(modinfo_t);

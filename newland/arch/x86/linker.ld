@@ -6,10 +6,6 @@ SECTIONS {
 	.text BLOCK(4K) : ALIGN(4K) {
 		*(.multiboot)
 		*(.text)
-    __modules_start = .;
-    . = ALIGN(4);
-    KEEP(*(modinfo*))
-    __modules_end = .;
 	}
 
 	.rodata BLOCK(4K) : ALIGN(4K) {
@@ -30,5 +26,12 @@ SECTIONS {
 		*(.bss)
     __bss_end = .;
 	}
+
+  .modinfo_array : {
+    PROVIDE_HIDDEN(__modules_start = .);
+    KEEP(*(modinfo*))
+    PROVIDE_HIDDEN(__modules_end = .);
+  }
+
   __kernel_end = .;
 }
