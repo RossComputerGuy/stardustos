@@ -2,7 +2,6 @@
   * NewLand Kernel - (C) 2019 Tristan Ross
   */
 #include <newland/arch/misc.h>
-#include <newland/arch/texcon.h>
 #include <newland/log.h>
 #include <string.h>
 

@@ -16,8 +16,6 @@
 static char klog_buffer[NEWLAND_KLOG_SIZE] = { 0 };
 static size_t klog_pos = 0;
 
-extern void arch_logc(const char c);
-
 static int getlevel(const char* msg) {
   if (msg[0] == KLOG_SOH_ASCII && msg[1] >= 0 && msg[1] < 7) return msg[1];
   return KLEVEL_NOTICE;
@@ -54,8 +52,7 @@ static int print(const char* str, size_t len, int inmsg) {
   tty_t* tty = tty_get(tty_count() - 1);
   if (tty != NULL) {
     tty->opts.write(tty, buff, len);
-  } else {
-    for (size_t i = 0; i < len; i++) arch_logc(buff[i]);
+    if (buff[len - 1] == '\n') tty->opts.write(tty, "\r", 1);
   }
   klog_pos += len;
   return len;

@@ -8,7 +8,6 @@
 #include <newland/arch/mem.h>
 #include <newland/arch/misc.h>
 #include <newland/arch/proc.h>
-#include <newland/arch/texcon.h>
 #include <newland/arch/timer.h>
 #include <newland/fs/initrd.h>
 #include <newland/fs/procfs.h>
@@ -23,8 +22,6 @@ extern time_t boot_time;
 void bootstrap_main(uint32_t magic, uint32_t mbaddr) {
   boot_time = time(NULL);
   multiboot_info_t* mbi = (multiboot_info_t*)mbaddr;
-
-  texcon_clear();
 
   if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
     panic("Multiboot magic check failed!");
