@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 set -e
-qemu-system-@EMULATOR@ -kernel @PROJECT_BINARY_DIR@/kernel.elf $@
+qemu-system-@EMULATOR@ -kernel @PROJECT_BINARY_DIR@/kernel $@

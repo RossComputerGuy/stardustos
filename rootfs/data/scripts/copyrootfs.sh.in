@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+cp @PROJECT_SOURCE_DIR@/fs/. @PROJECT_BINARY_DIR@/rootfs/ -r
+cp @PROJECT_SOURCE_DIR@/arch/@ARCH@/fs/. @PROJECT_BINARY_DIR@/rootfs/ -r
+cp @PROJECT_SOURCE_DIR@/arch/@ARCH@/platform/@PLATFORM@/fs/. @PROJECT_BINARY_DIR@/rootfs/ -r

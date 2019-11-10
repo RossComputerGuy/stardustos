@@ -35,7 +35,7 @@ configure_file("${PROJECT_SOURCE_DIR}/data/config.h.in" "${PROJECT_BINARY_DIR}/n
 configure_file("${PROJECT_SOURCE_DIR}/data/gdbinit.in" "${PROJECT_BINARY_DIR}/.gdbinit")
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXEC_LINKER_FLAGS} -T${ARCH_DIR}/linker.ld -nostdlib -nostartfiles -Wl,-Map=${PROJECT_BINARY_DIR}/kernel.map")
-add_executable(kernel.elf
+add_executable(kernel
   ${LIBC_SOURCES}
   ${LIBLIST_SOURCES}
   ${MINIZ_SOURCES}

@@ -13,5 +13,6 @@ add_subdirectory(libfile)
 add_subdirectory(liblist)
 add_subdirectory(miniz)
 add_subdirectory(initrd)
+add_subdirectory(rootfs)
 
 include(CTest)
