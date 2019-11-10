@@ -7,6 +7,7 @@ SECTIONS {
 		*(.multiboot)
 		*(.text)
     __modules_start = .;
+    . = ALIGN(4);
     KEEP(*(modinfo*))
     __modules_end = .;
 	}
