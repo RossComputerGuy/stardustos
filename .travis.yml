@@ -2,7 +2,9 @@ language: c
 dist: xenial
 compiler:
   - gcc
+serices:
+  - docker
 before_install:
   - sudo apt-get update
-  - sudo apt-get -y upgrade xorriso
-script: mkdir build && cd build && cmake .. && make
+  - ./scripts/docker-init.sh
+script: ./scripts/docker-run.sh
