@@ -10,6 +10,7 @@
 #include <newland/arch/proc.h>
 #include <newland/arch/texcon.h>
 #include <newland/arch/timer.h>
+#include <newland/fs/initrd.h>
 #include <newland/fs/procfs.h>
 #include <newland/boot/multiboot.h>
 #include <newland/log.h>
@@ -38,6 +39,9 @@ void bootstrap_main(uint32_t magic, uint32_t mbaddr) {
 
   int r = procfs_init();
   if (r < 0) panic("Failed to initialize procfs");
+
+  r = initrd_init();
+  if (r < 0) panic("Failed to initialize initrd");
 
   r = modules_init();
   if (r < 0) panic("Failed to load kernel modules");

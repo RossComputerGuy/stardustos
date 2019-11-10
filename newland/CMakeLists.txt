@@ -40,6 +40,7 @@ add_executable(kernel.elf
   "${ARCH_DIR}/src/clock.c"
   "${PROJECT_SOURCE_DIR}/src/dev/block.c"
   "${PROJECT_SOURCE_DIR}/src/dev/tty.c"
+  "${PROJECT_SOURCE_DIR}/src/fs/initrd.c"
   "${PROJECT_SOURCE_DIR}/src/fs/procfs.c"
   "${PROJECT_SOURCE_DIR}/src/bus.c"
   "${PROJECT_SOURCE_DIR}/src/dev.c"

@@ -5,6 +5,7 @@
 #include <newland/arch/mem.h>
 #include <newland/log.h>
 #include <errno.h>
+#include <stdlib.h>
 #include <string.h>
 
 extern uint32_t __kernel_end;
@@ -157,7 +158,9 @@ void mem_loadmmap(multiboot_info_t* mbi) {
       }
     }
   }
-  used_mem = PAGE_ALIGN((uint32_t)&__kernel_end);
+  multiboot_module_t* mod = (multiboot_module_t*)mbi->mods_addr;
+  for (size_t i = 0; i < mbi->mods_count; i++) mod = (multiboot_module_t*)((uint32_t)mod->mod_end + 1);
+  used_mem = PAGE_ALIGN(max((uint32_t)&__kernel_end, (uint32_t)mod));
   printk(KLOG_INFO "mem: memory map loaded (t: %dKib, u: %dKib)\n", total_mem / 1024, used_mem / 1024);
 }
 

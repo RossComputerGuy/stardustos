@@ -97,7 +97,7 @@ int register_bus(const char* type, const char* name) {
   bus->dev_count = 0;
   SLIST_INSERT_HEAD(&buses, bus, bus_list);
   buses_count++;
-  printk(KLOG_INFO "Registered bus: %s\n", name);
+  printk(KLOG_INFO "bus: registered: %s\n", name);
   return 0;
 }
 
@@ -115,6 +115,6 @@ int unregister_bus(const char* name) {
     kfree(dev);
   }
   kfree(bus);
-  printk(KLOG_INFO "Unregistered bus: %s\n", name);
+  printk(KLOG_INFO "bus: unregistered: %s\n", name);
   return 0;
 }

@@ -1,6 +1,7 @@
 /**
   * NewLand Kernel - (C) 2019 Tristan Ross
   */
+#include <newland/dev/tty.h>
 #include <newland/limits.h>
 #include <newland/log.h>
 #include <newland/time.h>
@@ -50,8 +51,11 @@ static int print(const char* str, size_t len, int inmsg) {
   strcpy(buff, str);
   buff[len] = 0;
   buff = klog_buffer + klog_pos;
-  for (size_t i = 0; i < len + 1; i++) {
-    arch_logc(buff[i]);
+  tty_t* tty = tty_get(tty_count() - 1);
+  if (tty != NULL) {
+    tty->opts.write(tty, buff, len);
+  } else {
+    for (size_t i = 0; i < len; i++) arch_logc(buff[i]);
   }
   klog_pos += len;
   return len;
@@ -70,7 +74,7 @@ int printk(const char* fmt, ...) {
     va_end(ap);
     return wrote;
   }
-  wrote = print(buff, strlen(buff) - 1, 0);
+  wrote = print(buff, strlen(buff), 0);
   va_end(ap);
   return wrote;
 }
