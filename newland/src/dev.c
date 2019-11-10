@@ -13,6 +13,16 @@ size_t device_count() {
   return dev_count;
 }
 
+size_t device_indexof(device_t* device) {
+  device_t* dev = NULL;
+  size_t index = 0;
+  SLIST_FOREACH(dev, &devices, dev_list) {
+    if (!strcmp(dev->name, device->name)) return index;
+    index++;
+  }
+  return -1;
+}
+
 device_t* device_get(size_t i) {
   device_t* device = NULL;
   size_t index = 0;
@@ -40,12 +50,13 @@ device_t* device_fromname(const char* name) {
   return NULL;
 }
 
-int register_device(dev_t dev, const char* name, fs_node_opts_t opts) {
+int register_device(dev_t dev, const char* name, fs_node_opts_t opts, size_t size) {
   if (strlen(name) > NAME_MAX) return -ENAMETOOLONG;
   if (device_fromname(name) != NULL || device_fromdev(dev) != NULL) return -EEXIST;
   device_t* device = kmalloc(sizeof(device_t));
   if (device == NULL) return -ENOMEM;
   device->dev = dev;
+  device->size = size;
   strcpy((char*)device->name, name);
   device->opts = opts;
   SLIST_INSERT_HEAD(&devices, device, dev_list);

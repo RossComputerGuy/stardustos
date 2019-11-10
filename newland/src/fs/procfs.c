@@ -34,7 +34,7 @@ static int procfs_get_child(fs_node_t* node, fs_node_t** childptr, size_t index)
     if (list_get(&procs, index) == NULL) {
       char name[NAME_MAX];
       itoa(name, 10, index);
-      int r = fs_node_create(childptr, name, FS_NODE_DIR);
+      int r = fs_node_create(childptr, name, 6 << FS_NODE_DIR);
       if (r < 0) return r;
       (*childptr)->impl = process_get(index);
       r = list_add(&procs, *childptr);
@@ -52,10 +52,9 @@ static int procfs_get_child(fs_node_t* node, fs_node_t** childptr, size_t index)
 }
 
 static int procfs_mount(fs_node_t** targetptr, fs_node_t* source, unsigned long flags, const void* data) {
-  int r = fs_node_create(targetptr, "/", FS_NODE_DIR);
+  int r = fs_node_create(targetptr, "/", 6 << FS_NODE_DIR);
   if (r < 0) return r;
   (*targetptr)->opts.get_child = procfs_get_child;
-  // TODO: set the operations for the root node
   return 0;
 }
 

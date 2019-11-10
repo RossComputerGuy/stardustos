@@ -12,5 +12,6 @@ add_subdirectory(libc)
 add_subdirectory(libfile)
 add_subdirectory(liblist)
 add_subdirectory(miniz)
+add_subdirectory(initrd)
 
 include(CTest)

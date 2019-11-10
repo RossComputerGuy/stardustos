@@ -10,9 +10,11 @@
 #include <newland/arch/multiboot.h>
 #include <newland/arch/proc.h>
 #include <newland/arch/timer.h>
+#include <newland/fs/devfs.h>
 #include <newland/fs/initrd.h>
 #include <newland/fs/procfs.h>
 #include <newland/boot/multiboot.h>
+#include <newland/dev.h>
 #include <newland/log.h>
 #include <newland/module.h>
 #include <newland/time.h>
@@ -47,5 +49,23 @@ void bootstrap_main(uint32_t magic, uint32_t mbaddr) {
   r = modules_init();
   if (r < 0) panic("Failed to load kernel modules");
 
+  r = devfs_init();
+  if (r < 0) panic("Failed to load kernel modules");
+
   printk(KLOG_NOTICE "Bootstrapping has completed.\n");
+
+  device_t* device = device_fromname("mbmod00");
+  if (device == NULL) panic("No initrd device was attached");
+
+  size_t devi = device_indexof(device);
+  if (devi == -1) panic("Failed to find the index of the initrd device");
+
+  fs_node_t* initrd = devfs_get(devi);
+  if (initrd == NULL) panic("Failed to get devfs initrd device node");
+
+  fs_t* fs = fs_fromname("initrd");
+  if (fs == NULL) panic("Failed to find fs: initrd");
+
+  r = mountpoint_create_fromnode(&fs, initrd, "/", 0, NULL);
+  if (r < 0) panic("Failed to mount initrd");
 }

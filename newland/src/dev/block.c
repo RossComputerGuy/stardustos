@@ -94,7 +94,7 @@ int register_blkdev(const char* name, blksize_t blksize, blkcnt_t blkcnt, blkdev
   blkdev->size = blksize;
   blkdev->count = blkcnt;
   blkdev->opts = opts;
-  int r = register_device(MKDEV(DEVMAJ_BLOCK, block_device_count), name, blkdev_fsopts);
+  int r = register_device(MKDEV(DEVMAJ_BLOCK, block_device_count), name, blkdev_fsopts, blkdev->size * blkdev->count);
   if (r < 0) {
     kfree(blkdev);
     return r;

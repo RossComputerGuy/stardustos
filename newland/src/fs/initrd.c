@@ -15,40 +15,48 @@
 struct initrd {
   mz_zip_archive zip;
   list_t nodes;
+  void* buff;
 };
 
 static int initrd_mount(fs_node_t** targetptr, fs_node_t* source, unsigned long flags, const void* data) {
-/** Find device **/
-  device_t* dev = device_fromdev(source->rdev);
-  if (dev == NULL) return -ENODEV;
-  blkdev_t* blkdev = blkdev_fromname(dev->name);
-  if (blkdev == NULL) return -ENODEV;
-
-/** Allocate buffer **/
-  void* buff = kmalloc(blkdev->size);
-  if (buff == NULL) return -ENOMEM;
-
 /** Decompress **/
   struct initrd* initrd = kmalloc(sizeof(struct initrd));
-  if (initrd == NULL) {
-    kfree(buff);
+  if (initrd == NULL) return -ENOMEM;
+
+  if ((initrd->buff = kmalloc(source->size)) == NULL) {
+    kfree(initrd);
     return -ENOMEM;
   }
-  if (!mz_zip_reader_init(&initrd->zip, blkdev->size * blkdev->count, MZ_ZIP_FLAG_CASE_SENSITIVE | MZ_ZIP_FLAG_COMPRESSED_DATA)) {
+
+  int r = fs_node_read(&source, 0, initrd->buff, source->size);
+  if (r < 0) {
+    kfree(initrd->buff);
+    kfree(initrd);
+    return r;
+  }
+
+  if (!mz_zip_reader_init_mem(&initrd->zip, initrd->buff, source->size, MZ_ZIP_FLAG_CASE_SENSITIVE | MZ_ZIP_FLAG_COMPRESSED_DATA)) {
+    kfree(initrd->buff);
+    kfree(initrd);
     printk(KLOG_ERR "initrd: miniz failed to initialize zip reader: %s\n", mz_zip_get_error_string(mz_zip_get_last_error(&initrd->zip)));
     return -EINVAL;
   }
 
 /** Root node creation **/
-  int r = fs_node_create(targetptr, "/", FS_NODE_DIR);
+  r = fs_node_create(targetptr, "/", 6 << FS_NODE_DIR);
   if (r < 0) return r;
-  (*targetptr)->dev = dev->dev;
+  (*targetptr)->dev = source->rdev;
   (*targetptr)->impl = initrd;
   // TODO: implement the get children function
   return 0;
 }
 
 static int initrd_umount(fs_node_t** targetptr) {
+  struct initrd* initrd = (struct initrd*)((*targetptr)->impl);
+  // TODO: free nodes
+  kfree(initrd->buff);
+  mz_zip_reader_end(&initrd->zip);
+  kfree(initrd);
   kfree(*targetptr);
   *targetptr = NULL;
   return 0;

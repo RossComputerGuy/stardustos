@@ -54,7 +54,7 @@ int register_tty(const char* name, tty_opts_t opts) {
   if (tty == NULL) return -ENOMEM;
   strcpy((char*)tty->name, name);
   tty->opts = opts;
-  int r = register_device(MKDEV(DEVMAJ_TTY, tty_cnt), name, tty_fsopts);
+  int r = register_device(MKDEV(DEVMAJ_TTY, tty_cnt), name, tty_fsopts, 0);
   if (r < 0) {
     kfree(tty);
     return r;

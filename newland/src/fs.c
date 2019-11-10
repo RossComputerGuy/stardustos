@@ -200,38 +200,40 @@ mountpoint_t* mountpoint_fromtarget(const char* target) {
   return NULL;
 }
 
+int mountpoint_create_fromnode(fs_t** fsptr, fs_node_t* source, const char* target, unsigned long flags, const void* data) {
+  if (!(flags & MS_BIND) && (fsptr == NULL || *fsptr == NULL)) return -EINVAL;
+  if (source == NULL || mountpoint_fromtarget(target) != NULL) return -EBUSY;
+  if (target[0] == '/') target++;
+  if (target[strlen(target) - 1] == '/') memset((void*)(target + (strlen(target) - 1)), 0, sizeof(char));
+  mountpoint_t* mp = kmalloc(sizeof(mountpoint_t));
+  if (mp == NULL) return -ENOMEM;
+  strcpy((char*)mp->target, target);
+  mp->flags = flags;
+  if (!(flags & MS_BIND)) {
+    strcpy((char*)mp->fsname, (*fsptr)->name);
+    int r = (*fsptr)->opts.mount(&mp->rootnode, source, flags, data);
+    if (r < 0) {
+      kfree(mp);
+      return r;
+    }
+  } else mp->rootnode = source;
+  SLIST_INSERT_HEAD(&mountpoints, mp, mp_list);
+  mp_count++;
+  return 0;
+}
+
 int mountpoint_create(fs_t** fsptr, const char* src, const char* target, unsigned long flags, const void* data) {
   if (!(flags & MS_BIND) && (fsptr == NULL || *fsptr == NULL)) return -EINVAL;
   if ((src != NULL && mountpoint_fromsrc(src) != NULL) || mountpoint_fromtarget(target) != NULL) return -EBUSY;
   if (target[0] == '/') target++;
   if (target[strlen(target) - 1] == '/') memset((void*)(target + (strlen(target) - 1)), 0, sizeof(char));
-  mountpoint_t* mp = kmalloc(sizeof(mountpoint_t));
-  if (mp == NULL) return -ENOMEM;
+  fs_node_t* sourcenode = NULL;
+  int r = fs_resolve(&sourcenode, src);
+  if (r < 0) return r;
+  r = mountpoint_create_fromnode(fsptr, sourcenode, target, flags, data);
+  if (r < 0) return r;
+  mountpoint_t* mp = mountpoint_fromtarget(target);
   strcpy((char*)mp->source, src);
-  strcpy((char*)mp->target, target);
-  fs_node_t* targetnode = NULL;
-  int r = fs_resolve(&targetnode, target);
-  if (r < 0) {
-    kfree(mp);
-    return r;
-  }
-  mp->flags = flags;
-  if (!(flags & MS_BIND)) {
-    strcpy((char*)mp->fsname, (*fsptr)->name);
-    r = (*fsptr)->opts.mount(&mp->rootnode, targetnode, flags, data);
-    if (r < 0) {
-      kfree(mp);
-      return r;
-    }
-  } else {
-    r = fs_resolve(&mp->rootnode, src);
-    if (r < 0) {
-      kfree(mp);
-      return r;
-    }
-  }
-  SLIST_INSERT_HEAD(&mountpoints, mp, mp_list);
-  mp_count++;
   return 0;
 }
 
