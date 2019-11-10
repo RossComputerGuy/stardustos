@@ -2,9 +2,7 @@ language: c
 dist: xenial
 compiler:
   - gcc
-addons:
-  apt:
-    update: true
-    packages:
-      - qemu
+before_install:
+  - sudo apt-get update
+  - sudo apt-get -y upgrade xorriso
 script: mkdir build && cd build && cmake .. && make
