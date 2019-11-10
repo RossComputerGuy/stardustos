@@ -1,2 +1,2 @@
-file ${PROJECT_BINARY_DIR}/kernel.elf
+file ${PROJECT_BINARY_DIR}/kernel
 target remote :1234

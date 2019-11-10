@@ -1,5 +1,7 @@
 include_directories("${libc_SOURCE_DIR}/arch/${ARCH}/include" "${libc_SOURCE_DIR}/include")
 set(LIBC_SOURCES
+# libgen
+  "${libc_SOURCE_DIR}/src/libgen/basename.c" "${libc_SOURCE_DIR}/src/libgen/dirname.c"
 # math
   "${libc_SOURCE_DIR}/src/math/arithm.c" "${libc_SOURCE_DIR}/src/math/pow.c"
 # stdlib

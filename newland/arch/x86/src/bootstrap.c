@@ -52,7 +52,7 @@ void bootstrap_main(uint32_t magic, uint32_t mbaddr) {
   r = devfs_init();
   if (r < 0) panic("Failed to load kernel modules");
 
-  printk(KLOG_NOTICE "Bootstrapping has completed.\n");
+  printk(KLOG_NOTICE "mounting initrd\n");
 
   device_t* device = device_fromname("mbmod00");
   if (device == NULL) panic("No initrd device was attached");
@@ -68,4 +68,7 @@ void bootstrap_main(uint32_t magic, uint32_t mbaddr) {
 
   r = mountpoint_create_fromnode(&fs, initrd, "/", 0, NULL);
   if (r < 0) panic("Failed to mount initrd");
+
+  printk(KLOG_INFO "mounted initrd\n");
+  // TODO: run the init program
 }

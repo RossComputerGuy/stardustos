@@ -5,6 +5,7 @@
 #include <newland/fs.h>
 #include <newland/limits.h>
 #include <errno.h>
+#include <libgen.h>
 
 /** Filesystem Node **/
 static ino_t next_inode = 0;
@@ -86,19 +87,20 @@ int fs_node_ioctl(fs_node_t** nodeptr, int req, ...) {
 int fs_node_resolve(fs_node_t** nodeptr, fs_node_t** foundptr, const char* path) {
   if (path[0] == '/') path++;
   if (path[strlen(path) - 1] == '/') memset((void*)(path + (strlen(path) - 1)), 0, sizeof(char));
-  size_t plen = 0;
-  for (size_t i = 0; i < strlen(path); i++) {
-    if (path[i] == '/') {
-      plen = i;
-      break;
-    }
-  }
+  size_t plen = strlen(dirname(path));
   fs_node_t* node = *nodeptr;
   fs_node_t* tmpnode = NULL;
   size_t i = 0;
   int r;
   while ((r = node->opts.get_child(node, &tmpnode, i++)) == 0) {
-    if (!strncmp(tmpnode->name, path, plen)) return fs_node_resolve(&tmpnode, foundptr, path + plen + 1);
+    if (plen > 1) {
+      if (!strncmp(tmpnode->name, path, plen)) return fs_node_resolve(&tmpnode, foundptr, path + plen);
+    } else {
+      if (!strcmp(tmpnode->name, path)) {
+        *foundptr = tmpnode;
+        return 0;
+      }
+    }
   }
   return -ENOENT;
 }
