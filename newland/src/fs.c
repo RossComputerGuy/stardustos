@@ -87,7 +87,7 @@ int fs_node_ioctl(fs_node_t** nodeptr, int req, ...) {
 int fs_node_resolve(fs_node_t** nodeptr, fs_node_t** foundptr, const char* path) {
   if (path[0] == '/') path++;
   if (path[strlen(path) - 1] == '/') memset((void*)(path + (strlen(path) - 1)), 0, sizeof(char));
-  size_t plen = strlen(dirname(path));
+  size_t plen = strlen(dirname((char*)path));
   fs_node_t* node = *nodeptr;
   fs_node_t* tmpnode = NULL;
   size_t i = 0;

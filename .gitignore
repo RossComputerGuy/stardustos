@@ -21,3 +21,6 @@ miniz-*
 newland-config.h
 test.sh
 run.sh
+**/rootfs/rootfs
+**/initrd/initrd
+**/rootfs/copyrootfs.sh
