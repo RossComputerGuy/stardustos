@@ -1,8 +1,8 @@
 add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/rootfs/boot/kernel.elf"
   COMMAND cp "${newland_BINARY_DIR}/kernel.elf" "${PROJECT_BINARY_DIR}/rootfs/boot/kernel.elf"
   COMMENT "Copying kernel to rootfs"
-  MAIN_DEPENDENCY newland)
+  DEPENDS "${newland_BINARY_DIR}/kernel.elf")
 add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/rootfs/boot/initrd.zip"
   COMMAND cp "${initrd_BINARY_DIR}/initrd.zip" "${PROJECT_BINARY_DIR}/rootfs/boot/initrd.zip"
   COMMENT "Copying initrd to rootfs"
-  MAIN_DEPENDENCY initrd)
+  DEPENDS "${initrd_BINARY_DIR}/initrd.zip")
