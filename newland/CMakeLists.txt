@@ -25,6 +25,10 @@ include("${PROJECT_SOURCE_DIR}/libc/build.cmake")
 set(liblist_SOURCE_DIR "${PROJECT_SOURCE_DIR}/liblist")
 include("${PROJECT_SOURCE_DIR}/liblist/build.cmake")
 
+set(miniz_SOURCE_DIR "${PROJECT_SOURCE_DIR}/miniz")
+set(miniz_BINARY_DIR "${PROJECT_BINARY_DIR}")
+include("${PROJECT_SOURCE_DIR}/miniz/build.cmake")
+
 configure_file("${PROJECT_SOURCE_DIR}/data/scripts/run.sh.in" "${PROJECT_BINARY_DIR}/run.sh")
 configure_file("${PROJECT_SOURCE_DIR}/data/scripts/test.sh.in" "${PROJECT_BINARY_DIR}/test.sh")
 configure_file("${PROJECT_SOURCE_DIR}/data/config.h.in" "${PROJECT_BINARY_DIR}/newland-config.h")
