@@ -25,7 +25,8 @@ int vsnprintf(char* str, size_t size, const char* format, va_list ap) {
   char* s = NULL;
   for (; *traverse != 0; traverse++) {
     while (*traverse != '%' && *traverse != 0) {
-      str[wrote++] = *traverse;
+      if (wrote < size) str[wrote] = *traverse;
+      wrote++;
       traverse++;
     }
     if (*traverse == 0) break;
@@ -33,41 +34,50 @@ int vsnprintf(char* str, size_t size, const char* format, va_list ap) {
     switch (*traverse) {
       case 'c':
         i = va_arg(ap, int);
-        str[wrote++] = *traverse;
+        if (wrote < size) str[wrote] = *traverse;
+        wrote++;
         break;
       case 'd':
         i = va_arg(ap, int);
         if (i < 0) {
           i = -i;
-          str[wrote++] = '-';
+          if (wrote < size) str[wrote] = '-';
+          wrote++;
         }
         s = convert(i, 10);
-        strncpy((char*)(str + wrote), s, strlen(s));
+        if (wrote < size) strncpy((char*)(str + wrote), s, strlen(s));
         wrote += strlen(s);
         break;
       case 'o':
         i = va_arg(ap, unsigned int);
         s = convert(i, 10);
-        strncpy((char*)(str + wrote), s, strlen(s));
+        if (wrote < size) strncpy((char*)(str + wrote), s, strlen(s));
         wrote += strlen(s);
         break;
       case 's':
         s = va_arg(ap, char*);
         if (s == NULL) s = "(null)";
-        strncpy((char*)(str + wrote), s, strlen(s));
+        if (wrote < size) strncpy((char*)(str + wrote), s, strlen(s));
         wrote += strlen(s);
         break;
       case 'x':
         i = va_arg(ap, unsigned int);
         s = convert(i, 10);
-        strncpy((char*)(str + wrote), s, strlen(s));
+        if (wrote < size) strncpy((char*)(str + wrote), s, strlen(s));
         wrote += strlen(s);
         break;
       case 'f':
-        wrote += ftoa(va_arg(ap, double), (char*)(str + wrote));
+        {
+          double v = va_arg(ap, double);
+          static char temp[50];
+          i = ftoa(v, temp);
+          if (wrote < size) strncpy((char*)(str + wrote), temp, i);
+          wrote += i;
+        }
         break;
       case '%':
-        str[wrote++] = '%';
+        if (wrote < size) str[wrote] = '%';
+        wrote++;
         break;
     }
   }

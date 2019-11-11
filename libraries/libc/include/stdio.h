@@ -6,26 +6,32 @@
 #include <stdarg.h>
 #include <stddef.h>
 
+typedef struct FILE {
+  int fd;
+  void* impl;
+  const char* mode;
+  size_t offset;
+  int (*write)(struct FILE* stream, const void* buff, size_t size);
+  int (*read)(struct FILE* stream, void* buff, size_t size);
+} FILE;
+
 #ifndef stdin
-#define stdin ((FILE*)0)
+extern FILE __libc_stdin;
+#define stdin &__libc_stdin
 #endif
 
 #ifndef stdout
-#define stdout ((FILE*)1)
+extern FILE __libc_stdout;
+#define stdout &__libc_stdout
 #endif
 
 #ifndef stderr
-#define stderr ((FILE*)2)
+extern FILE __libc_stderr;
+#define stderr &__libc_stderr
 #endif
-
-typedef int FILE;
 
 int fprintf(FILE* stream, const char* format, ...);
 
-void perror(const char *s);
-
-int printf(const char* format, ...);
-int putc(const char c, FILE* stream);
-
 int snprintf(char* str, size_t size, const char* format, ...);
+int vfprintf(FILE* stream, const char* format, va_list ap);
 int vsnprintf(char* str, size_t size, const char* format, va_list ap);

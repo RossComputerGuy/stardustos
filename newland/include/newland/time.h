@@ -4,6 +4,7 @@
 #pragma once
 
 #include <newland/arch/clock.h>
+#include <time.h>
 
 #define EPOCH_YEAR 1970
 #define SECONDS_PER_MINUTE (60)
@@ -32,8 +33,6 @@ struct tm {
   int tm_yday;
   int tm_isdst;
 };
-
-typedef long time_t;
 
 time_t time(time_t* t);
 time_t boottime(time_t* t);

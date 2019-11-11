@@ -7,7 +7,7 @@ set(LIBC_SOURCES
 # stdlib
   "${libc_SOURCE_DIR}/src/stdlib/ftoa.c" "${libc_SOURCE_DIR}/src/stdlib/ultoa.c"
 # stdio
-  "${libc_SOURCE_DIR}/src/stdio/vsnprintf.c"
+  "${libc_SOURCE_DIR}/src/stdio/fprintf.c" "${libc_SOURCE_DIR}/src/stdio/snprintf.c" "${libc_SOURCE_DIR}/src/stdio/vfprintf.c" "${libc_SOURCE_DIR}/src/stdio/vsnprintf.c"
 # string
   "${libc_SOURCE_DIR}/src/string/itoa.c"
   "${libc_SOURCE_DIR}/src/string/memcmp.c" "${libc_SOURCE_DIR}/src/string/memcpy.c" "${libc_SOURCE_DIR}/src/string/memmove.c" "${libc_SOURCE_DIR}/src/string/memset.c"
