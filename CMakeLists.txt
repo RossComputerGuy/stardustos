@@ -12,10 +12,10 @@ add_subdirectory(newland)
 add_subdirectory(modules)
 
 # Libraries
-add_subdirectory(libc)
-add_subdirectory(libfile)
-add_subdirectory(liblist)
-add_subdirectory(miniz)
+add_subdirectory(libraries/libc)
+add_subdirectory(libraries/libfile)
+add_subdirectory(libraries/liblist)
+add_subdirectory(libraries/miniz)
 
 # Programs
 add_subdirectory(programs/init)

@@ -32,5 +32,7 @@ void* realloc(void* ptr, size_t size);
 void free(void* ptr);
 #endif
 
+void exit(int i) __attribute__((noreturn));
+
 int ftoa(float value, char* ptr);
 char* ultoa(unsigned long value, char* ptr, int base);
