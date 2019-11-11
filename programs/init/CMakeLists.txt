@@ -5,7 +5,7 @@ if(NOT ARCH)
   set(ARCH "x86")
 endif()
 
-add_compile_options("-nostdlib" "-fno-builtin")
+add_compile_options("-nostdinc" "-fno-builtin")
 set(CMAKE_EXEC_LINKER_FLAGS "-nostdlib -nostartfiles")
 
 if(NOT CMAKE_PROJECT_NAME STREQUAL "stardustos")
