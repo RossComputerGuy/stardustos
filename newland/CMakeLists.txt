@@ -16,6 +16,10 @@ include(CTest)
 include("${ARCH_DIR}/build.cmake")
 include_directories("${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
 
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  add_compile_options("-fdump-rtl-expand")
+endif()
+
 add_compile_definitions("NEWLAND_KERNEL" "MINIZ_NO_ARCHIVE_WRITING_APIS")
 add_compile_options("-nostdinc" "-fno-builtin" "-Werror=implicit-function-declaration" "-fno-stack-protector")
 
@@ -32,6 +36,7 @@ set(miniz_SOURCE_DIR "${PROJECT_SOURCE_DIR}/miniz")
 set(miniz_BINARY_DIR "${PROJECT_BINARY_DIR}")
 include("${PROJECT_SOURCE_DIR}/miniz/build.cmake")
 
+configure_file("${PROJECT_SOURCE_DIR}/data/scripts/mkcallgraph.sh.in" "${PROJECT_BINARY_DIR}/mkcallgraph.sh")
 configure_file("${PROJECT_SOURCE_DIR}/data/scripts/run.sh.in" "${PROJECT_BINARY_DIR}/run.sh")
 configure_file("${PROJECT_SOURCE_DIR}/data/scripts/test.sh.in" "${PROJECT_BINARY_DIR}/test.sh")
 configure_file("${PROJECT_SOURCE_DIR}/data/config.h.in" "${PROJECT_BINARY_DIR}/newland-config.h")
@@ -57,6 +62,13 @@ add_executable(kernel.elf
   "${PROJECT_SOURCE_DIR}/src/log.c"
   "${PROJECT_SOURCE_DIR}/src/module.c"
   "${PROJECT_SOURCE_DIR}/src/time.c")
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/callgraph.png"
+    COMMAND ${PROJECT_BINARY_DIR}/mkcallgraph.sh
+    COMMENT "Generating function call graph")
+  add_custom_target(kernel-callgraph ALL DEPENDS "${PROJECT_BINARY_DIR}/callgraph.png")
+endif()
 
 add_test(NAME kernel
   COMMAND ${PROJECT_BINARY_DIR}/test.sh)

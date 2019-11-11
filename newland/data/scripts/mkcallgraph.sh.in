@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+egypt $(find @PROJECT_BINARY_DIR@ -name "*.expand") | dot -Tpng -o @PROJECT_BINARY_DIR@/callgraph.png

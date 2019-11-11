@@ -15,6 +15,7 @@ DartConfiguration.tcl
 *.a
 *.zip
 *.iso
+*callgraph.png
 miniz-*
 *.233r.expand
 .gdbinit
@@ -24,3 +25,4 @@ run.sh
 **/rootfs/rootfs
 **/initrd/initrd
 **/rootfs/copyrootfs.sh
+**/init/init
