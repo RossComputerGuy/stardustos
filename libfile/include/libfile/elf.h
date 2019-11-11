@@ -15,7 +15,8 @@
 typedef enum {
   ELF_NONE = 0,
   ELF_REL = 1,
-  ELF_EXEC = 2
+  ELF_EXEC = 2,
+  ELF_SHAR = 3
 } elf_type_t;
 
 typedef struct {

@@ -37,7 +37,7 @@ configure_file("${PROJECT_SOURCE_DIR}/data/scripts/test.sh.in" "${PROJECT_BINARY
 configure_file("${PROJECT_SOURCE_DIR}/data/config.h.in" "${PROJECT_BINARY_DIR}/newland-config.h")
 configure_file("${PROJECT_SOURCE_DIR}/data/gdbinit.in" "${PROJECT_BINARY_DIR}/.gdbinit")
 
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXEC_LINKER_FLAGS} -T${ARCH_DIR}/linker.ld -nostdlib -nostartfiles -Wl,-Map=${PROJECT_BINARY_DIR}/kernel.map")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T${ARCH_DIR}/linker.ld -nostdlib -nostartfiles -Wl,-Map=${PROJECT_BINARY_DIR}/kernel.map")
 add_executable(kernel.elf
   ${LIBC_SOURCES}
   ${LIBFILE_SOURCES}

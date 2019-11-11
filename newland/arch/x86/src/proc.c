@@ -7,6 +7,7 @@
 #include <newland/arch/proc.h>
 #include <newland/dev/tty.h>
 #include <newland/alloc.h>
+#include <newland/log.h>
 #include <newland/signal.h>
 #include <errno.h>
 
@@ -41,12 +42,14 @@ proc_t* process_frompid(pid_t pid) {
 }
 
 proc_t* process_curr() {
+  if (curr_pid == 0) return NULL;
   return process_frompid(curr_pid);
 }
 
 proc_t* process_next() {
+  if (proc_count == 0) return NULL;
   proc_t* curr_proc = process_frompid(curr_pid);
-  if (curr_proc == NULL) return NULL;
+  if (curr_proc == NULL) return SLIST_FIRST(&processes);
   if (SLIST_NEXT(curr_proc, proc_list) != NULL) return SLIST_NEXT(curr_proc, proc_list);
   return SLIST_FIRST(&processes);
 }
@@ -205,17 +208,22 @@ void processes_cleanup() {
 }
 
 uint32_t schedule(uint32_t sp, regs_t regs) {
+  if (proc_count == 0) return sp;
   proc_t* curr_proc = process_frompid(curr_pid);
-  if (curr_proc == NULL) return sp;
-  curr_proc->sp = sp;
-  fpu_savectx(curr_proc);
-  sched_rec[ticks % SCHED_RECCOUNT] = curr_pid;
-  ticks++;
   proc_t* next_proc = process_next();
-  if (next_proc != NULL) curr_pid = next_proc->id;
-  paging_loaddir(curr_proc->pgdir);
+  if (curr_proc != NULL) {
+    curr_proc->sp = sp;
+    fpu_savectx(curr_proc);
+    sched_rec[ticks % SCHED_RECCOUNT] = curr_pid;
+    ticks++;
+    curr_pid = next_proc->id;
+  } else {
+    curr_pid = 1;
+  }
+  if (curr_proc != NULL) paging_loaddir(curr_proc->pgdir);
   paging_invalidate_tlb();
   fpu_loadctx(next_proc);
+  printk(KLOG_INFO "proc: switching context %d\n", next_proc->id);
   return next_proc->sp;
 }
 
@@ -245,11 +253,14 @@ int proc_exec(const char* path, const char** argv) {
   memcpy((void*)proc->sp, path, strlen(path) + 1);
 
   int argc = 0;
-  while (argv[argc] != NULL) {
-    proc->sp -= strlen(argv[argc]) + 1;
-    memcpy((void*)proc->sp, argv[argc], strlen(argv[argc]) + 1);
-    argc++;
+  if (argv != NULL) {
+    while (argv[argc] != NULL) {
+      proc->sp -= strlen(argv[argc]) + 1;
+      memcpy((void*)proc->sp, argv[argc], strlen(argv[argc]) + 1);
+      argc++;
+    }
   }
+  argc++;
 
   proc->sp -= sizeof(int);
   memcpy((void*)proc->sp, &argc, sizeof(int));
