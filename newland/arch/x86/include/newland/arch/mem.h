@@ -6,6 +6,9 @@
 #include <newland/boot/multiboot.h>
 #include <newland/types.h>
 
+#define PAGE_SIZE 0x1000
+#define PAGE_ALIGN_UP(__x) ((__x) + PAGE_SIZE - ((__x) % PAGE_SIZE))
+
 typedef union {
   struct {
     int present:1;
@@ -69,6 +72,7 @@ unsigned int mem_allocident(page_dir_t* dir, unsigned int count, int iswrite, in
 unsigned int mem_alloc(page_dir_t* dir, unsigned int count, int iswrite, int isuser);
 void mem_free(page_dir_t* dir, unsigned int addr, unsigned int count);
 int mem_identmap(page_dir_t* dir, unsigned int addr, unsigned int count);
+int mem_map(page_dir_t* pgdir, unsigned int addr, unsigned int count, int iswrite, int isuser);
 
 page_dir_t* get_krnlpgdir();
 page_dir_t* mem_alloc_pgdir();

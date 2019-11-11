@@ -70,5 +70,7 @@ void bootstrap_main(uint32_t magic, uint32_t mbaddr) {
   if (r < 0) panic("Failed to mount initrd");
 
   printk(KLOG_INFO "mounted initrd\n");
-  // TODO: run the init program
+
+  r = proc_exec("/init", (const char**){ NULL });
+  if (r < 0) panic("Failed to execute init program");
 }

@@ -1,6 +1,7 @@
 /**
   * NewLand Kernel - (C) 2019 Tristan Ross
   */
+#include <libfile/elf.h>
 #include <newland/arch/fpu.h>
 #include <newland/arch/irq.h>
 #include <newland/arch/proc.h>
@@ -133,6 +134,14 @@ int proc_destroy(proc_t** procptr) {
   return 0;
 }
 
+page_dir_t* proc_switch_pgdir(proc_t** procptr, page_dir_t* pgdir) {
+  proc_t* proc = *procptr;
+  page_dir_t* old = proc->pgdir;
+  proc->pgdir = pgdir;
+  paging_loaddir(pgdir);
+  return old;
+}
+
 int proc_sigenter(proc_t** procptr, uint8_t signum, void* data, size_t datasz) {
   proc_t* proc = *procptr;
   if (proc->issignaling) return -EINPROGRESS;
@@ -208,6 +217,71 @@ uint32_t schedule(uint32_t sp, regs_t regs) {
   paging_invalidate_tlb();
   fpu_loadctx(next_proc);
   return next_proc->sp;
+}
+
+int proc_exec(const char* path, const char** argv) {
+  fs_node_t* node;
+  int r = fs_resolve(&node, path);
+  if (r < 0) return r;
+
+  elf_header_t hdr;
+  r = fs_node_read(&node, 0, &hdr, sizeof(elf_header_t));
+  if (r < 0) return r;
+
+  if (!(elf_isvalid(&hdr) && hdr.machine == 3)) return -EINVAL;
+
+  uint32_t eflags = irq_disable();
+  proc_t* proc;
+  proc_t* curr = process_curr();
+  r = proc_create(&proc, curr, path, 1);
+  if (r < 0) {
+    irq_restore(eflags);
+    return r;
+  }
+
+  proc->entry = (void*)hdr.entry;
+
+  proc->sp -= strlen(path) + 1;
+  memcpy((void*)proc->sp, path, strlen(path) + 1);
+
+  int argc = 0;
+  while (argv[argc] != NULL) {
+    proc->sp -= strlen(argv[argc]) + 1;
+    memcpy((void*)proc->sp, argv[argc], strlen(argv[argc]) + 1);
+    argc++;
+  }
+
+  proc->sp -= sizeof(int);
+  memcpy((void*)proc->sp, &argc, sizeof(int));
+
+  elf_program_t prog;
+  for (int i = 0; i < hdr.phnum; i++) {
+    r = fs_node_read(&node, hdr.phoff + (hdr.phentsize * i), &prog, sizeof(elf_program_t));
+    if (r < 0) {
+      proc_destroy(&proc);
+      irq_restore(eflags);
+      return r;
+    }
+    if (prog.vaddr >= 0x100000) {
+      page_dir_t* oldpgdir = proc_switch_pgdir(&curr, proc->pgdir);
+      paging_loaddir(proc->pgdir);
+      mem_map(proc->pgdir, prog.vaddr, PAGE_ALIGN_UP(prog.memsz) / PAGE_SIZE, 1, 1);
+      memset((void*)prog.vaddr, 0, prog.memsz);
+
+      r = fs_node_read(&node, prog.offset, (void*)prog.vaddr, prog.filesz);
+      if (r < 0) {
+        proc_destroy(&proc);
+        irq_restore(eflags);
+        return r;
+      }
+      proc_switch_pgdir(&curr, oldpgdir);
+    }
+  }
+
+  proc_go(&proc);
+
+  irq_restore(eflags);
+  return proc->id;
 }
 
 int sched_getusage(pid_t pid) {

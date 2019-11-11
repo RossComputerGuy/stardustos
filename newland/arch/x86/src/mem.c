@@ -14,7 +14,6 @@ static uint32_t used_mem = 0;
 static uint32_t total_mem = 0;
 static unsigned char mem[1024 * 1024 / 8] = { 0 };
 
-#define PAGE_SIZE 0x1000
 #define PHYSICAL_IS_USED(__addr) (mem[(unsigned int)(__addr) / PAGE_SIZE / 8] & (1 << ((unsigned int)(__addr) / PAGE_SIZE % 8)))
 #define PHYSICAL_SET_USED(__addr) (mem[(unsigned int)(__addr) / PAGE_SIZE / 8] |= (1 << ((unsigned int)(__addr) / PAGE_SIZE % 8)))
 #define PHYSICAL_SET_FREE(__addr) (mem[(unsigned int)(__addr) / PAGE_SIZE / 8] &= ~(1 << ((unsigned int)(__addr) / PAGE_SIZE % 8)))
@@ -221,6 +220,17 @@ void mem_free(page_dir_t* dir, unsigned int addr, unsigned int count) {
 int mem_identmap(page_dir_t* dir, unsigned int addr, unsigned int count) {
   phys_setused(addr, count);
   virt_map(dir, addr, addr, count, 1, 0);
+  return 0;
+}
+
+int mem_map(page_dir_t* pgdir, unsigned int addr, unsigned int count, int iswrite, int isuser) {
+  for (unsigned int i = 0; i < count; i++) {
+    unsigned int vaddr = addr + i * PAGE_SIZE;
+    if (!virt_ispresent(pgdir, vaddr, 1)) {
+      unsigned int paddr = phys_alloc(1);
+      virt_map(pgdir, vaddr, paddr, 1, iswrite, isuser);
+    }
+  }
   return 0;
 }
 

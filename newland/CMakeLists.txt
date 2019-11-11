@@ -22,6 +22,9 @@ add_compile_options("-nostdinc" "-fno-builtin" "-Werror=implicit-function-declar
 set(libc_SOURCE_DIR "${PROJECT_SOURCE_DIR}/libc")
 include("${PROJECT_SOURCE_DIR}/libc/build.cmake")
 
+set(libfile_SOURCE_DIR "${PROJECT_SOURCE_DIR}/libfile")
+include("${PROJECT_SOURCE_DIR}/libfile/build.cmake")
+
 set(liblist_SOURCE_DIR "${PROJECT_SOURCE_DIR}/liblist")
 include("${PROJECT_SOURCE_DIR}/liblist/build.cmake")
 
@@ -37,6 +40,7 @@ configure_file("${PROJECT_SOURCE_DIR}/data/gdbinit.in" "${PROJECT_BINARY_DIR}/.g
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXEC_LINKER_FLAGS} -T${ARCH_DIR}/linker.ld -nostdlib -nostartfiles -Wl,-Map=${PROJECT_BINARY_DIR}/kernel.map")
 add_executable(kernel.elf
   ${LIBC_SOURCES}
+  ${LIBFILE_SOURCES}
   ${LIBLIST_SOURCES}
   ${MINIZ_SOURCES}
   ${ARCH_FILES}

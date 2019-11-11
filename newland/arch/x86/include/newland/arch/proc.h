@@ -61,11 +61,14 @@ proc_t* process_next();
 
 int proc_create(proc_t** procptr, proc_t* parent, const char* name, int isuser);
 int proc_destroy(proc_t** procptr);
+page_dir_t* proc_switch_pgdir(proc_t** procptr, page_dir_t* pgdir);
 int proc_sigenter(proc_t** procptr, uint8_t signum, void* data, size_t datasz);
 int proc_sigleave(proc_t** procptr);
 void proc_go(proc_t** procptr);
 
 void processes_cleanup();
+
+int proc_exec(const char* path, const char** argv);
 
 int sched_getusage(pid_t pid);
 void sched_init();
