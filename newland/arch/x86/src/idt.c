@@ -26,8 +26,9 @@ void register_int_handler(uint8_t i, isr_t handler) {
 }
 
 void isr_handler(regs_t regs) {
-  if (idt_handlers[regs.int_no] != 0) idt_handlers[regs.int_no](regs);
+  if (idt_handlers[regs.int_no] != 0) idt_handlers[regs.int_no](&regs);
   else printk(KLOG_ERR "idt: received unhandled interrupt (%d)", regs.int_no);
+  outb(0x20, 0x20);
 }
 
 extern void isr0();

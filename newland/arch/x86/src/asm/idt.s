@@ -40,7 +40,7 @@ isr_common_stub:
   pop %es
   pop %ds
   popa
-  add 8, %esp
+  add $8, %esp
   iret
 
 ISR_NOERRCODE 0

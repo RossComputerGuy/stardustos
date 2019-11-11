@@ -207,7 +207,7 @@ void processes_cleanup() {
   }
 }
 
-uint32_t schedule(uint32_t sp, regs_t regs) {
+uint32_t schedule(uint32_t sp, regs_t* regs) {
   if (proc_count == 0) return sp;
   proc_t* curr_proc = process_frompid(curr_pid);
   proc_t* next_proc = process_next();
@@ -303,10 +303,10 @@ int sched_getusage(pid_t pid) {
   return count;
 }
 
-static void proc_handle_interrrupt(regs_t regs) {
+static void proc_handle_interrrupt(regs_t* regs) {
   proc_t* curr_proc = process_curr();
   if (curr_proc == NULL) return;
-  switch (regs.int_no) {
+  switch (regs->int_no) {
     /* Invalid Opcode */
     case 0x06:
       proc_sigenter(&curr_proc, SIGILL, NULL, 0);

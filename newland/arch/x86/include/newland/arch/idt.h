@@ -25,7 +25,7 @@ typedef struct {
   uint32_t base;
 } __attribute__((packed)) idt_t;
 
-typedef void (*isr_t)(regs_t regs);
+typedef void (*isr_t)(regs_t* regs);
 
 void register_int_handler(uint8_t i, isr_t handler);
 void idt_init();
