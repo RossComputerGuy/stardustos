@@ -9,6 +9,6 @@
 3. ...
 
 ### Fixes
-* Issue #?
-* Issue #?
-* ...
+1. Issue #?
+2. Issue #?
+3. ...
