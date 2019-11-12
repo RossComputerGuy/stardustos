@@ -6,7 +6,7 @@ if(NOT ARCH)
 endif()
 
 add_compile_options("-nostdinc" "-fno-builtin")
-set(CMAKE_EXEC_LINKER_FLAGS "-nostdlib -nostartfiles")
+set(CMAKE_EXE_LINKER_FLAGS "-nostdlib -nostartfiles")
 
 if(NOT CMAKE_PROJECT_NAME STREQUAL "stardustos")
   add_subdirectory(libc)

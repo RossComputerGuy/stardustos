@@ -4,9 +4,9 @@
 .globl _init
 .section .init
 _init:
-  push ebp
+  pushl %ebp
 
 .globl _fini
 .section .fini
 _fini:
-  push ebp
+  pushl %ebp

@@ -7,5 +7,5 @@
 _start:
   call __libc_init
   call main
-  push eax
+  pushl %eax
   call __libc_fini
