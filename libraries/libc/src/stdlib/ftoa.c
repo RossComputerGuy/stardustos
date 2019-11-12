@@ -37,7 +37,7 @@ int ftoa(float value, char* ptr) {
     pos++;
   }
   size_t wl = 0;
-  for (uint8_t i = len; i >= 0; i--) {
+  for (int8_t i = len; i >= 0; i--) {
     if (i == len) ptr[i] = 0;
     else if (i == pos) ptr[i] = '.';
     else if (sign == '-' && i == 0) ptr[i] = '-';
