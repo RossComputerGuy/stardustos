@@ -95,7 +95,6 @@ static int found_dev(pci_dev_t* addr) {
   if (name[5] == 0) name[5] = '0';
   name[6] = '.';
   itoa(name + 7, 10, addr->func);
-  name[9] = 0;
   bus_t* bus = bus_fromname("pci");
   bus_adddev(bus, name);
   bus_dev_t* bdev = bus_getdevbyname(bus, name);

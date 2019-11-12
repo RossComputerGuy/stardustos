@@ -257,8 +257,8 @@ void mem_free_pgdir(page_dir_t* dir) {
     page_dir_entry_t* pde = &dir->entries[i];
     if (pde->present) {
       page_table_t* pt = (page_table_t*)(pde->frame * PAGE_SIZE);
-      for (size_t i = 0; i < 1024; i++) {
-        page_t* pg = &pt->entries[i];
+      for (size_t x = 0; i < 1024; i++) {
+        page_t* pg = &pt->entries[x];
         if (pg->present) phys_free(pg->frame * PAGE_SIZE, 1);
       }
       mem_free(&krnl_pgdir, (unsigned int)pt, 1);

@@ -16,11 +16,6 @@
 static char klog_buffer[NEWLAND_KLOG_SIZE] = { 0 };
 static size_t klog_pos = 0;
 
-static int getlevel(const char* msg) {
-  if (msg[0] == KLOG_SOH_ASCII && msg[1] >= 0 && msg[1] < 7) return msg[1];
-  return KLEVEL_NOTICE;
-}
-
 static int print(const char* str, size_t len, int inmsg) {
   if (str[0] == KLOG_SOH_ASCII) {
     str += 2;
