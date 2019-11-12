@@ -6,7 +6,7 @@
 [![Commit Activity](https://img.shields.io/github/commit-activity/w/RossComputerGuy/stardustos?style=for-the-badge)](https://github.com/RossComputerGuy/stardustos/pulse)
 [![Stars](https://img.shields.io/github/stars/RossComputerGuy/stardustos?style=for-the-badge)](https://github.com/RossComputerGuy/stardustos/stargazers)
 
-A modern Unix-like operating system which does not conform to POSIX, it's partially compatible so basic programs should work without issue but programs that are heavily dependent on POSIX won't work and will need to be ported.
+A modern Unix-like operating system which does not conform to POSIX.
 
 ## Features
 
@@ -67,14 +67,14 @@ The `scripts/build.sh` script is a simple bash script which easily compiles Star
 
 ## FAQ
 
-### Why not include full POSIX compatibility?
+### Why not include full POSIX compatibility
 
 I decided to have partial/basic POSIX compatibility since I wanted to have Vim and basic programs to run without issues but I don't want to be fully POSIX compliant since there's just more work, it is less fun to implement, and it would be just redesigning Linux/Unix.
 
-### Can I contribute?
+### Can I contribute
 
 Yes, I'm happy to accept pull requests as long as I think they should be added in. Check [`CONTRIBUTING.md`](https://github.com/RossComputerGuy/stardustos/blob/master/CONTRIBUTING.md) for knowing how I expect adding features or fixing code should be done. I suggest looking at the issues marked "help wanted" or ones that have been out with no fix for over a few days since those tend be to harder to fix.
 
-### Will there be more architecture supported?
+### Will there be more architecture supported
 
 Yes but right now I'm focusing on x86 first, until the operating system is usable under x86 there will be no other CPU architectures added.
