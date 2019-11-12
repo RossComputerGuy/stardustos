@@ -15,10 +15,9 @@ A clear and concise description of what the bug is.
 
 Steps to reproduce the behavior:
 
-1. Run QEMU.
-2. Do this.
-3. Do that.
-4. Done.
+1. Do this.
+2. Do that.
+3. Done.
 
 ## Expected behavior
 
