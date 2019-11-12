@@ -27,3 +27,4 @@ mkcallgraph.sh
 **/initrd/initrd
 **/rootfs/copyrootfs.sh
 **/init/init
+**/hello/hello
