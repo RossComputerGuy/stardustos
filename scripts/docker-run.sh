@@ -3,7 +3,8 @@
 if [ -n "$TRAVIS_BUILD_DIR" ]; then
  p="$TRAVIS_BUILD_DIR"
 else
-  p="$(readlink -f $(dirname $(dirname $0)))"
+  p="$(dirname $0)"
+  p="$(dirname $p)"
 fi
 
-docker run -ti -v "$p":/usr/src -t stardustos /usr/src/scripts/build.sh
+docker run -ti -v "$(readlink -f $p)":/usr/src -t stardustos /usr/src/scripts/build.sh
