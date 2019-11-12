@@ -4,7 +4,8 @@
 #include <stdlib.h>
 
 char* ultoa(unsigned long value, char* ptr, int base) {
-  unsigned long t = 0, res = 0;
+  unsigned long t = 0;
+  unsigned long res = 0;
   unsigned long tmp = value;
   int count = 0;
   if (ptr == NULL) return NULL;

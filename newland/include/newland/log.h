@@ -22,5 +22,4 @@
 #define KLEVEL_FATAL 4
 #define KLEVEL_NOTICE 5
 
-int putk(const char* str);
 int printk(const char* fmt, ...);

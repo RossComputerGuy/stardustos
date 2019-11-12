@@ -22,7 +22,6 @@ static int getlevel(const char* msg) {
 }
 
 static int print(const char* str, size_t len, int inmsg) {
-  int level = getlevel(str);
   if (str[0] == KLOG_SOH_ASCII) {
     str += 2;
     len -= 2;
@@ -56,10 +55,6 @@ static int print(const char* str, size_t len, int inmsg) {
   }
   klog_pos += len;
   return len;
-}
-
-int putk(const char* str) {
-  return print(str, strlen(str), 0);
 }
 
 int printk(const char* fmt, ...) {

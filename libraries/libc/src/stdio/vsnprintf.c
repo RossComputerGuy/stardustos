@@ -21,7 +21,8 @@ static char* convert(unsigned int num, int base) {
 int vsnprintf(char* str, size_t size, const char* format, va_list ap) {
   int wrote = 0;
   char* traverse = (char*)format;
-  unsigned int i = 0;
+  int i = 0;
+  unsigned int si = 0;
   char* s = NULL;
   for (; *traverse != 0; traverse++) {
     while (*traverse != '%' && *traverse != 0) {
@@ -49,8 +50,8 @@ int vsnprintf(char* str, size_t size, const char* format, va_list ap) {
         wrote += strlen(s);
         break;
       case 'o':
-        i = va_arg(ap, unsigned int);
-        s = convert(i, 10);
+        si = va_arg(ap, unsigned int);
+        s = convert(si, 10);
         if (wrote < size) strncpy((char*)(str + wrote), s, strlen(s));
         wrote += strlen(s);
         break;
@@ -61,8 +62,8 @@ int vsnprintf(char* str, size_t size, const char* format, va_list ap) {
         wrote += strlen(s);
         break;
       case 'x':
-        i = va_arg(ap, unsigned int);
-        s = convert(i, 10);
+        si = va_arg(ap, unsigned int);
+        s = convert(si, 10);
         if (wrote < size) strncpy((char*)(str + wrote), s, strlen(s));
         wrote += strlen(s);
         break;

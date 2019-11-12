@@ -50,7 +50,7 @@ static int tty_creat(uint8_t comindex) {
   char name[4];
   memset(name, 0, 4);
   strcpy(name, "ser");
-  itoa(name + 3, 10, comindex);
+  itoa((char*)(name + 3), 10, comindex);
   outb(comport[comindex] + 1, 0x00);
   outb(comport[comindex] + 3, 0x80);
   outb(comport[comindex] + 0, 0x03);

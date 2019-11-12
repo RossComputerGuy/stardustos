@@ -32,7 +32,7 @@ size_t fs_node_read(fs_node_t** nodeptr, off_t offset, void* buff, size_t size) 
   if (node->opts.read == NULL) return -ENOSYS;
   if (type == FS_NODE_LINK) {
     char path[PATH_MAX];
-    size_t r = node->opts.read(node, 0, path, node->size);
+    int r = node->opts.read(node, 0, path, node->size);
     if (r < 0) return r;
     fs_node_t* parentnode;
     r = fs_resolve(&parentnode, path);
@@ -49,7 +49,7 @@ size_t fs_node_write(fs_node_t** nodeptr, off_t offset, const void* buff, size_t
   if (node->opts.write == NULL) return -ENOSYS;
   if (type == FS_NODE_LINK) {
     char path[PATH_MAX];
-    size_t r = node->opts.read(node, 0, path, node->size);
+    int r = node->opts.read(node, 0, path, node->size);
     if (r < 0) return r;
     fs_node_t* parentnode;
     r = fs_resolve(&parentnode, path);
@@ -66,7 +66,7 @@ int fs_node_vioctl(fs_node_t** nodeptr, int req, va_list ap) {
   if (node->opts.ioctl == NULL) return -ENOSYS;
   if (type == FS_NODE_LINK) {
     char path[PATH_MAX];
-    size_t r = node->opts.read(node, 0, path, node->size);
+    int r = node->opts.read(node, 0, path, node->size);
     if (r < 0) return r;
     fs_node_t* parentnode;
     r = fs_resolve(&parentnode, path);

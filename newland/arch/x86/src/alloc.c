@@ -39,7 +39,7 @@ static struct block_meta* req_space(struct block_meta* last, size_t size) {
 
 void* kmalloc(size_t size) {
   struct block_meta* block;
-  if (size <= 0) return NULL;
+  if (size == 0) return NULL;
   if (!global_base) {
     block = req_space(NULL, size);
     if (block == NULL) return NULL;

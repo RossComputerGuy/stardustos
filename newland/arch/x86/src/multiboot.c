@@ -25,13 +25,11 @@ static fs_node_opts_t mbimod_opts = { .read = mb_read };
 int mbi_modules_init(multiboot_info_t* _mbi) {
   mbi = _mbi;
   multiboot_module_t* mod = (multiboot_module_t*)mbi->mods_addr;
-  size_t x = 0;
   for (size_t i = 0; i < mbi->mods_count; i++) {
     char name[7];
     strcpy(name, "mbmod");
     itoa(name + 5, 10, i);
     if (name[6] == 0) name[6] = '0';
-    name[7] = 0;
     int r = register_device(MKDEV(DEVMAJ_MBMOD, i), name, mbimod_opts, mod->mod_end - mod->mod_start);
     if (r < 0) return r;
     mod = (multiboot_module_t*)((uint32_t)mod->mod_end + 1);

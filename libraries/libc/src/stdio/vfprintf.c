@@ -18,7 +18,10 @@ int vfprintf(FILE* stream, const char* format, va_list ap) {
   va_copy(tmpap, ap);
   char tmp;
   int r = vsnprintf(&tmp, 1, format, tmpap);
-  if (r < 0) return r;
+  if (r < 0) {
+    va_end(tmpap);
+    return r;
+  }
   char* str = malloc(r);
   if (str == NULL) return r;
   vsnprintf(str, r, format, ap);
