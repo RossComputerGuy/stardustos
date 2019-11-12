@@ -11,7 +11,7 @@ assignees: ''
 
 A clear and concise description of what the bug is.
 
-# To Reproduce
+## To Reproduce
 
 Steps to reproduce the behavior:
 
@@ -20,14 +20,14 @@ Steps to reproduce the behavior:
 3. Do that.
 4. Done.
 
-# Expected behavior
+## Expected behavior
 
 A clear and concise description of what you expected to happen.
 
-# Screenshots
+## Screenshots
 
 If applicable, add screenshots to help explain your problem.
 
-# Additional context
+## Additional context
 
 Add any other context about the problem here.

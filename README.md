@@ -29,6 +29,13 @@ First, setup the build directory with CMake:
 
 ```
 $ cmake -S . -B build
+-- The C compiler identification is GNU 9.2.0
+-- The ASM compiler identification is GNU
+-- Found assembler: /usr/sbin/cc
+-- Check for working C compiler: /usr/sbin/cc
+-- Check for working C compiler: /usr/sbin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
 ```
 
 This is to be executed inside of a downloaded version of the source code, it will use `build` as the directory in which to compile StardustOS in. The minimum CMake version required is `3.12` which most systems should have at least that version.
@@ -49,32 +56,55 @@ First, setup the Docker container:
 
 ```
 $ ./scripts/docker-init.sh
+Sending build context to Docker daemon  590.8kB
+Step 1/6 : FROM archlinux/base
+latest: Pulling from archlinux/base
 ```
 
-This will setup an Arch Linux Docker container called `stardustos` which will have all the required dependencies installed.
+This will setup an Arch Linux Docker container called `stardustos`
+which will have all the required dependencies installed.
 
 Second, build the operating system:
 
 ```
 $ ./scripts/docker-run.sh
+-- The C compiler identification is GNU 9.2.0
+-- The ASM compiler identification is GNU
+-- Found assembler: /usr/sbin/cc
+-- Check for working C compiler: /usr/sbin/cc
+-- Check for working C compiler: /usr/sbin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
 ```
 
-This runs the container which executes the setup of the CMake build directory and builds the source. The disk image should be available as `build/rootfs/rootfs.iso`.
+This runs the container which executes the setup of the CMake build directory
+and builds the source. The disk image should be available as `build/rootfs/rootfs.iso`.
 
 ### Script
 
-The `scripts/build.sh` script is a simple bash script which easily compiles StardustOS; it just requires Bash, CMake, GCC, Grub, and Zip. To invoke the build process, run `./scripts/build.sh` inside of a terminal and the disk image should be available as `build/rootfs/rootfs.iso`.
+The `scripts/build.sh` script is a simple bash script which easily compiles
+StardustOS; it just requires Bash, CMake, GCC, Grub, and Zip.
+To invoke the build process, run `./scripts/build.sh` inside of a terminal
+and the disk image should be available as `build/rootfs/rootfs.iso`.
 
 ## FAQ
 
 ### Why not include full POSIX compatibility
 
-I decided to have partial/basic POSIX compatibility since I wanted to have Vim and basic programs to run without issues but I don't want to be fully POSIX compliant since there's just more work, it is less fun to implement, and it would be just redesigning Linux/Unix.
+I decided to have partial/basic POSIX compatibility since
+I wanted to have Vim and basic programs to run without issues
+but I don't want to be fully POSIX compliant since there's just more work,
+it is less fun to implement, and it would be just redesigning Linux/Unix.
 
 ### Can I contribute
 
-Yes, I'm happy to accept pull requests as long as I think they should be added in. Check [`CONTRIBUTING.md`](https://github.com/RossComputerGuy/stardustos/blob/master/CONTRIBUTING.md) for knowing how I expect adding features or fixing code should be done. I suggest looking at the issues marked "help wanted" or ones that have been out with no fix for over a few days since those tend be to harder to fix.
+Yes, I'm happy to accept pull requests as long as I think they
+should be added in.
+Check [`CONTRIBUTING.md`][contrib] for knowing how I expect adding features or fixing code should be done. I suggest looking at the issues marked "help wanted" or ones that have been out with no fix for over a few days since those tend be to harder to fix.
+
+[contrib]: https://github.com/RossComputerGuy/stardustos/blob/master/CONTRIBUTING.md
 
 ### Will there be more architecture supported
 
-Yes but right now I'm focusing on x86 first, until the operating system is usable under x86 there will be no other CPU architectures added.
+Yes but right now I'm focusing on x86 first, until the operating system
+is usable under x86 there will be no other CPU architectures added.
