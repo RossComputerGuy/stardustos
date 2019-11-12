@@ -47,10 +47,11 @@ static size_t tty_write(tty_t* tty, const void* buff, size_t size) {
 static tty_opts_t tty_opts = { .read = tty_read, .write = tty_write };
 
 static int tty_creat(uint8_t comindex) {
-  char name[4];
+  char name[5];
   memset(name, 0, 4);
   strcpy(name, "ser");
   itoa((char*)(name + 3), 10, comindex);
+  name[4] = 0;
   outb(comport[comindex] + 1, 0x00);
   outb(comport[comindex] + 3, 0x80);
   outb(comport[comindex] + 0, 0x03);
