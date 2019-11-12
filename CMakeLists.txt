@@ -18,6 +18,7 @@ add_subdirectory(libraries/liblist)
 add_subdirectory(libraries/miniz)
 
 # Programs
+add_subdirectory(programs/hello)
 add_subdirectory(programs/init)
 
 # Disk stuff

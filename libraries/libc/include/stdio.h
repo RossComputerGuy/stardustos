@@ -32,6 +32,8 @@ extern const FILE __libc_stderr;
 
 int fprintf(FILE* stream, const char* format, ...);
 
+int printf(const char* format, ...);
+
 int snprintf(char* str, size_t size, const char* format, ...);
 int vfprintf(FILE* stream, const char* format, va_list ap);
 int vsnprintf(char* str, size_t size, const char* format, va_list ap);

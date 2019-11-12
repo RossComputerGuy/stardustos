@@ -3,10 +3,12 @@
  */
 #include <stdio.h>
 
-// TODO: set the write and read functions
-const FILE __libc_stdin = { .fd = 0, .impl = NULL, .mode = "r", .offset = 0 };
-const FILE __libc_stdout = { .fd = 1, .impl = NULL, .mode = "w", .offset = 0 };
-const FILE __libc_stderr = { .fd = 2, .impl = NULL, .mode = "w", .offset = 0 };
+extern int __file_write(FILE* stream, const void* buff, size_t size);
+extern int __file_read(FILE* stream, void* buff, size_t size);
+
+const FILE __libc_stdin = { .fd = 0, .impl = NULL, .mode = "r", .offset = 0, .write = __file_write, .read = __file_read };
+const FILE __libc_stdout = { .fd = 1, .impl = NULL, .mode = "w", .offset = 0, .write = __file_write, .read = __file_read };
+const FILE __libc_stderr = { .fd = 2, .impl = NULL, .mode = "w", .offset = 0, .write = __file_write, .read = __file_read };
 
 #ifndef NEWLAND_KERNEL
 extern void _init();
