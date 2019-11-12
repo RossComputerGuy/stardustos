@@ -9,7 +9,7 @@ add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/initrd"
   COMMAND cp -r "${PROJECT_SOURCE_DIR}/fs/" "${PROJECT_BINARY_DIR}/initrd"
   COMMENT "Copying files to initrd")
 add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/initrd.zip"
-  COMMAND zip -r "${PROJECT_BINARY_DIR}/initrd.zip" .
+  COMMAND zip -q -r "${PROJECT_BINARY_DIR}/initrd.zip" .
   COMMENT "Compressing initrd"
   DEPENDS "${PROJECT_BINARY_DIR}/initrd/init"
   MAIN_DEPENDENCY "${PROJECT_BINARY_DIR}/initrd"
