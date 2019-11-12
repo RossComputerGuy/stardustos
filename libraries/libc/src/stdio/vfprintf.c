@@ -17,6 +17,7 @@ int vfprintf(FILE* stream, const char* format, va_list ap) {
   if (str == NULL) return r;
   vsnprintf(str, r, format, ap);
   r = stream->write(stream, str, r);
+  if (r > 0) stream->offset += r;
   free(str);
   va_end(tmpap);
   va_end(ap);

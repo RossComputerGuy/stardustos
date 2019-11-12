@@ -16,18 +16,18 @@ typedef struct FILE {
 } FILE;
 
 #ifndef stdin
-extern FILE __libc_stdin;
-#define stdin &__libc_stdin
+extern const FILE __libc_stdin;
+#define stdin ((FILE*)&__libc_stdin)
 #endif
 
 #ifndef stdout
-extern FILE __libc_stdout;
-#define stdout &__libc_stdout
+extern const FILE __libc_stdout;
+#define stdout ((FILE*)&__libc_stdout)
 #endif
 
 #ifndef stderr
-extern FILE __libc_stderr;
-#define stderr &__libc_stderr
+extern const FILE __libc_stderr;
+#define stderr ((FILE*)&__libc_stderr)
 #endif
 
 int fprintf(FILE* stream, const char* format, ...);
