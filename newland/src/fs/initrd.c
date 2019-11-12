@@ -31,7 +31,7 @@ static size_t initrd_read(fs_node_t* node, off_t offset, void* buff, size_t size
   size_t sz;
   void* _buff = mz_zip_reader_extract_to_heap(&initrd->zip, initrd_node->index, &sz, 0);
   if (_buff == NULL) return -EINVAL;
-  memcpy(buff, (void*)(_buff + offset), size);
+  memcpy(buff, (void*)(((char*)_buff) + offset), size);
   kfree(_buff);
   return sz;
 }
