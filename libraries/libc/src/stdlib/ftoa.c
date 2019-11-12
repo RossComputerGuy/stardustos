@@ -1,6 +1,7 @@
 /**
   * StardustOS libc - (C) 2019 Tristan Ross
   */
+#include <sys/types.h>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
