@@ -5,5 +5,6 @@ set -e
 mkdir -p build
 cd build
 p="$(dirname $0)"
-cmake -S "$(dirname $p)"
+p="$(dirname $p)"
+cmake -S "$p"
 make
