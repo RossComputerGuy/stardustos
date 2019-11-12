@@ -23,7 +23,9 @@ Compiling StardustOS can be done through the build script in `scripts`, a Docker
 
 ### CMake
 
-The primary build system for StardustOS is CMake, the script and Docker container both invoke CMake in one way or another. Dependencies are CMake, GCC, Grub, and Zip.
+The primary build system for StardustOS is CMake,
+the script and Docker container both invoke CMake in one way or another.
+Dependencies are CMake, GCC, Grub, and Zip.
 
 First, setup the build directory with CMake:
 
@@ -38,19 +40,30 @@ $ cmake -S . -B build
 -- Detecting C compiler ABI info - done
 ```
 
-This is to be executed inside of a downloaded version of the source code, it will use `build` as the directory in which to compile StardustOS in. The minimum CMake version required is `3.12` which most systems should have at least that version.
+This is to be executed inside of a downloaded version of the source code,
+it will use `build` as the directory in which to compile StardustOS in.
+The minimum CMake version required is `3.12`.
 
 The second step is the acutal build process:
 
 ```
 $ make -C build
+Scanning dependencies of target kernel.elf
+[  1%] Building C object newland/CMakeFiles/kernel.elf.dir/libc/src/lib.c.o
+[  2%] Building C object newland/CMakeFiles/kernel.elf.dir/libc/src/libgen/basename.c.o
+[  3%] Building C object newland/CMakeFiles/kernel.elf.dir/libc/src/libgen/dirname.c.o
+[  4%] Building C object newland/CMakeFiles/kernel.elf.dir/libc/src/math/arithm.c.o
+[  5%] Building C object newland/CMakeFiles/kernel.elf.dir/libc/src/math/pow.c.o
 ```
 
-This will build the kernel, kernel modules, libraries, programs, initrd, and rootfs. The disk image should be available as `build/rootfs/rootfs.iso`.
+This will build the kernel, kernel modules, libraries, programs, initrd,
+and rootfs. The disk image should be available as `build/rootfs/rootfs.iso`.
 
 ### Docker
 
-StardustOS can be compiled from a Docker container, Travis CI does this and it saves time from figuring out dependencies as its a more automated way. The only dependencies are Bash and Docker.
+StardustOS can be compiled from a Docker container, Travis CI does this and
+it saves time from figuring out dependencies as its a more automated way.
+The only dependencies are Bash and Docker.
 
 First, setup the Docker container:
 
@@ -100,7 +113,10 @@ it is less fun to implement, and it would be just redesigning Linux/Unix.
 
 Yes, I'm happy to accept pull requests as long as I think they
 should be added in.
-Check [`CONTRIBUTING.md`][contrib] for knowing how I expect adding features or fixing code should be done. I suggest looking at the issues marked "help wanted" or ones that have been out with no fix for over a few days since those tend be to harder to fix.
+Check [`CONTRIBUTING.md`][contrib] for knowing how I expect adding features or
+fixing code should be done. I suggest looking at the issues marked
+"help wanted" or ones that have been out with no fix for over a few days
+since those tend be to harder to fix.
 
 [contrib]: https://github.com/RossComputerGuy/stardustos/blob/master/CONTRIBUTING.md
 
