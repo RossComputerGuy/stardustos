@@ -86,7 +86,6 @@ int fs_node_ioctl(fs_node_t** nodeptr, int req, ...) {
 
 int fs_node_resolve(fs_node_t** nodeptr, fs_node_t** foundptr, const char* path) {
   if (path[0] == '/') path++;
-  if (path[strlen(path) - 1] == '/') memset((void*)(path + (strlen(path) - 1)), 0, sizeof(char));
   size_t plen = strlen(dirname((char*)path));
   fs_node_t* node = *nodeptr;
   fs_node_t* tmpnode = NULL;
@@ -163,7 +162,6 @@ static size_t mp_count = 0;
 
 int fs_resolve(fs_node_t** nodeptr, const char* path) {
   if (path[0] == '/') path++;
-  if (path[strlen(path) - 1] == '/') memset((void*)(path + (strlen(path) - 1)), 0, sizeof(char));
   mountpoint_t* mp = NULL;
   fs_node_t* root = NULL;
   SLIST_FOREACH(mp, &mountpoints, mp_list) {
@@ -206,7 +204,6 @@ int mountpoint_create_fromnode(fs_t** fsptr, fs_node_t* source, const char* targ
   if (!(flags & MS_BIND) && (fsptr == NULL || *fsptr == NULL)) return -EINVAL;
   if (source == NULL || mountpoint_fromtarget(target) != NULL) return -EBUSY;
   if (target[0] == '/') target++;
-  if (target[strlen(target) - 1] == '/') memset((void*)(target + (strlen(target) - 1)), 0, sizeof(char));
   mountpoint_t* mp = kmalloc(sizeof(mountpoint_t));
   if (mp == NULL) return -ENOMEM;
   strcpy((char*)mp->target, target);
@@ -228,7 +225,6 @@ int mountpoint_create(fs_t** fsptr, const char* src, const char* target, unsigne
   if (!(flags & MS_BIND) && (fsptr == NULL || *fsptr == NULL)) return -EINVAL;
   if ((src != NULL && mountpoint_fromsrc(src) != NULL) || mountpoint_fromtarget(target) != NULL) return -EBUSY;
   if (target[0] == '/') target++;
-  if (target[strlen(target) - 1] == '/') memset((void*)(target + (strlen(target) - 1)), 0, sizeof(char));
   fs_node_t* sourcenode = NULL;
   int r = fs_resolve(&sourcenode, src);
   if (r < 0) return r;

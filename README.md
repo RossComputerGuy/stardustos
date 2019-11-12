@@ -19,7 +19,8 @@ A modern Unix-like operating system which does not conform to POSIX.
 
 ## Building
 
-Compiling StardustOS can be done through the build script in `scripts`, a Docker container, or CMake.
+Compiling StardustOS can be done through the build script in `scripts`,
+a Docker container, or CMake.
 
 ### CMake
 

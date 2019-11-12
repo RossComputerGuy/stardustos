@@ -5,7 +5,6 @@
 
 char* ultoa(unsigned long value, char* ptr, int base) {
   unsigned long t = 0;
-  unsigned long res = 0;
   unsigned long tmp = value;
   int count = 0;
   if (ptr == NULL) return NULL;
@@ -17,7 +16,7 @@ char* ultoa(unsigned long value, char* ptr, int base) {
   ptr += count;
   *ptr = '\0';
   do {
-    res = value - base * (t = value / base);
+    unsigned long res = value - base * (t = value / base);
     if (res < 10) * -- ptr = '0' + res;
     else if ((res >= 10) && (res < 16)) * --ptr = 'A' - 10 + res;
   } while ((value = t) != 0);
