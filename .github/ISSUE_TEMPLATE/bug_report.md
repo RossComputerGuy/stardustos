@@ -15,9 +15,9 @@ A clear and concise description of what the bug is.
 
 Steps to reproduce the behavior:
 
-1. Do this.
-2. Do that.
-3. Done.
+* Do this.
+* Do that.
+* Done.
 
 ## Expected behavior
 
