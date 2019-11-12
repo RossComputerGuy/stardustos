@@ -6,8 +6,14 @@
 #include <stdio.h>
 
 int vfprintf(FILE* stream, const char* format, va_list ap) {
-  if (stream == NULL) return -EINVAL;
-  if (stream->write == NULL) return -ENOSYS;
+  if (stream == NULL) {
+    errno = EINVAL;
+    return -1;
+  }
+  if (stream->write == NULL) {
+    errno = ENOSYS;
+    return -1;
+  }
   va_list tmpap;
   va_copy(tmpap, ap);
   char tmp;

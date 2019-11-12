@@ -17,3 +17,5 @@
 #define EISDIR 12
 #define EBUSY 13
 #define ENOENT 14
+
+extern int errno;
