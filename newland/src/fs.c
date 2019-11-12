@@ -161,6 +161,7 @@ static struct mp_list mountpoints = { NULL };
 static size_t mp_count = 0;
 
 int fs_resolve(fs_node_t** nodeptr, const char* path) {
+  if (path == NULL) return -EINVAL;
   if (path[0] == '/') path++;
   mountpoint_t* mp = NULL;
   fs_node_t* root = NULL;
