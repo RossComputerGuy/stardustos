@@ -11,6 +11,7 @@
 .endm
 
 irq_common_stub:
+  cld
   pusha
   push %ds
   push %es

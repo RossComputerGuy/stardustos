@@ -21,6 +21,7 @@
 .endm
 
 isr_common_stub:
+  cld
   pusha
   push %ds
   push %es
@@ -31,10 +32,7 @@ isr_common_stub:
   mov %ax, %es
   mov %ax, %fs
   mov %ax, %gs
-  mov %esp, %eax
-  push %esp
   call isr_handler
-  mov %eax, %esp
   pop %gs
   pop %fs
   pop %es
