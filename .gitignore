@@ -19,6 +19,7 @@ DartConfiguration.tcl
 miniz-*
 *.233r.expand
 .gdbinit
+cscope.out
 newland-config.h
 test.sh
 run.sh

@@ -1,18 +1,21 @@
 #!/usr/bin/env bash
 
-pushd @PROJECT_SOURCE_DIR@/docs >/dev/null
+set -e
 URL="https://github.com/RossComputerGuy/stardustos"
-sources=($(grep -r "${URL}" | cut -d ':' -f1))
+sources=($(grep -r "${URL}" @PROJECT_SOURCE_DIR@/docs | cut -d ':' -f1))
 sources=($(printf "%s\n" "${sources[@]}" | sort -u))
 srcsources=($(find @PROJECT_SOURCE_DIR@ -type 'f' -name '*.c' -not -path '@PROJECT_BINARY_DIR@/*'))
 function finish {
-	rm cscope.files
+	rm -rf cscope.out
 }
 trap finish EXIT
-srcfuncs=$(cscope -I @PROJECT_SOURCE_DIR@/include -s @PROJECT_SOURCE_DIR@/src -R)
 for src in ${sources[@]}; do
 	funcs=($(grep "$URL" $src | awk -F'[][]' '{print $2}'))
 	for fn in ${funcs[@]}; do
-		# TODO
+		line=$(cscope -L1"${fn}" ${srcsources[@]} | cut -f3 -d ' ')
+		srcsrc=$(cscope -L1"${fn}" ${srcsources[@]} | cut -f1 -d ' ' | sed "s|@PROJECT_SOURCE_DIR@|$(basename @PROJECT_SOURCE_DIR@)|g")
+		ln=$(grep "\[$fn\]\: $URL" "$src" --line-number | grep "$URL" | cut -f1 -d ':')
+		url=$(grep "\[$fn\]\: $URL" "$src" | cut -f2 -d ' ')
+		sed -i "${ln}s|$url|${URL}/blob/master/$srcsrc#L${line}|g" $src
 	done
 done
