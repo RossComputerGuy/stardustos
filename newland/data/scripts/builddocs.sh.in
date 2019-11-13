@@ -4,7 +4,12 @@ pushd @PROJECT_SOURCE_DIR@/docs >/dev/null
 URL="https://github.com/RossComputerGuy/stardustos"
 sources=($(grep -r "${URL}" | cut -d ':' -f1))
 sources=($(printf "%s\n" "${sources[@]}" | sort -u))
-csources=($(find @PROJECT_SOURCE_DIR@ -type 'f' -name '*.c' -not -path '@PROJECT_BINARY_DIR@/*'))
+srcsources=($(find @PROJECT_SOURCE_DIR@ -type 'f' -name '*.c' -not -path '@PROJECT_BINARY_DIR@/*'))
+function finish {
+	rm cscope.files
+}
+trap finish EXIT
+srcfuncs=$(cscope -I @PROJECT_SOURCE_DIR@/include -s @PROJECT_SOURCE_DIR@/src -R)
 for src in ${sources[@]}; do
 	funcs=($(grep "$URL" $src | awk -F'[][]' '{print $2}'))
 	for fn in ${funcs[@]}; do
