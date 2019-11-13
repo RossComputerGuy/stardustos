@@ -27,6 +27,10 @@ mkcallgraph.sh
 builddocs.sh
 lint.sh
 doc.md
+**/docs/html/**
+CMakeDoxyfile.in
+CMakeDoxygenDefaults.cmake
+Doxyfile.*
 uploaddocs.sh
 wiki
 **/rootfs/rootfs
