@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.15)
 project(initrd NONE)
 
 add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/initrd/init"

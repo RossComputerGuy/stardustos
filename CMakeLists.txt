@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.15)
 project(stardustos NONE)
 
 if(NOT ARCH)
@@ -6,6 +6,10 @@ if(NOT ARCH)
 endif()
 
 set(NEWLAND_ARCH "${ARCH}")
+
+configure_file("${PROJECT_SOURCE_DIR}/data/scripts/lint.sh.in" "${PROJECT_BINARY_DIR}/lint.sh")
+
+add_custom_target(lint ${PROJECT_BINARY_DIR}/lint.sh)
 
 # Kernel stuff
 add_subdirectory(newland)

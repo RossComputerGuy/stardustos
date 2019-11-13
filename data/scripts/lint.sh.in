@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Markdown
+mdl $(find '@PROJECT_SOURCE_DIR@' -type 'f' -name '*.md' -not -path '@PROJECT_BINARY_DIR@/*')
+
+# C/C++ Linting
+cpplint=$(mktemp)
+function finish {
+	rm "$cpplint"
+}
+trap finish EXIT
+cppcheck $(find '@PROJECT_SOURCE_DIR@' -type 'f' -name '*.[c,h]' -not -path '@PROJECT_BINARY_DIR@/*') 2> "$cpplint" >/dev/null
+if [ $(wc -c <"$cpplint") -gt 0 ]; then
+	cat "$cpplint"
+	exit 1
+fi

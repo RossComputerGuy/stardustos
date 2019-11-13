@@ -44,7 +44,7 @@ $ cmake -S . -B build
 
 This is to be executed inside of a downloaded version of the source code,
 it will use `build` as the directory in which to compile StardustOS in.
-The minimum CMake version required is `3.12`.
+The minimum CMake version required is `3.15`.
 
 The second step is the acutal build process:
 

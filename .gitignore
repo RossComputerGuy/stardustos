@@ -23,6 +23,7 @@ newland-config.h
 test.sh
 run.sh
 mkcallgraph.sh
+lint.sh
 **/rootfs/rootfs
 **/initrd/initrd
 **/rootfs/copyrootfs.sh

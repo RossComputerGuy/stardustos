@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.15)
 project(init)
 
 if(NOT ARCH)
@@ -6,7 +6,7 @@ if(NOT ARCH)
 endif()
 
 add_compile_options("-nostdinc" "-fno-builtin")
-set(CMAKE_EXE_LINKER_FLAGS "-nostdlib -nostartfiles")
+add_link_options("-nostdlib" "-nostartfiles")
 
 if(NOT CMAKE_PROJECT_NAME STREQUAL "stardustos")
 	add_subdirectory(libc)

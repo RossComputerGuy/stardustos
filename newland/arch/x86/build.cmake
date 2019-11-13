@@ -17,6 +17,6 @@ set(ARCH_FILES "${ARCH_DIR}/modules/bus/pci.c"
 	"${ARCH_DIR}/src/proc.c"
 	"${ARCH_DIR}/src/timer.c")
 include_directories("${ARCH_DIR}/include")
-set(CMAKE_EXE_LINKER_FLAGS "-m32")
 add_compile_options("-m32")
+add_link_options("-m32")
 set(EMULATOR i386)

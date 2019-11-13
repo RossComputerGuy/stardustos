@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.15)
 include("version.cmake")
 project(newland C ASM)
 
@@ -18,7 +18,7 @@ include_directories("${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	add_compile_options("-fdump-rtl-expand")
-	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-Map=${PROJECT_BINARY_DIR}/kernel.map")
+	add_link_options("-Wl,-Map=${PROJECT_BINARY_DIR}/kernel.map")
 endif()
 
 add_compile_definitions("NEWLAND_KERNEL" "MINIZ_NO_ARCHIVE_WRITING_APIS")
@@ -37,13 +37,18 @@ set(miniz_SOURCE_DIR "${PROJECT_SOURCE_DIR}/miniz")
 set(miniz_BINARY_DIR "${PROJECT_BINARY_DIR}")
 include("${PROJECT_SOURCE_DIR}/miniz/build.cmake")
 
+configure_file("${PROJECT_SOURCE_DIR}/data/scripts/lint.sh.in" "${PROJECT_BINARY_DIR}/lint.sh")
 configure_file("${PROJECT_SOURCE_DIR}/data/scripts/mkcallgraph.sh.in" "${PROJECT_BINARY_DIR}/mkcallgraph.sh")
 configure_file("${PROJECT_SOURCE_DIR}/data/scripts/run.sh.in" "${PROJECT_BINARY_DIR}/run.sh")
 configure_file("${PROJECT_SOURCE_DIR}/data/scripts/test.sh.in" "${PROJECT_BINARY_DIR}/test.sh")
 configure_file("${PROJECT_SOURCE_DIR}/data/config.h.in" "${PROJECT_BINARY_DIR}/newland-config.h")
 configure_file("${PROJECT_SOURCE_DIR}/data/gdbinit.in" "${PROJECT_BINARY_DIR}/.gdbinit")
 
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T${ARCH_DIR}/linker.ld -nostdlib -nostartfiles")
+if(NOT CMAKE_PROJECT_NAME STREQUAL "stardustos")
+	add_custom_target(lint ${PROJECT_BINARY_DIR}/lint.sh)
+endif()
+
+add_link_options("-T${ARCH_DIR}/linker.ld" "-nostdlib" "-nostartfiles")
 add_executable(kernel.elf
 	${LIBC_SOURCES}
 	${LIBFILE_SOURCES}
