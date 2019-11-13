@@ -27,7 +27,14 @@ add_compile_options("-nostdinc" "-fno-builtin" "-Werror=implicit-function-declar
 find_package(Doxygen REQUIRED dot)
 set(DOXYGEN_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/docs)
 set(DOXYGEN_RECURSIVE TRUE)
-doxygen_add_docs(docs-newland ALL ${PROJECT_SOURCE_DIR}
+set(DOXYGEN_CALL_GRAPH TRUE)
+set(DOXYGEN_CALLER_GRAPH TRUE)
+set(DOXYGEN_TAB_SIZE 2)
+set(DOXYGEN_EXTRACT_ALL TRUE)
+set(DOXYGEN_SOURCE_BROWSER TRUE)
+set(DOXYGEN_USE_MDFILE_AS_MAINPAGE ${PROJECT_SOURCE_DIR}/README.md)
+set(DOXYGEN_QUIET TRUE)
+doxygen_add_docs(docs-newland ALL ${PROJECT_SOURCE_DIR}/arch ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/libc ${PROJECT_SOURCE_DIR}/libfile ${PROJECT_SOURCE_DIR}/miniz ${PROJECT_SOURCE_DIR}/src
 	COMMENT "Building kernel documentation")
 
 set(libc_SOURCE_DIR "${PROJECT_SOURCE_DIR}/libc")

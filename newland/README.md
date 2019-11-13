@@ -1,3 +1,3 @@
 # NewLand
 
-The Unix-like modular kernel for the Stardust operating system.
+The Unix-like modular monolithic kernel for the Stardust operating system.
