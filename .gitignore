@@ -27,6 +27,8 @@ mkcallgraph.sh
 builddocs.sh
 lint.sh
 doc.md
+uploaddocs.sh
+wiki
 **/rootfs/rootfs
 **/initrd/initrd
 **/rootfs/copyrootfs.sh

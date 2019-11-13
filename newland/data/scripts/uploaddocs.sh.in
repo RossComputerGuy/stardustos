@@ -1,0 +1,14 @@
+#!/usr/bin/env
+
+set -e
+cd @PROJECT_BINARY_DIR@
+git clone https://github.com/RossComputerGuy/stardustos.wiki.git wiki
+function finish {
+	rm -rf @PROJECT_BINARY_DIR@/wiki
+}
+trap finish EXIT
+cp @PROJECT_BINARY_DIR@/doc.md @PROJECT_BINARY_DIR@/wiki/NewLand-Documentation.md
+cd @PROJECT_BINARY_DIR@/wiki/
+git add NewLand-Documentation.md
+git commit -a -m "Documentation update: $(date +%Y%m%d%H%M%S)"
+git push
