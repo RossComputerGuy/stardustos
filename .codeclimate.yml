@@ -1,13 +1,14 @@
+version: "2"
 plugins:
-	cppcheck:
-		enabled: true
-	editorconfig:
-		enabled: true
-	fixme:
-		enabled: true
-	gnu-complexity:
-		enabled: true
-	markdownlint:
-		enabled: true
-	shellcheck:
-		enabled: true
+  cppcheck:
+    enabled: true
+  editorconfig:
+    enabled: true
+  fixme:
+    enabled: true
+  gnu-complexity:
+    enabled: true
+  markdownlint:
+    enabled: true
+  shellcheck:
+    enabled: true

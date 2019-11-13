@@ -1,5 +1,8 @@
 root = true
 
+[.codeclimate.yml]
+indent_style = space
+
 [*.*]
 end_of_line = lf
 insert_final_newline = false
