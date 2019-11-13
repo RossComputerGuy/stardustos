@@ -1,10 +1,10 @@
 language: c
 dist: xenial
 compiler:
-	- gcc
+  - gcc
 serices:
-	- docker
+  - docker
 before_install:
-	- sudo chown 1000 . -R
-	- ./scripts/docker-init.sh
+  - sudo chown 1000 . -R
+  - ./scripts/docker-init.sh
 script: ./scripts/docker-run.sh
