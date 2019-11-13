@@ -6,9 +6,9 @@ RUN apt-get update -y >/dev/null 2>&1 && \
 RUN useradd builder -m -u 1000 && \
 	passwd -d builder
 
+RUN gem install mdl
+
 USER builder
 WORKDIR /usr/src
-
-RUN gem install mdl
 
 CMD ["./scripts/build.sh"]
