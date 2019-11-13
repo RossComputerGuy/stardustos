@@ -49,10 +49,10 @@ void phys_setfree(unsigned int addr, unsigned int count) {
 unsigned int phys_alloc(unsigned int count) {
 	for (unsigned int i = 0; i < (total_mem / PAGE_SIZE); i++) {
 		unsigned int addr = i * PAGE_SIZE;
-		 if (!phys_isused(addr, count)) {
-			 phys_setused(addr, count);
-			 return addr;
-		 }
+		if (!phys_isused(addr, count)) {
+			phys_setused(addr, count);
+			return addr;
+		}
 	}
 	return -ENOMEM;
 }
