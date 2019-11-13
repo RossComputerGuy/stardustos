@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+pushd @PROJECT_SOURCE_DIR@/docs >/dev/null
+URL="https://github.com/RossComputerGuy/stardustos"
+sources=($(grep -r "${URL}" | cut -d ':' -f1))
+sources=($(printf "%s\n" "${sources[@]}" | sort -u))
+csources=($(find @PROJECT_SOURCE_DIR@ -type 'f' -name '*.c' -not -path '@PROJECT_BINARY_DIR@/*'))
+for src in ${sources[@]}; do
+	funcs=($(grep "$URL" $src | awk -F'[][]' '{print $2}'))
+	for fn in ${funcs[@]}; do
+		# TODO
+	done
+done
