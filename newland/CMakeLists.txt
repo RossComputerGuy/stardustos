@@ -24,6 +24,11 @@ endif()
 add_compile_definitions("NEWLAND_KERNEL" "MINIZ_NO_ARCHIVE_WRITING_APIS")
 add_compile_options("-nostdinc" "-fno-builtin" "-Werror=implicit-function-declaration" "-fno-stack-protector")
 
+find_package(Doxygen REQUIRED dot)
+set(DOXYGEN_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/docs)
+doxygen_add_docs(docs-newland ALL ${PROJECT_SOURCE_DIR}
+	COMMENT "Building kernel documentation")
+
 set(libc_SOURCE_DIR "${PROJECT_SOURCE_DIR}/libc")
 include("${PROJECT_SOURCE_DIR}/libc/build.cmake")
 
