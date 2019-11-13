@@ -26,6 +26,7 @@ run.sh
 mkcallgraph.sh
 builddocs.sh
 lint.sh
+doc.md
 **/rootfs/rootfs
 **/initrd/initrd
 **/rootfs/copyrootfs.sh

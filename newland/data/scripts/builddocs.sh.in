@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 set -e
+
+# Update
 URL="https://github.com/RossComputerGuy/stardustos"
 sources=($(grep -r "${URL}" @PROJECT_SOURCE_DIR@/docs | cut -d ':' -f1))
 sources=($(printf "%s\n" "${sources[@]}" | sort -u))
@@ -19,3 +21,7 @@ for src in ${sources[@]}; do
 		sed -i "${ln}s|$url|${URL}/blob/master/$srcsrc#L${line}|g" $src
 	done
 done
+
+# Merge
+sources=(@PROJECT_SOURCE_DIR@/docs/README.md $(find @PROJECT_SOURCE_DIR@/docs -name "*.md" -not -name "README.md"))
+cat ${sources[@]} > "@PROJECT_BINARY_DIR@/doc.md"
