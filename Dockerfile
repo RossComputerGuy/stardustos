@@ -1,8 +1,7 @@
-FROM archlinux/base
+FROM debian:sid
 
-RUN pacman -Sy >/dev/null 2>&1 && \
-	pacman -S --noconfirm base-devel grub xorriso gcc cmake zip unzip mtools cppcheck rubygems >/dev/null 2>&1 && \
-	pacman -Scc --noconfirm >/dev/null 2>&1
+RUN apt-get upgrade -y >/dev/null 2>&1 && \
+	apt-get install -y base-devel grub xorriso gcc cmake zip unzip mtools cppcheck rubygems >/dev/null 2>&1
 
 RUN useradd builder -m -u 1000 && \
 	passwd -d builder

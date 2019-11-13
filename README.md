@@ -76,7 +76,7 @@ Step 1/6 : FROM archlinux/base
 latest: Pulling from archlinux/base
 ```
 
-This will setup an Arch Linux Docker container called `stardustos`
+This will setup a Debian Sid Docker container called `stardustos`
 which will have all the required dependencies installed.
 
 Second, build the operating system:
