@@ -18,6 +18,7 @@ include_directories("${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	add_compile_options("-fdump-rtl-expand")
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-Map=${PROJECT_BINARY_DIR}/kernel.map")
 endif()
 
 add_compile_definitions("NEWLAND_KERNEL" "MINIZ_NO_ARCHIVE_WRITING_APIS")
@@ -42,7 +43,7 @@ configure_file("${PROJECT_SOURCE_DIR}/data/scripts/test.sh.in" "${PROJECT_BINARY
 configure_file("${PROJECT_SOURCE_DIR}/data/config.h.in" "${PROJECT_BINARY_DIR}/newland-config.h")
 configure_file("${PROJECT_SOURCE_DIR}/data/gdbinit.in" "${PROJECT_BINARY_DIR}/.gdbinit")
 
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T${ARCH_DIR}/linker.ld -nostdlib -nostartfiles -Wl,-Map=${PROJECT_BINARY_DIR}/kernel.map")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T${ARCH_DIR}/linker.ld -nostdlib -nostartfiles")
 add_executable(kernel.elf
 	${LIBC_SOURCES}
 	${LIBFILE_SOURCES}
