@@ -26,6 +26,7 @@ add_compile_options("-nostdinc" "-fno-builtin" "-Werror=implicit-function-declar
 
 find_package(Doxygen REQUIRED dot)
 set(DOXYGEN_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/docs)
+set(DOXYGEN_RECURSIVE ON)
 doxygen_add_docs(docs-newland ALL ${PROJECT_SOURCE_DIR}
 	COMMENT "Building kernel documentation")
 
