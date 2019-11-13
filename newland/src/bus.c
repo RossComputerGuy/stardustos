@@ -27,7 +27,7 @@ bus_t* bus_get(size_t i) {
 bus_t* bus_fromname(const char* name) {
 	bus_t* bus = NULL;
 	SLIST_FOREACH(bus, &buses, bus_list) {
-	 if (!strcmp(bus->name, name)) return bus;
+		if (!strcmp(bus->name, name)) return bus;
 	}
 	return NULL;
 }
