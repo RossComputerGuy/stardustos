@@ -10,11 +10,12 @@ set(NEWLAND_ARCH "${ARCH}")
 configure_file("${PROJECT_SOURCE_DIR}/data/scripts/lint.sh.in" "${PROJECT_BINARY_DIR}/lint.sh")
 
 add_custom_target(lint ${PROJECT_BINARY_DIR}/lint.sh)
-add_custom_target(docgen ALL ${newland_BINARY_DIR}/builddocs.sh)
 
 # Kernel stuff
 add_subdirectory(newland)
 add_subdirectory(modules)
+
+add_custom_target(docgen ALL ${newland_BINARY_DIR}/builddocs.sh)
 
 # Libraries
 add_subdirectory(libraries/libc)
