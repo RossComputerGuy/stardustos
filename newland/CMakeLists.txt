@@ -47,6 +47,7 @@ configure_file("${PROJECT_SOURCE_DIR}/data/gdbinit.in" "${PROJECT_BINARY_DIR}/.g
 
 if(NOT CMAKE_PROJECT_NAME STREQUAL "stardustos")
 	add_custom_target(lint ${PROJECT_BINARY_DIR}/lint.sh)
+	add_custom_target(docgen ALL ${PROJECT_BINARY_DIR}/builddocs.sh)
 endif()
 
 add_link_options("-T${ARCH_DIR}/linker.ld" "-nostdlib" "-nostartfiles")
