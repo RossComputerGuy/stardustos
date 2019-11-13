@@ -51,11 +51,11 @@ The second step is the acutal build process:
 ```
 $ make -C build
 Scanning dependencies of target kernel.elf
-[  1%] Building C object newland/CMakeFiles/kernel.elf.dir/libc/src/lib.c.o
-[  2%] Building C object newland/CMakeFiles/kernel.elf.dir/libc/src/libgen/basename.c.o
-[  3%] Building C object newland/CMakeFiles/kernel.elf.dir/libc/src/libgen/dirname.c.o
-[  4%] Building C object newland/CMakeFiles/kernel.elf.dir/libc/src/math/arithm.c.o
-[  5%] Building C object newland/CMakeFiles/kernel.elf.dir/libc/src/math/pow.c.o
+[	1%] Building C object newland/CMakeFiles/kernel.elf.dir/libc/src/lib.c.o
+[	2%] Building C object newland/CMakeFiles/kernel.elf.dir/libc/src/libgen/basename.c.o
+[	3%] Building C object newland/CMakeFiles/kernel.elf.dir/libc/src/libgen/dirname.c.o
+[	4%] Building C object newland/CMakeFiles/kernel.elf.dir/libc/src/math/arithm.c.o
+[	5%] Building C object newland/CMakeFiles/kernel.elf.dir/libc/src/math/pow.c.o
 ```
 
 This will build the kernel, kernel modules, libraries, programs, initrd,
@@ -71,7 +71,7 @@ First, setup the Docker container:
 
 ```
 $ ./scripts/docker-init.sh
-Sending build context to Docker daemon  590.8kB
+Sending build context to Docker daemon	590.8kB
 Step 1/6 : FROM archlinux/base
 latest: Pulling from archlinux/base
 ```

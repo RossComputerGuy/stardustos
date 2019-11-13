@@ -1,6 +1,6 @@
 /**
-  * StardustOS libc - (C) 2019 Tristan Ross
-  */
+	* StardustOS libc - (C) 2019 Tristan Ross
+	*/
 #pragma once
 
 typedef unsigned char uint8_t;

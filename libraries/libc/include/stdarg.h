@@ -1,6 +1,6 @@
 /**
-  * StardustOS libc - (C) 2019 Tristan Ross
-  */
+	* StardustOS libc - (C) 2019 Tristan Ross
+	*/
 #pragma once
 
 typedef __builtin_va_list va_list;

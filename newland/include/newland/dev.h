@@ -1,6 +1,6 @@
 /**
-  * NewLand Kernel - (C) 2019 Tristan Ross
-  */
+	* NewLand Kernel - (C) 2019 Tristan Ross
+	*/
 #pragma once
 
 #include <newland/fs.h>
@@ -16,12 +16,12 @@
 #define DEVMAJ_MBMOD 3
 
 typedef struct device {
-  SLIST_ENTRY(struct device) dev_list;
-  SLIST_ENTRY(struct device) bus_list;
-  dev_t dev;
-  size_t size;
-  const char name[NAME_MAX];
-  fs_node_opts_t opts;
+	SLIST_ENTRY(struct device) dev_list;
+	SLIST_ENTRY(struct device) bus_list;
+	dev_t dev;
+	size_t size;
+	const char name[NAME_MAX];
+	fs_node_opts_t opts;
 } device_t;
 
 size_t device_count();

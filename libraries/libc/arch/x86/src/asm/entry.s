@@ -5,7 +5,7 @@
 
 .globl _start
 _start:
-  call __libc_init
-  call main
-  pushl %eax
-  call __libc_fini
+	call __libc_init
+	call main
+	pushl %eax
+	call __libc_fini

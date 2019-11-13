@@ -1,6 +1,6 @@
 /**
-  * NewLand Kernel - (C) 2019 Tristan Ross
-  */
+	* NewLand Kernel - (C) 2019 Tristan Ross
+	*/
 #pragma once
 
 #include <newland/limits.h>
@@ -14,16 +14,16 @@ struct blkdev;
 #define BLKDEV_COUNT 2
 
 typedef struct {
-  size_t (*read_block)(struct blkdev* blkdev, uint16_t block, void* buff, size_t size);
-  size_t (*write_block)(struct blkdev* blkdev, uint16_t block, const void* buff, size_t size);
+	size_t (*read_block)(struct blkdev* blkdev, uint16_t block, void* buff, size_t size);
+	size_t (*write_block)(struct blkdev* blkdev, uint16_t block, const void* buff, size_t size);
 } blkdev_opts_t;
 
 typedef struct blkdev {
-  SLIST_ENTRY(struct blkdev) blkdev_list;
-  blksize_t size;
-  blkcnt_t count;
-  const char name[NAME_MAX];
-  blkdev_opts_t opts;
+	SLIST_ENTRY(struct blkdev) blkdev_list;
+	blksize_t size;
+	blkcnt_t count;
+	const char name[NAME_MAX];
+	blkdev_opts_t opts;
 } blkdev_t;
 
 size_t blkdev_count();

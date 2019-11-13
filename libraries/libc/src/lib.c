@@ -17,13 +17,13 @@ extern void _init();
 extern void _fini();
 
 void __libc_init() {
-  // TODO: open stdin, stdout, and stderr
-  _init();
+	// TODO: open stdin, stdout, and stderr
+	_init();
 }
 
 void __libc_fini(int code) {
-  _fini();
-  // TODO: close stdin, stdout, and stderr
-  while (1);
+	_fini();
+	// TODO: close stdin, stdout, and stderr
+	while (1);
 }
 #endif

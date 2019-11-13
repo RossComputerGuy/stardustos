@@ -7,12 +7,12 @@
 #include <stddef.h>
 
 typedef struct FILE {
-  int fd;
-  void* impl;
-  const char* mode;
-  size_t offset;
-  int (*write)(struct FILE* stream, const void* buff, size_t size);
-  int (*read)(struct FILE* stream, void* buff, size_t size);
+	int fd;
+	void* impl;
+	const char* mode;
+	size_t offset;
+	int (*write)(struct FILE* stream, const void* buff, size_t size);
+	int (*read)(struct FILE* stream, void* buff, size_t size);
 } FILE;
 
 #ifndef stdin

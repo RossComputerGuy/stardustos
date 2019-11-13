@@ -1,6 +1,6 @@
 /**
-  * NewLand Kernel - (C) 2019 Tristan Ross
-  */
+	* NewLand Kernel - (C) 2019 Tristan Ross
+	*/
 #pragma once
 
 #include <newland/limits.h>
@@ -11,19 +11,19 @@
 struct tty;
 
 typedef struct {
-  size_t (*read)(struct tty* tty, void* buff, size_t size);
-  size_t (*write)(struct tty* tty, const void* buff, size_t size);
-  int (*cursor_set)(struct tty* tty, int enabled);
-  int (*cursor_move)(struct tty* tty, uint32_t x, uint32_t y);
-  int (*cursor_get)(struct tty* tty, uint32_t* x, uint32_t* y);
-  int (*win_get)(struct tty* tty, uint32_t* x, uint32_t* y);
-  int (*win_set)(struct tty* tty, uint32_t x, uint32_t y);
+	size_t (*read)(struct tty* tty, void* buff, size_t size);
+	size_t (*write)(struct tty* tty, const void* buff, size_t size);
+	int (*cursor_set)(struct tty* tty, int enabled);
+	int (*cursor_move)(struct tty* tty, uint32_t x, uint32_t y);
+	int (*cursor_get)(struct tty* tty, uint32_t* x, uint32_t* y);
+	int (*win_get)(struct tty* tty, uint32_t* x, uint32_t* y);
+	int (*win_set)(struct tty* tty, uint32_t x, uint32_t y);
 } tty_opts_t;
 
 typedef struct tty {
-  SLIST_ENTRY(struct tty) tty_list;
-  const char name[NAME_MAX];
-  tty_opts_t opts;
+	SLIST_ENTRY(struct tty) tty_list;
+	const char name[NAME_MAX];
+	tty_opts_t opts;
 } tty_t;
 
 size_t tty_count();

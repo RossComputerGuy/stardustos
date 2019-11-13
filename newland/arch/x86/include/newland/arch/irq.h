@@ -1,6 +1,6 @@
 /**
-  * NewLand Kernel - (C) 2019 Tristan Ross
-  */
+	* NewLand Kernel - (C) 2019 Tristan Ross
+	*/
 #pragma once
 
 #include <newland/arch/idt.h>

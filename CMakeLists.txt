@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(stardustos NONE)
 
 if(NOT ARCH)
-  set(ARCH "x86")
+	set(ARCH "x86")
 endif()
 
 set(NEWLAND_ARCH "${ARCH}")

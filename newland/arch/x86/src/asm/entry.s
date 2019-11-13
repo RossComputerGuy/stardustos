@@ -1,6 +1,6 @@
 /**
-  * NewLand Kernel - (C) 2019 Tristan Ross
-  */
+	* NewLand Kernel - (C) 2019 Tristan Ross
+	*/
 
 .set ALIGN, (1 << 0)
 .set MEMINFO, (1 << 1)
@@ -23,12 +23,12 @@ stack_top:
 .section .text
 .globl _start
 _start:
-  movl $stack_top, %esp
-  pushl $0
-  popf
-  pushl %ebx
-  pushl %eax
-  call bootstrap_main
-  cli
+	movl $stack_top, %esp
+	pushl $0
+	popf
+	pushl %ebx
+	pushl %eax
+	call bootstrap_main
+	cli
 1: hlt
-  jmp 1b
+	jmp 1b

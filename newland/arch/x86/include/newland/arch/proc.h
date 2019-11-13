@@ -1,6 +1,6 @@
 /**
-  * NewLand Kernel - (C) 2019 Tristan Ross
-  */
+	* NewLand Kernel - (C) 2019 Tristan Ross
+	*/
 #pragma once
 
 #include <newland/arch/idt.h>
@@ -21,34 +21,34 @@
 #define PROC_READY 3
 
 typedef struct proc {
-  SLIST_ENTRY(struct proc) proc_list;
-  pid_t id;
+	SLIST_ENTRY(struct proc) proc_list;
+	pid_t id;
 
-  const char name[256];
-  const char cwd[PATH_MAX];
-  const char tty[NAME_MAX];
+	const char name[256];
+	const char cwd[PATH_MAX];
+	const char tty[NAME_MAX];
 
-  int status;
-  int exitval;
-  int isuser:1;
-  int issignaling:1;
+	int status;
+	int exitval;
+	int isuser:1;
+	int issignaling:1;
 
-  uint32_t sp;
-  uint8_t signum;
-  int stack[PROC_STACKSIZE];
-  void (*entry)();
-  void (*signal_handler)(uint8_t signum, void* data);
-  page_dir_t* pgdir;
-  char fpu_regs[512];
+	uint32_t sp;
+	uint8_t signum;
+	int stack[PROC_STACKSIZE];
+	void (*entry)();
+	void (*signal_handler)(uint8_t signum, void* data);
+	page_dir_t* pgdir;
+	char fpu_regs[512];
 
-  fd_t fd[OPEN_MAX];
+	fd_t fd[OPEN_MAX];
 
-  gid_t gid;
-  uid_t uid;
+	gid_t gid;
+	uid_t uid;
 
-  pid_t parent;
-  pid_t child[CHILD_MAX];
-  size_t child_count;
+	pid_t parent;
+	pid_t child[CHILD_MAX];
+	size_t child_count;
 } proc_t;
 
 #define proc_getcpuusage(procptr) ((sched_getusage((*(procptr))->id) * 100) / SCHED_RECCOUNT)

@@ -1,9 +1,9 @@
 {
-   "cpp.buildConfigurations": [
-      {
-         "name": "",
-         "directory": ""
-      }
-   ],
-   "cpp.clangdArgs": "-Inewland/include"
+	 "cpp.buildConfigurations": [
+			{
+				 "name": "",
+				 "directory": ""
+			}
+	 ],
+	 "cpp.clangdArgs": "-Inewland/include"
 }

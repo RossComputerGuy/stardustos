@@ -1,6 +1,6 @@
 /**
-  * NewLand Kernel - (C) 2019 Tristan Ross
-  */
+	* NewLand Kernel - (C) 2019 Tristan Ross
+	*/
 #pragma once
 
 #include <newland/dev.h>
@@ -12,10 +12,10 @@
 #define BUSDEVRES_MEM 2
 
 typedef struct bus_dev_res {
-  SLIST_ENTRY(struct bus_dev_res) res_list;
-  uint64_t value;
-  size_t size;
-  int type;
+	SLIST_ENTRY(struct bus_dev_res) res_list;
+	uint64_t value;
+	size_t size;
+	int type;
 } bus_dev_res_t;
 
 SLIST_HEAD(bus_dev_res_list, bus_dev_res_t);
@@ -23,27 +23,27 @@ SLIST_HEAD(bus_dev_res_list, bus_dev_res_t);
 #define BUSDEV_INT (1 << 0)
 
 typedef struct bus_dev {
-  SLIST_ENTRY(struct bus_dev) dev_list;
-  const char name[NAME_MAX];
-  const char dname[NAME_MAX];
+	SLIST_ENTRY(struct bus_dev) dev_list;
+	const char name[NAME_MAX];
+	const char dname[NAME_MAX];
 
-  uint32_t addr;
+	uint32_t addr;
 
-  struct bus_dev_res_list res_list;
-  size_t res_count;
+	struct bus_dev_res_list res_list;
+	size_t res_count;
 
-  uint8_t flags;
-  uint16_t interrupt;
+	uint8_t flags;
+	uint16_t interrupt;
 } bus_dev_t;
 
 SLIST_HEAD(bus_dev_list, bus_dev_t);
 
 typedef struct bus {
-  SLIST_ENTRY(struct bus) bus_list;
-  const char name[NAME_MAX];
-  const char type[NAME_MAX];
-  struct bus_dev_list dev_list;
-  size_t dev_count;
+	SLIST_ENTRY(struct bus) bus_list;
+	const char name[NAME_MAX];
+	const char type[NAME_MAX];
+	struct bus_dev_list dev_list;
+	size_t dev_count;
 } bus_t;
 
 size_t bus_count();

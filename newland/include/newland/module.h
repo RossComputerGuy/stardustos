@@ -1,6 +1,6 @@
 /**
-  * NewLand Kernel - (C) 2019 Tristan Ross
-  */
+	* NewLand Kernel - (C) 2019 Tristan Ross
+	*/
 #pragma once
 
 #include <string.h>
@@ -9,13 +9,13 @@ typedef int (*modinit_t)();
 typedef void (*modfini_t)();
 
 typedef struct {
-  const char id[25];
-  const char author[125];
-  const char license[25];
-  const char modver[12];
-  const char krnlver[12];
-  modinit_t init;
-  modfini_t fini;
+	const char id[25];
+	const char author[125];
+	const char license[25];
+	const char modver[12];
+	const char krnlver[12];
+	modinit_t init;
+	modfini_t fini;
 } __attribute__((packed)) modinfo_t;
 
 #ifdef NEWLAND_MODULE

@@ -1,45 +1,45 @@
 /**
-  * NewLand Kernel - (C) 2019 Tristan Ross
-  */
+	* NewLand Kernel - (C) 2019 Tristan Ross
+	*/
 .macro ISR_NOERRCODE num
-  .globl isr\num
-  isr\num:
-    cli
-    push $0
-    push $1
-    jmp isr_common_stub
-    ret
+	.globl isr\num
+	isr\num:
+		cli
+		push $0
+		push $1
+		jmp isr_common_stub
+		ret
 .endm
 
 .macro ISR_ERRCODE num
-  .globl isr\num
-  isr\num:
-    cli
-    push $1
-    jmp isr_common_stub
-    ret
+	.globl isr\num
+	isr\num:
+		cli
+		push $1
+		jmp isr_common_stub
+		ret
 .endm
 
 isr_common_stub:
-  cld
-  pusha
-  push %ds
-  push %es
-  push %fs
-  push %gs
-  mov $0x10, %ax
-  mov %ax, %dx
-  mov %ax, %es
-  mov %ax, %fs
-  mov %ax, %gs
-  call isr_handler
-  pop %gs
-  pop %fs
-  pop %es
-  pop %ds
-  popa
-  add $8, %esp
-  iret
+	cld
+	pusha
+	push %ds
+	push %es
+	push %fs
+	push %gs
+	mov $0x10, %ax
+	mov %ax, %dx
+	mov %ax, %es
+	mov %ax, %fs
+	mov %ax, %gs
+	call isr_handler
+	pop %gs
+	pop %fs
+	pop %es
+	pop %ds
+	popa
+	add $8, %esp
+	iret
 
 ISR_NOERRCODE 0
 ISR_NOERRCODE 1

@@ -1,38 +1,38 @@
 /**
-  * NewLand Kernel - (C) 2019 Tristan Ross
-  */
+	* NewLand Kernel - (C) 2019 Tristan Ross
+	*/
 .macro IRQ irqnum, isrnum
-  .globl irq\irqnum
-  irq\irqnum:
-    cli
-    push $0
-    push $\isrnum
-    jmp irq_common_stub
+	.globl irq\irqnum
+	irq\irqnum:
+		cli
+		push $0
+		push $\isrnum
+		jmp irq_common_stub
 .endm
 
 irq_common_stub:
-  cld
-  pusha
-  push %ds
-  push %es
-  push %fs
-  push %gs
-  mov $0x10, %ax
-  mov %ax, %ds
-  mov %ax, %es
-  mov %ax, %fs
-  mov %ax, %gs
-  mov %esp, %eax
-  push %esp
-  call irq_handler
-  mov %eax, %esp
-  pop %gs
-  pop %fs
-  pop %es
-  pop %ds
-  popa
-  add $8, %esp
-  iret
+	cld
+	pusha
+	push %ds
+	push %es
+	push %fs
+	push %gs
+	mov $0x10, %ax
+	mov %ax, %ds
+	mov %ax, %es
+	mov %ax, %fs
+	mov %ax, %gs
+	mov %esp, %eax
+	push %esp
+	call irq_handler
+	mov %eax, %esp
+	pop %gs
+	pop %fs
+	pop %es
+	pop %ds
+	popa
+	add $8, %esp
+	iret
 
 IRQ 0, 32
 IRQ 1, 33

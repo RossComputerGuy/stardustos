@@ -1,6 +1,6 @@
 /**
-  * NewLand Kernel - (C) 2019 Tristan Ross
-  */
+	* NewLand Kernel - (C) 2019 Tristan Ross
+	*/
 #pragma once
 
 #include <newland/boot/multiboot.h>
@@ -10,43 +10,43 @@
 #define PAGE_ALIGN_UP(__x) ((__x) + PAGE_SIZE - ((__x) % PAGE_SIZE))
 
 typedef union {
-  struct {
-    int present:1;
-    int write:1;
-    int user:1;
-    int write_through:1;
-    int disable_cache:1;
-    int accessed:1;
-    int dirty:1;
-    int pat:1;
-    uint32_t ignored:4;
-    uint32_t frame:20;
-  };
-  uint32_t value;
+	struct {
+		int present:1;
+		int write:1;
+		int user:1;
+		int write_through:1;
+		int disable_cache:1;
+		int accessed:1;
+		int dirty:1;
+		int pat:1;
+		uint32_t ignored:4;
+		uint32_t frame:20;
+	};
+	uint32_t value;
 } page_t;
 
 typedef struct {
-  page_t entries[1024];
+	page_t entries[1024];
 } page_table_t;
 
 typedef union {
-  struct {
-    int present:1;
-    int write:1;
-    int user:1;
-    int write_through:1;
-    int disable_cache:1;
-    int accessed:1;
-    int ignored1:1;
-    int large_page:1;
-    uint32_t ignored2:4;
-    uint32_t frame:20;
-  };
-  uint32_t value;
+	struct {
+		int present:1;
+		int write:1;
+		int user:1;
+		int write_through:1;
+		int disable_cache:1;
+		int accessed:1;
+		int ignored1:1;
+		int large_page:1;
+		uint32_t ignored2:4;
+		uint32_t frame:20;
+	};
+	uint32_t value;
 } page_dir_entry_t;
 
 typedef struct {
-  page_dir_entry_t entries[1024];
+	page_dir_entry_t entries[1024];
 } page_dir_t;
 
 extern void paging_enable();

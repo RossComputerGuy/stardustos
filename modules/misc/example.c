@@ -1,10 +1,10 @@
 /**
-  * NewLand Kernel - (C) 2019 Tristan Ross
-  */
+	* NewLand Kernel - (C) 2019 Tristan Ross
+	*/
 #include <newland/module.h>
 
 MODULE_INIT(example) {
-  return 0;
+	return 0;
 }
 
 MODULE_FINI(example) {}

@@ -1,6 +1,6 @@
 /**
-  * NewLand Kernel - (C) 2019 Tristan Ross
-  */
+	* NewLand Kernel - (C) 2019 Tristan Ross
+	*/
 #pragma once
 
 #include <newland/types.h>
@@ -9,7 +9,7 @@
 #define PCI_VAL 0xCFC
 
 typedef struct {
-  uint8_t bus, slot, func;
+	uint8_t bus, slot, func;
 } pci_dev_t;
 
 #define pcidev_getdevice(dev) (pci_read32(dev, 0) >> 16)

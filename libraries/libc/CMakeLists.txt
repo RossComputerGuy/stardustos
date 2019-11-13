@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(libc C ASM)
 
 if(NOT ARCH)
-  set(ARCH "x86")
+	set(ARCH "x86")
 endif()
 
 include("${PROJECT_SOURCE_DIR}/build.cmake")
