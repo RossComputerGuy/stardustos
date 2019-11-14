@@ -1,6 +1,6 @@
 /**
-	* NewLand Kernel - (C) 2019 Tristan Ross
-	*/
+ * \copyright NewLand Kernel - (C) 2019 Tristan Ross
+ */
 
 .set ALIGN, (1 << 0)
 .set MEMINFO, (1 << 1)

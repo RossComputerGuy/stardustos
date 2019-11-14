@@ -1,6 +1,6 @@
 /**
-	* NewLand Kernel - (C) 2019 Tristan Ross
-	*/
+ * \copyright NewLand Kernel - (C) 2019 Tristan Ross
+ */
 #include <newland/arch/io.h>
 #include <newland/dev/tty.h>
 #include <newland/log.h>

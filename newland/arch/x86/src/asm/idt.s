@@ -1,6 +1,6 @@
 /**
-	* NewLand Kernel - (C) 2019 Tristan Ross
-	*/
+ * \copyright NewLand Kernel - (C) 2019 Tristan Ross
+ */
 .macro ISR_NOERRCODE num
 	.globl isr\num
 	isr\num:

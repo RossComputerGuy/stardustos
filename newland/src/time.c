@@ -1,6 +1,6 @@
 /**
-	* NewLand Kernel - (C) 2019 Tristan Ross
-	*/
+ * \copyright NewLand Kernel - (C) 2019 Tristan Ross
+ */
 #include <newland/time.h>
 #include <string.h>
 

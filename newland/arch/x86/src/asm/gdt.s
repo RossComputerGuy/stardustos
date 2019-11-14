@@ -1,6 +1,6 @@
 /**
-	* NewLand Kernel - (C) 2019 Tristan Ross
-	*/
+ * \copyright NewLand Kernel - (C) 2019 Tristan Ross
+ */
 .globl gdt_reloadseg
 gdt_reloadseg:
 	jmp $0x08, $.flush

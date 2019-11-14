@@ -1,6 +1,6 @@
 /**
-	* NewLand Kernel - (C) 2019 Tristan Ross
-	*/
+ * \copyright NewLand Kernel - (C) 2019 Tristan Ross
+ */
 #include <newland/dev/block.h>
 #include <newland/fs/initrd.h>
 #include <newland/alloc.h>
@@ -56,7 +56,7 @@ static int initrd_get_child(fs_node_t* node, fs_node_t** childptr, size_t index)
 		if (!mz_zip_reader_file_stat(&initrd->zip, initrd_node->index, &stat)) continue;
 		if (!strncmp(stat.m_filename, d, strlen(d))) {
 			if (index == 0) {
-				*childptr = n;
+			 *childptr = n;
 				return 0;
 			}
 			index--;
@@ -147,7 +147,7 @@ static int initrd_umount(fs_node_t** targetptr) {
 	mz_zip_reader_end(&initrd->zip);
 	kfree(initrd);
 	kfree(*targetptr);
-	*targetptr = NULL;
+ *targetptr = NULL;
 	return 0;
 }
 

@@ -1,6 +1,6 @@
 /**
-	* NewLand Kernel - (C) 2019 Tristan Ross
-	*/
+ * \copyright NewLand Kernel - (C) 2019 Tristan Ross
+ */
 #include <newland/alloc.h>
 #include <newland/fs.h>
 #include <newland/limits.h>
@@ -96,7 +96,7 @@ int fs_node_resolve(fs_node_t** nodeptr, fs_node_t** foundptr, const char* path)
 			if (!strncmp(tmpnode->name, path, plen)) return fs_node_resolve(&tmpnode, foundptr, path + plen);
 		} else {
 			if (!strcmp(tmpnode->name, path)) {
-				*foundptr = tmpnode;
+			 *foundptr = tmpnode;
 				return 0;
 			}
 		}

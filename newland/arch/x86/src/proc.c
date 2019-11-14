@@ -1,6 +1,6 @@
 /**
-	* NewLand Kernel - (C) 2019 Tristan Ross
-	*/
+ * \copyright NewLand Kernel - (C) 2019 Tristan Ross
+ */
 #include <libfile/elf.h>
 #include <newland/arch/fpu.h>
 #include <newland/arch/irq.h>

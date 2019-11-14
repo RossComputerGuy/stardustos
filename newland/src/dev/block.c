@@ -1,6 +1,6 @@
 /**
-	* NewLand Kernel - (C) 2019 Tristan Ross
-	*/
+ * \copyright NewLand Kernel - (C) 2019 Tristan Ross
+ */
 #include <newland/dev/block.h>
 #include <newland/alloc.h>
 #include <newland/dev.h>
@@ -66,13 +66,13 @@ static int blkdev_ioctl(fs_node_t* node, int req, va_list ap) {
 		case BLKDEV_SIZE:
 			{
 				blksize_t* ptr = va_arg(ap, blksize_t*);
-				*ptr = blkdev->size;
+			 *ptr = blkdev->size;
 			}
 			return 0;
 		case BLKDEV_COUNT:
 			{
 				blkcnt_t* ptr = va_arg(ap, blkcnt_t*);
-				*ptr = blkdev->count;
+			 *ptr = blkdev->count;
 			}
 			return 0;
 	}

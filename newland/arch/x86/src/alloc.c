@@ -1,6 +1,6 @@
 /**
-	* NewLand Kernel - (C) 2019 Tristan Ross
-	*/
+ * \copyright NewLand Kernel - (C) 2019 Tristan Ross
+ */
 #include <newland/arch/mem.h>
 #include <newland/alloc.h>
 
@@ -15,7 +15,7 @@ void* global_base = NULL;
 static struct block_meta* find_free_block(struct block_meta** last, size_t size) {
 	struct block_meta* curr = global_base;
 	while (curr && !(curr->free && curr->size >= size)) {
-		*last = curr;
+	 *last = curr;
 		curr = curr->next;
 	}
 	return curr;

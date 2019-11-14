@@ -1,6 +1,6 @@
 /**
-	* NewLand Kernel - (C) 2019 Tristan Ross
-	*/
+ * \copyright NewLand Kernel - (C) 2019 Tristan Ross
+ */
 #include <newland/arch/io.h>
 
 #define DEF_PORT(n, s) void out## n (uint16_t port, uint## s ##_t value) { asm volatile ("out"#n" %0, %1" :: "a"(value), "Nd"(port)); } \
