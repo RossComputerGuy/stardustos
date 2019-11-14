@@ -1,5 +1,5 @@
 /**
- * \copyright NewLand Kernel - (C) 2019 Tristan Ross
+ * NewLand Kernel - (C) 2019 Tristan Ross
  */
 #include <newland/arch/multiboot.h>
 #include <newland/dev/block.h>

@@ -1,5 +1,5 @@
 /**
- * \copyright NewLand Kernel - (C) 2019 Tristan Ross
+ * NewLand Kernel - (C) 2019 Tristan Ross
  */
 .globl paging_invalidate_tlb
 paging_invalidate_tlb:
