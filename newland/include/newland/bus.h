@@ -66,12 +66,12 @@ typedef struct bus_dev {
 	 */
 	const char dname[NAME_MAX];
 
-  /**
+	/**
 	 * The bus device address, should be used for the read and write bus functions
 	 */
 	uint32_t addr;
 
-  /**
+	/**
 	 * A list of resources the device has
 	 */
 	struct bus_dev_res_list res_list;
@@ -81,7 +81,7 @@ typedef struct bus_dev {
 	 */
 	size_t res_count;
 
-  /**
+	/**
 	 * Bus device flags
 	 */
 	uint8_t flags;
