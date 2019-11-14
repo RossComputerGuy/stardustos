@@ -3,7 +3,6 @@
  */
 #include <newland/alloc.h>
 #include <newland/fs.h>
-#include <newland/limits.h>
 #include <errno.h>
 #include <libgen.h>
 

@@ -8,8 +8,8 @@
 #pragma once
 
 #include <newland/dev.h>
-#include <newland/limits.h>
 #include <liblist.h>
+#include <limits.h>
 #include <string.h>
 
 /**

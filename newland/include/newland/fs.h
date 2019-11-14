@@ -7,10 +7,10 @@
  */
 #pragma once
 
-#include <newland/limits.h>
 #include <newland/time.h>
 #include <newland/types.h>
 #include <liblist.h>
+#include <limits.h>
 #include <stdarg.h>
 #include <string.h>
 

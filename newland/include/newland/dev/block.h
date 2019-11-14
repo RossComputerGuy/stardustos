@@ -3,9 +3,9 @@
  */
 #pragma once
 
-#include <newland/limits.h>
 #include <newland/types.h>
 #include <liblist.h>
+#include <limits.h>
 #include <string.h>
 
 struct blkdev;

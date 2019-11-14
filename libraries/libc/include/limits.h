@@ -1,9 +1,9 @@
 /**
- * NewLand Kernel - (C) 2019 Tristan Ross
+ * StardustOS libc - (C) 2019 Tristan Ross
  */
 #pragma once
 
-#include <newland/arch/limits.h>
+#include <sys/limits.h>
 
 #define CHILD_MAX 25
 #define NAME_MAX 128
