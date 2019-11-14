@@ -1,5 +1,9 @@
-/**
- * NewLand Kernel - (C) 2019 Tristan Ross
+/** \file include/newland/alloc.h
+ * \author Tristan Ross
+ * \copyright GNU Public License 3.0
+ * \brief Kernel memory allocation
+ * \since v0.1.0
+ * \details Kernelspace memory allocation functions; includes kmalloc, kfree, and krealloc
  */
 #pragma once
 

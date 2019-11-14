@@ -1,5 +1,9 @@
-/**
- * NewLand Kernel - (C) 2019 Tristan Ross
+/** \file include/newland/bus.h
+ * \author Tristan Ross
+ * \copyright GNU Public License 3.0
+ * \brief Bus management and bus driver API
+ * \since v0.1.0
+ * \details This portion of the NewLand kernel contains code for managing buses and reading them. Detailed explanation can be found in the kernel manual.
  */
 #pragma once
 
@@ -8,7 +12,14 @@
 #include <liblist.h>
 #include <string.h>
 
+/**
+ * I/O resource for bus devices
+ */
 #define BUSDEVRES_IO 1
+
+/**
+ * Memory resource for bus devices
+ */
 #define BUSDEVRES_MEM 2
 
 /**
@@ -16,13 +27,27 @@
  */
 typedef struct bus_dev_res {
 	SLIST_ENTRY(struct bus_dev_res) res_list;
+	/**
+	 * The value of the resource, if its a memory resource then its going to be the address
+	 */
 	uint64_t value;
+
+	/**
+	 * The size in bytes the resource takes up
+	 */
 	size_t size;
+
+	/**
+	 * The type of resource, can only be BUSDEVRES_IO or BUSDEVRES_MEM
+	 */
 	int type;
 } bus_dev_res_t;
 
 SLIST_HEAD(bus_dev_res_list, bus_dev_res_t);
 
+/**
+ * A flag used for bus devices for telling the kernel there's an interrupt handler that is needed
+ */
 #define BUSDEV_INT (1 << 0)
 
 /**
@@ -30,15 +55,40 @@ SLIST_HEAD(bus_dev_res_list, bus_dev_res_t);
  */
 typedef struct bus_dev {
 	SLIST_ENTRY(struct bus_dev) dev_list;
+
+	/**
+	 * The name of the device on the bus
+	 */
 	const char name[NAME_MAX];
+
+	/**
+	 * The name of the device driver that's attached to this bus device
+	 */
 	const char dname[NAME_MAX];
 
+  /**
+	 * The bus device address, should be used for the read and write bus functions
+	 */
 	uint32_t addr;
 
+  /**
+	 * A list of resources the device has
+	 */
 	struct bus_dev_res_list res_list;
+
+	/**
+	 * The number of resources the device has
+	 */
 	size_t res_count;
 
+  /**
+	 * Bus device flags
+	 */
 	uint8_t flags;
+
+	/**
+	 * The interrupt number, should only be set when the interrupt flag is set
+	 */
 	uint16_t interrupt;
 } bus_dev_t;
 
@@ -49,9 +99,25 @@ SLIST_HEAD(bus_dev_list, bus_dev_t);
  */
 typedef struct bus {
 	SLIST_ENTRY(struct bus) bus_list;
+
+	/**
+	 * The name of the bus
+	 */
 	const char name[NAME_MAX];
+
+	/**
+	 * The type of bus this is, a list of types can be found in the kernel manual
+	 */
 	const char type[NAME_MAX];
+
+	/**
+	 * The list of bus devices attached to the bus
+	 */
 	struct bus_dev_list dev_list;
+
+	/**
+	 * The current number of bus devices attached to the bus
+	 */
 	size_t dev_count;
 } bus_t;
 
@@ -137,7 +203,7 @@ int bus_remdev(bus_t* bus, const char* name);
 /**
  * Registers a bus
  *
- * @param[in] type The type of bus as a string, this is outlined more in the kernel documentation
+ * @param[in] type The type of bus as a string, this is outlined more in the kernel manual
  * @param[in] name The name of the bus
  * @return Zero on success or a negative errno code
  */

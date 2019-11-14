@@ -24,14 +24,14 @@ newland-config.h
 test.sh
 run.sh
 mkcallgraph.sh
-builddocs.sh
+buildman.sh
 lint.sh
 doc.md
 **/docs/html/**
 CMakeDoxyfile.in
 CMakeDoxygenDefaults.cmake
 Doxyfile.*
-uploaddocs.sh
+uploadman.sh
 wiki
 **/rootfs/rootfs
 **/initrd/initrd

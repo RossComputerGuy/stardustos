@@ -24,4 +24,4 @@ done
 
 # Merge
 sources=(@PROJECT_SOURCE_DIR@/docs/README.md @PROJECT_SOURCE_DIR@/docs/building.md $(find @PROJECT_SOURCE_DIR@/docs -name "*.md" -not -name "README.md" -not -name "building.md"))
-cat ${sources[@]} > "@PROJECT_BINARY_DIR@/doc.md"
+cat ${sources[@]} > "@PROJECT_BINARY_DIR@/manual.md"

@@ -10,6 +10,7 @@ if(NOT NEWLAND_KLOG_SIZE)
 	set(NEWLAND_KLOG_SIZE 1000)
 endif()
 
+set(ARCH ${NEWLAND_ARCH})
 set(ARCH_DIR "${PROJECT_SOURCE_DIR}/arch/${NEWLAND_ARCH}")
 
 include(CTest)
@@ -34,7 +35,7 @@ set(DOXYGEN_EXTRACT_ALL TRUE)
 set(DOXYGEN_SOURCE_BROWSER TRUE)
 set(DOXYGEN_USE_MDFILE_AS_MAINPAGE ${PROJECT_SOURCE_DIR}/README.md)
 set(DOXYGEN_QUIET TRUE)
-doxygen_add_docs(docs-newland ALL ${PROJECT_SOURCE_DIR}/arch ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/libc ${PROJECT_SOURCE_DIR}/libfile ${PROJECT_SOURCE_DIR}/liblist ${PROJECT_SOURCE_DIR}/miniz ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/README.md
+doxygen_add_docs(docs ALL ${PROJECT_SOURCE_DIR}/arch ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/libc ${PROJECT_SOURCE_DIR}/libfile ${PROJECT_SOURCE_DIR}/liblist ${PROJECT_SOURCE_DIR}/miniz ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/README.md
 	COMMENT "Building kernel documentation")
 
 set(libc_SOURCE_DIR "${PROJECT_SOURCE_DIR}/libc")
@@ -50,18 +51,18 @@ set(miniz_SOURCE_DIR "${PROJECT_SOURCE_DIR}/miniz")
 set(miniz_BINARY_DIR "${PROJECT_BINARY_DIR}")
 include("${PROJECT_SOURCE_DIR}/miniz/build.cmake")
 
-configure_file("${PROJECT_SOURCE_DIR}/data/scripts/builddocs.sh.in" "${PROJECT_BINARY_DIR}/builddocs.sh" @ONLY)
+configure_file("${PROJECT_SOURCE_DIR}/data/scripts/buildman.sh.in" "${PROJECT_BINARY_DIR}/buildman.sh" @ONLY)
 configure_file("${PROJECT_SOURCE_DIR}/data/scripts/lint.sh.in" "${PROJECT_BINARY_DIR}/lint.sh" @ONLY)
 configure_file("${PROJECT_SOURCE_DIR}/data/scripts/mkcallgraph.sh.in" "${PROJECT_BINARY_DIR}/mkcallgraph.sh" @ONLY)
 configure_file("${PROJECT_SOURCE_DIR}/data/scripts/run.sh.in" "${PROJECT_BINARY_DIR}/run.sh" @ONLY)
 configure_file("${PROJECT_SOURCE_DIR}/data/scripts/test.sh.in" "${PROJECT_BINARY_DIR}/test.sh" @ONLY)
-configure_file("${PROJECT_SOURCE_DIR}/data/scripts/uploaddocs.sh.in" "${PROJECT_BINARY_DIR}/uploaddocs.sh" @ONLY)
+configure_file("${PROJECT_SOURCE_DIR}/data/scripts/uploadman.sh.in" "${PROJECT_BINARY_DIR}/uploadman.sh" @ONLY)
 configure_file("${PROJECT_SOURCE_DIR}/data/config.h.in" "${PROJECT_BINARY_DIR}/newland-config.h")
 configure_file("${PROJECT_SOURCE_DIR}/data/gdbinit.in" "${PROJECT_BINARY_DIR}/.gdbinit")
 
 if(NOT CMAKE_PROJECT_NAME STREQUAL "stardustos")
 	add_custom_target(lint ${PROJECT_BINARY_DIR}/lint.sh)
-	add_custom_target(docgen ALL ${PROJECT_BINARY_DIR}/builddocs.sh)
+	add_custom_target(man ALL ${PROJECT_BINARY_DIR}/buildman.sh)
 endif()
 
 add_link_options("-T${ARCH_DIR}/linker.ld" "-nostdlib" "-nostartfiles")
