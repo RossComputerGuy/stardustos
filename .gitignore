@@ -26,7 +26,7 @@ run.sh
 mkcallgraph.sh
 buildman.sh
 lint.sh
-doc.md
+manual.md
 **/docs/html/**
 CMakeDoxyfile.in
 CMakeDoxygenDefaults.cmake

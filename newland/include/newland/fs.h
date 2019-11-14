@@ -345,22 +345,139 @@ typedef struct mountpoint {
 	unsigned long flags;
 } mountpoint_t;
 
+/**
+ * Creates a filesytem node
+ *
+ * @param[out] nodeptr The pointer to store the newly created node
+ * @param[in] name The name of the node
+ * @param[in] mode The mode of the node
+ * @return Zero on success or a negative errno code
+ */
 int fs_node_create(fs_node_t** nodeptr, const char* name, mode_t mode);
+
+/**
+ * Closes a file descriptor
+ *
+ * @param[out] nodeptr The pointer to the filesystem node
+ * @param[out] fd Pointer for the file descriptor
+ * @return Zero on success or a negative errno code on failure
+ */
 int fs_node_close(fs_node_t** nodeptr, fd_t* fd);
+
+/**
+ * Reads from the node
+ *
+ * @param[in] nodeptr The pointer to the filesystem node
+ * @param[in] offset The offset to write at
+ * @param[in] buff The buffer to store the data read
+ * @param[in] size The number of bytes to read
+ * @return The number of bytes read on success or a negative errno code
+ */
 size_t fs_node_read(fs_node_t** nodeptr, off_t offset, void* buff, size_t size);
+
+/**
+ * Writes to the node
+ *
+ * @param[in] nodeptr The pointer to the filesystem node
+ * @param[in] offset The offset to write at
+ * @param[in] buff The buffer to write into the node
+ * @param[in] size The size of the buffer to write into the node
+ * @return The number of bytes written on success or a negative errno code
+ */
 size_t fs_node_write(fs_node_t** nodeptr, off_t offset, const void* buff, size_t size);
+
+/**
+ * Run an I/O control operation on the node
+ *
+ * @param[in] nodeptr The filesystem node
+ * @param[in] req The request code
+ * @param[in] ap The va_list of arguments
+ * @return Can be anything above a negative number on success or a negative errno code on failure
+ */
 int fs_node_vioctl(fs_node_t** nodeptr, int req, va_list ap);
+
+/**
+ * Run an I/O control operation on the node
+ *
+ * @param[in] nodeptr The filesystem node
+ * @param[in] req The request code
+ * @return Can be anything above a negative number on success or a negative errno code on failure
+ */
 int fs_node_ioctl(fs_node_t** nodeptr, int req, ...);
+
+/**
+ * Resolves a child node from a path
+ *
+ * @param[in] nodeptr The pointer to the filesystem node
+ * @param[out] foundptr The pointer to store the child node
+ * @param[in] path The path of the node
+ * @return Zero on success or a negative errno code
+ */
 int fs_node_resolve(fs_node_t** nodeptr, fs_node_t** foundptr, const char* path);
 
+/**
+ * Gets the number of registered filesystems
+ *
+ * @return A number
+ */
 size_t fs_count();
+
+/**
+ * Gets a filesystem by its index
+ *
+ * @param[in] i The index of the filesystem
+ * @return A filesystem or NULL if not found
+ */
 fs_t* fs_get(size_t i);
+
+/**
+ * Gets a filesystem by its name
+ *
+ * @param[in] name The name of the filesystem
+ * @return A filesystem or NULL if not found
+ */
 fs_t* fs_fromname(const char* name);
+
+/**
+ * Registers a filesystem
+ *
+ * @param[in] name The name of the filesystem
+ * @param[in] type The type of the filesystem
+ * @param[in] opts The filesystem operations
+ * @return Zero on success or a negative errno code
+ */
 int register_fs(const char* name, int type, fs_opts_t opts);
+
+/**
+ * Unregisters a filesystem
+ *
+ * @param[in] name The name of the filesystem
+ * @return Zero on success or a negative errno code
+ */
 int unregister_fs(const char* name);
 
+/**
+ * Resolves a path into a filesystem node
+ *
+ * @param[out] nodeptr The pointer to store the node
+ * @param[in] path A path to a file
+ * @return Zero on success or a negative errno code
+ */
 int fs_resolve(fs_node_t** nodeptr, const char* path);
+
+/**
+ * Gets the number of mountpoints
+ *
+ * @return A number
+ */
 size_t mountpoint_count();
+
+/**
+ * Gets a mountpoint by its source
+ *
+ * @param[in] src The source node path
+ * @return A mountpoint or NULL if not found
+ */
 mountpoint_t* mountpoint_fromsrc(const char* src);
 
 /**
@@ -375,7 +492,7 @@ mountpoint_t* mountpoint_fromtarget(const char* target);
  * Creates a mountpoint using a source node
  *
  * @param[out] fsptr The pointer to the filesystem to use
- * @param[in] src The source node
+ * @param[in] source The source node
  * @param[in] target The target path
  * @param[in] flags The mount flags
  * @param[in] data The mount data
