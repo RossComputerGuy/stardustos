@@ -44,7 +44,7 @@ static int procfs_get_child(fs_node_t* node, fs_node_t** childptr, size_t index)
 			}
 			return 0;
 		} else {
-		 *childptr = (fs_node_t*)list_get(&procs, index);
+		  *childptr = (fs_node_t*)list_get(&procs, index);
 			return 0;
 		}
 	}
@@ -60,7 +60,7 @@ static int procfs_mount(fs_node_t** targetptr, fs_node_t* source, unsigned long 
 
 static int procfs_umount(fs_node_t** targetptr) {
 	kfree(*targetptr);
- *targetptr = NULL;
+  *targetptr = NULL;
 	return 0;
 }
 

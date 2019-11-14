@@ -147,7 +147,7 @@ static int initrd_umount(fs_node_t** targetptr) {
 	mz_zip_reader_end(&initrd->zip);
 	kfree(initrd);
 	kfree(*targetptr);
- *targetptr = NULL;
+	*targetptr = NULL;
 	return 0;
 }
 
