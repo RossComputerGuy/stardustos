@@ -6,7 +6,6 @@
  */
 #pragma once
 
-#include <newland/arch/clock.h>
 #include <time.h>
 
 /**

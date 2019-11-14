@@ -1,7 +1,6 @@
 /**
  * NewLand Kernel - (C) 2019 Tristan Ross
  */
-#include <newland/arch/clock.h>
 #include <newland/arch/io.h>
 #include <newland/time.h>
 #include <string.h>

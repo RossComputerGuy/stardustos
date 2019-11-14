@@ -1,11 +1,17 @@
-/**
- * NewLand Kernel - (C) 2019 Tristan Ross
+/** \file arch/x86/include/newland/arch/gdt.h
+ * \author Tristan Ross
+ * \copyright GNU Public License 3.0
+ * \brief x86 global descriptor table and task state segment
+ * \since v0.1.0
  */
 #pragma once
 
 #include <sys/types.h>
 
-typedef struct {
+/**
+ * Task State Segment structure
+ */
+typedef struct tss {
 	uint32_t prev_tss;
 	uint32_t esp0;
 	uint32_t ss0;
@@ -35,7 +41,10 @@ typedef struct {
 	uint16_t iomap_base;
 } tss_t;
 
-typedef struct {
+/**
+ * Global Descriptor Table Entry structure
+ */
+typedef struct gdt_entry {
 	uint16_t limit_low;
 	uint16_t base_low;
 	uint8_t base_middle;
@@ -44,9 +53,15 @@ typedef struct {
 	uint8_t base_high;
 } gdt_entry_t;
 
-typedef struct {
+/**
+ * Global Descriptor Table structure
+ */
+typedef struct gdt {
 	uint16_t limit;
 	uint32_t base;
 } __attribute__((packed)) gdt_t;
 
+/**
+ * Initializes the GDT
+ */
 void gdt_init();
