@@ -4,7 +4,7 @@
 #pragma once
 
 #include <newland/boot/multiboot.h>
-#include <newland/types.h>
+#include <sys/types.h>
 
 #define PAGE_SIZE 0x1000
 #define PAGE_ALIGN_UP(__x) ((__x) + PAGE_SIZE - ((__x) % PAGE_SIZE))

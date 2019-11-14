@@ -8,7 +8,7 @@
 #pragma once
 
 #include <newland/time.h>
-#include <newland/types.h>
+#include <sys/types.h>
 #include <liblist.h>
 #include <limits.h>
 #include <stdarg.h>

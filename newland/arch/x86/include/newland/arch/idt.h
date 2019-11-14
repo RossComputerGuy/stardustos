@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include <newland/types.h>
+#include <sys/types.h>
 
 typedef struct {
 	uint32_t gs, fs, es, ds;

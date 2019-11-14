@@ -4,7 +4,7 @@
 #pragma once
 
 #include <newland/arch/idt.h>
-#include <newland/types.h>
+#include <sys/types.h>
 
 typedef uint32_t (*irq_t)(uint32_t esp, regs_t* regs);
 

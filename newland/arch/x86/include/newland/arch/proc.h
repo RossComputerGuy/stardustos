@@ -6,7 +6,7 @@
 #include <newland/arch/idt.h>
 #include <newland/arch/mem.h>
 #include <newland/fs.h>
-#include <newland/types.h>
+#include <sys/types.h>
 #include <liblist.h>
 #include <limits.h>
 #include <string.h>

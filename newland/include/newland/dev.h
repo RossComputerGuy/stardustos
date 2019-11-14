@@ -8,7 +8,7 @@
 #pragma once
 
 #include <newland/fs.h>
-#include <newland/types.h>
+#include <sys/types.h>
 #include <liblist.h>
 
 /**

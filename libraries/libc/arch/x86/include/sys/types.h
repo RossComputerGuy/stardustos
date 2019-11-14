@@ -16,3 +16,14 @@ typedef signed long long int64_t;
 
 typedef unsigned long long uintmax_t;
 typedef signed long long intmax_t;
+
+typedef unsigned int pid_t;
+typedef unsigned int uid_t;
+typedef unsigned int gid_t;
+typedef unsigned int mode_t;
+typedef unsigned long off_t;
+typedef unsigned long ino_t;
+typedef unsigned long blksize_t;
+typedef unsigned int blkcnt_t;
+typedef unsigned int dev_t;
+typedef unsigned int nlink_t;

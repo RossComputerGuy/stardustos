@@ -5,7 +5,6 @@
 #include <newland/dev/tty.h>
 #include <newland/log.h>
 #include <newland/module.h>
-#include <newland/types.h>
 #include <errno.h>
 #include <string.h>
 

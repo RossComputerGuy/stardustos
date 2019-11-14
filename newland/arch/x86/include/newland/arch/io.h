@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include <newland/types.h>
+#include <sys/types.h>
 
 #define io_wait() asm volatile ("outb %%al, $0x80" : : "a"(0))
 

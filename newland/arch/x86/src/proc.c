@@ -8,8 +8,8 @@
 #include <newland/dev/tty.h>
 #include <newland/alloc.h>
 #include <newland/log.h>
-#include <newland/signal.h>
 #include <errno.h>
+#include <signal.h>
 
 SLIST_HEAD(proc_list, proc_t);
 struct proc_list processes;

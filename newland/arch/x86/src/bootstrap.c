@@ -18,7 +18,7 @@
 #include <newland/log.h>
 #include <newland/module.h>
 #include <newland/time.h>
-#include <newland/types.h>
+#include <sys/types.h>
 
 extern time_t boot_time;
 

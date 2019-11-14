@@ -1,5 +1,5 @@
 /**
- * NewLand Kernel - (C) 2019 Tristan Ross
+ * StardustOS libc - (C) 2019 Tristan Ross
  */
 #pragma once
 

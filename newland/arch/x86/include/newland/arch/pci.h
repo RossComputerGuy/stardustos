@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include <newland/types.h>
+#include <sys/types.h>
 
 #define PCI_ADDR 0xCF8
 #define PCI_VAL 0xCFC

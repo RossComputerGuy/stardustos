@@ -3,7 +3,7 @@
  */
 #include <newland/log.h>
 #include <newland/module.h>
-#include <newland/types.h>
+#include <sys/types.h>
 #include <errno.h>
 
 #define mod_get(i) (modinfo_t*)(((uintptr_t)&__modules_start) + (sizeof(modinfo_t) * i) + (i == 0 ? 0 : 17))
