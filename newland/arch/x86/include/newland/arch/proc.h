@@ -20,6 +20,11 @@
 #define PROC_RUNNING 2
 #define PROC_READY 3
 
+/**
+ * Structure which represents a process
+ * 
+ * @todo This requires quite a bit of memory, we should try making it smaller
+ */
 typedef struct proc {
 	SLIST_ENTRY(struct proc) proc_list;
 	pid_t id;
@@ -51,12 +56,25 @@ typedef struct proc {
 	size_t child_count;
 } proc_t;
 
+/**
+ * Gets CPU usage for a process
+ *
+ * @param[out] procptr The pointer to the process
+ * @return The CPU usage of a process
+ */
 #define proc_getcpuusage(procptr) ((sched_getusage((*(procptr))->id) * 100) / SCHED_RECCOUNT)
 
 size_t process_count();
 proc_t* process_get(size_t i);
 proc_t* process_frompid(pid_t pid);
 proc_t* proccess_curr();
+
+/**
+ * Used by the scheduler to find the next process in which to execute
+ *
+ * @todo This function needs to check the process status
+ * @return A pointer to a process or NULL if none was found
+ */
 proc_t* process_next();
 
 int proc_create(proc_t** procptr, proc_t* parent, const char* name, int isuser);
@@ -68,6 +86,14 @@ void proc_go(proc_t** procptr);
 
 void processes_cleanup();
 
+/**
+ * Executes a process from an executable file
+ *
+ * @bug The process information is forgotten when the schedule function is called (#6)
+ * @param[in] path The path of the executable
+ * @param[in] argv The arguments to pass, terminated with NULL
+ * @return Zero on success or a negative errno code
+ */
 int proc_exec(const char* path, const char** argv);
 
 int sched_getusage(pid_t pid);
