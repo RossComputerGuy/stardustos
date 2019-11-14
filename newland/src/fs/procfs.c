@@ -60,7 +60,7 @@ static int procfs_mount(fs_node_t** targetptr, fs_node_t* source, unsigned long 
 
 static int procfs_umount(fs_node_t** targetptr) {
 	kfree(*targetptr);
-  *targetptr = NULL;
+	*targetptr = NULL;
 	return 0;
 }
 
