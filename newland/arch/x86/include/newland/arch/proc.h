@@ -61,17 +61,7 @@ typedef struct proc {
 	/**
 	 * Process name
 	 */
-	const char name[256];
-
-	/**
-	 * Current working directory
-	 */
-	const char cwd[PATH_MAX];
-
-	/**
-	 * Process TTY
-	 */
-	const char tty[NAME_MAX];
+	const char name[NAME_MAX];
 
 	/**
 	 * Process stack
@@ -117,11 +107,6 @@ typedef struct proc {
 	 * FPU registers
 	 */
 	char fpu_regs[512];
-
-	/**
-	 * File descriptors
-	 */
-	fd_t fd[OPEN_MAX];
 
 	/**
 	 * Process GID
@@ -284,5 +269,6 @@ int sched_getusage(pid_t pid);
 
 /**
  * Sets up the scheduler
+ * @return Zero on success or a negative errno code
  */
-void sched_init();
+int sched_init();

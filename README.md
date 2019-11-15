@@ -7,7 +7,7 @@
 [![Stars](https://img.shields.io/github/stars/RossComputerGuy/stardustos?style=for-the-badge)](https://github.com/RossComputerGuy/stardustos/stargazers)
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/RossComputerGuy/stardustos)
 
-A modern Unix-like operating system which does not conform to POSIX.
+A modern Unix inspired operating system which does not conform to all of POSIX.
 
 ## Features
 

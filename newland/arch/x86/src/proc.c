@@ -82,25 +82,17 @@ proc_t* proc_create(proc_t* parent, const char* name, int isuser) {
 	}
 
 	proc->id = next_pid++;
-	strncpy((char*)proc->name, name, 256);
+	strncpy((char*)proc->name, name, NAME_MAX);
 	proc->status = PROC_READY;
 	proc->isuser = isuser;
 
 	if (parent == NULL) {
-		strncpy((char*)proc->cwd, "/", PATH_MAX);
-		if (tty_get(0) != NULL) strncpy((char*)proc->tty, tty_get(0)->name, NAME_MAX);
 		proc->gid = proc->uid = proc->parent = 0;
 	} else {
-		strncpy((char*)proc->cwd, parent->cwd, PATH_MAX);
 		proc->gid = parent->gid;
 		proc->uid = parent->uid;
 		proc->parent = parent->id;
 		parent->child[parent_index] = proc->id;
-		strncpy((char*)proc->tty, parent->tty, NAME_MAX);
-	}
-
-	for (size_t i = 0; i < OPEN_MAX; i++) {
-		proc->fd[i].node = NULL;
 	}
 
 	proc->regs.esp = (uint32_t)proc->stack + PROC_STACKSIZE;
@@ -120,10 +112,6 @@ proc_t* proc_create(proc_t* parent, const char* name, int isuser) {
 int proc_destroy(proc_t** procptr) {
 	uint32_t irqflgs = irq_disable();
 	proc_t* proc = *procptr;
-	for (size_t i = 0; i < OPEN_MAX; i++) {
-		if (proc->fd[i].node == NULL) continue;
-		fs_node_close(&proc->fd[i].node, &proc->fd[i]);
-	}
 	if ((page_dir_t*)proc->regs.cr3 != get_krnlpgdir()) mem_free_pgdir((page_dir_t*)proc->regs.cr3);
 	if (proc->parent != 0) {
 		proc_t* parent = process_frompid(proc->parent);
@@ -303,10 +291,13 @@ static void proc_handle_interrrupt(regs_t* regs) {
 	}
 }
 
-void sched_init() {
+int sched_init() {
+	proc_t* cleanup_proc = proc_create(NULL, "kcleanup", 1);
+	if (cleanup_proc == NULL) return errno;
 	register_int_handler(0x06, proc_handle_interrrupt);
 	register_int_handler(0x10, proc_handle_interrrupt);
 	register_int_handler(0x0C, proc_handle_interrrupt);
 	register_int_handler(0x0E, proc_handle_interrrupt);
 	register_irq_handler(0x00, schedule);
+	return 0;
 }
