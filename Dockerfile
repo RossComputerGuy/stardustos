@@ -1,7 +1,7 @@
 FROM debian:sid
 
 RUN apt-get update -y >/dev/null 2>&1 && \
-	apt-get install -y build-essential grub xorriso gcc gdb python grub-pc cmake zip unzip curl cppcheck rubygems cscope doxygen graphviz git xvfb x11vnc qemu-system openbox >/dev/null 2>&1 \
+	apt-get install -y build-essential grub2 grub-pc-bin bash-completion xorriso gcc gdb python cmake zip unzip curl cppcheck rubygems cscope doxygen graphviz git xvfb x11vnc qemu-system openbox >/dev/null 2>&1 \
 	&& apt-get clean >/dev/null 2>&1 && rm -rf /var/lib/apt/lists/* /tmp/*
 
 ENV WINDOW_MANAGER="openbox"
