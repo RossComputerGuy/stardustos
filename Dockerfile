@@ -3,6 +3,8 @@ FROM debian:sid
 RUN apt-get update -y >/dev/null 2>&1 && \
 	apt-get install -y build-essential grub xorriso gcc cmake zip unzip curl cppcheck rubygems cscope doxygen graphviz git xvfb x11vnc qemu openbox >/dev/null 2>&1 
 
+ENV WINDOW_MANAGER="openbox"
+
 RUN git clone https://github.com/novnc/noVNC.git /opt/novnc && git clone https://github.com/novnc/websockify /opt/novnc/utils/websockify
 COPY data/novnc-index.html /opt/novnc/index.html
 
