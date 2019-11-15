@@ -22,10 +22,7 @@ irq_common_stub:
 	mov %ax, %es
 	mov %ax, %fs
 	mov %ax, %gs
-	mov %esp, %eax
-	push %esp
 	call irq_handler
-	mov %eax, %esp
 	pop %gs
 	pop %fs
 	pop %es

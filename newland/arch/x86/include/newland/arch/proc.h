@@ -41,6 +41,10 @@
  */
 #define PROC_READY 3
 
+typedef struct {
+	uint32_t eax, ebx, ecx, edx, esi, edi, esp, ebp, eip, eflags, cr3;
+} proc_regs_t;
+
 /**
  * Structure which represents a process
  * 
@@ -90,34 +94,19 @@ typedef struct proc {
 	int issignaling:1;
 
 	/**
-	 * Process stack pointer
-	 */
-	uint32_t sp;
-
-	/**
 	 * Current process signal number
 	 */
 	uint8_t signum;
 
 	/**
-	 * Process stack
+	 * Process registers
 	 */
-	int stack[PROC_STACKSIZE];
-
-	/**
-	 * Process entry
-	 */
-	void (*entry)();
+	proc_regs_t regs;
 
 	/**
 	 * Signal handler for the process
 	 */
 	void (*signal_handler)(uint8_t signum, void* data);
-
-	/**
-	 * Page directory
-	 */
-	page_dir_t* pgdir;
 
 	/**
 	 * FPU registers
@@ -162,6 +151,14 @@ typedef struct proc {
  * @return The CPU usage of a process
  */
 #define proc_getcpuusage(procptr) ((sched_getusage((*(procptr))->id) * 100) / SCHED_RECCOUNT)
+
+/**
+ * Switches the process registers
+ *
+ * @param[in] a The old registers
+ * @param[in] b The new registers
+ */
+extern void proc_regswitch(proc_regs_t* a, proc_regs_t* b);
 
 /**
  * Get the number of processes
@@ -246,13 +243,6 @@ int proc_sigenter(proc_t** procptr, uint8_t signum, void* data, size_t datasz);
  * @return Zero on sucess or a negative errno code
  */
 int proc_sigleave(proc_t** procptr);
-
-/**
- * Enters the process
- *
- * @param[out] procptr The pointer to the process
- */
-void proc_go(proc_t** procptr);
 
 /**
  * Removes any zombie processes
