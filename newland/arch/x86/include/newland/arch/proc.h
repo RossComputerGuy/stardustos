@@ -74,6 +74,11 @@ typedef struct proc {
 	const char tty[NAME_MAX];
 
 	/**
+	 * Process stack
+	 */
+	int stack[PROC_STACKSIZE];
+
+	/**
 	 * Process status
 	 */
 	int status;
@@ -215,6 +220,16 @@ proc_t* proc_create(proc_t* parent, const char* name, int isuser);
  * @return Zero on success or a negative errno code
  */
 int proc_destroy(proc_t** procptr);
+
+/**
+ * Pushes data onto the process's stack
+ *
+ * @param[out] procptr The pointer to the process
+ * @param[in] value The data to push
+ * @param[in] size The size of the data
+ * @return The new stack pointer
+ */
+int proc_pushstack(proc_t** procptr, const void* value, size_t size);
 
 /**
  * Switches the page directory

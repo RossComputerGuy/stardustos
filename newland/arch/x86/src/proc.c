@@ -103,6 +103,8 @@ proc_t* proc_create(proc_t* parent, const char* name, int isuser) {
 		proc->fd[i].node = NULL;
 	}
 
+	proc->regs.esp = (uint32_t)proc->stack + PROC_STACKSIZE;
+
 	if ((proc->isuser = isuser)) proc->regs.cr3 = (uint32_t)mem_alloc_pgdir();
 	else proc->regs.cr3 = (uint32_t)get_krnlpgdir();
 
@@ -140,6 +142,13 @@ int proc_destroy(proc_t** procptr) {
 	return 0;
 }
 
+int proc_pushstack(proc_t** procptr, const void* value, size_t size) {
+	proc_t* proc = *procptr;
+	proc->regs.esp -= size;
+	memcpy((void*)proc->regs.esp, value, size);
+	return proc->regs.esp;
+}
+
 page_dir_t* proc_switch_pgdir(proc_t** procptr, page_dir_t* pgdir) {
 	proc_t* proc = *procptr;
 	page_dir_t* old = (page_dir_t*)proc->regs.cr3;
@@ -161,7 +170,7 @@ int proc_sigenter(proc_t** procptr, uint8_t signum, void* data, size_t datasz) {
 
 	proc->issignaling = 1;
 	proc->signum = signum;
-	// TODO: write the signal data
+	if (datasz > 0 && data != NULL) proc_pushstack(procptr, data, datasz);
 	return 0;
 }
 
@@ -226,7 +235,14 @@ int proc_exec(const char* path, const char** argv) {
 
 	proc->regs.eip = hdr.entry;
 
-	/* TODO: write arguments */
+	int argc = 0;
+	if (argv != NULL) {
+		while (argv[argc] != NULL) {
+			proc_pushstack(&proc, argv[argc], strlen((const char*)argv[argc]) + 1);
+			argc++;
+		}
+	}
+	proc_pushstack(&proc, &argc, sizeof(int));
 
 	elf_program_t prog;
 	for (int i = 0; i < hdr.phnum; i++) {
