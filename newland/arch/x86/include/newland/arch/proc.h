@@ -204,13 +204,12 @@ proc_t* process_next();
 /**
  * Creates a process
  *
- * @param[out] procptr The pointer to the process
  * @param[in] parent The pointer to the parent process
  * @param[in] name The process name
  * @param[in] isuser Set to true to run the process in userspace
- * @return Zero on success or a negative errno code
+ * @return A newly allocated process or NULL if it failed
  */
-int proc_create(proc_t** procptr, proc_t* parent, const char* name, int isuser);
+proc_t* proc_create(proc_t* parent, const char* name, int isuser);
 
 /**
  * Destroys a process

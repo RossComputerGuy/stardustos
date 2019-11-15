@@ -42,21 +42,23 @@ proc_t* process_frompid(pid_t pid) {
 }
 
 proc_t* process_curr() {
+	if (proc_count == 0) return NULL;
 	if (curr_pid == 0) return NULL;
 	return process_frompid(curr_pid);
 }
 
 proc_t* process_next() {
 	if (proc_count == 0) return NULL;
+	if (curr_pid == 0) return NULL;
 	proc_t* curr_proc = process_frompid(curr_pid);
 	if (curr_proc == NULL) return SLIST_FIRST(&processes);
 	if (SLIST_NEXT(curr_proc, proc_list) != NULL) return SLIST_NEXT(curr_proc, proc_list);
 	return SLIST_FIRST(&processes);
 }
 
-int proc_create(proc_t** procptr, proc_t* parent, const char* name, int isuser) {
-	proc_t* proc = (*procptr = kmalloc(sizeof(proc_t)));
-	if (proc == NULL) return -ENOMEM;
+proc_t* proc_create(proc_t* parent, const char* name, int isuser) {
+	proc_t* proc = kmalloc(sizeof(proc_t));
+	if (proc == NULL) return NULL;
 	uint32_t irqflgs = irq_disable();
 	memset(proc, 0, sizeof(proc_t));
 
@@ -70,8 +72,10 @@ int proc_create(proc_t** procptr, proc_t* parent, const char* name, int isuser) 
 		}
 		if (parent_index == -1) {
 			if (parent->child_count + 1 > CHILD_MAX) {
+				errno = -ECHILD;
+				kfree(proc);
 				irq_restore(irqflgs);
-				return -ECHILD;
+				return NULL;
 			}
 			parent_index = parent->child_count++;
 		}
@@ -109,7 +113,8 @@ int proc_create(proc_t** procptr, proc_t* parent, const char* name, int isuser) 
 	SLIST_INSERT_HEAD(&processes, proc, proc_list);
 	proc_count++;
 	irq_restore(irqflgs);
-	return proc->id;
+	if (proc_count == 1 && curr_pid == 0) curr_pid = proc->id;
+	return proc;
 }
 
 int proc_destroy(proc_t** procptr) {
@@ -220,7 +225,9 @@ uint32_t schedule(uint32_t sp, regs_t* regs) {
 	} else {
 		curr_pid = 1;
 	}
-	if (curr_proc != NULL) paging_loaddir(curr_proc->pgdir);
+	curr_proc->status = PROC_READY;
+	next_proc->status = PROC_RUNNING;
+	paging_loaddir(curr_proc->pgdir);
 	paging_invalidate_tlb();
 	fpu_loadctx(next_proc);
 	printk(KLOG_INFO "proc: switching context %d\n", next_proc->id);
@@ -228,23 +235,31 @@ uint32_t schedule(uint32_t sp, regs_t* regs) {
 }
 
 int proc_exec(const char* path, const char** argv) {
+	uint32_t eflags = irq_disable();
 	fs_node_t* node;
 	int r = fs_resolve(&node, path);
-	if (r < 0) return r;
-
-	elf_header_t hdr;
-	r = fs_node_read(&node, 0, &hdr, sizeof(elf_header_t));
-	if (r < 0) return r;
-
-	if (!(elf_isvalid(&hdr) && hdr.machine == 3)) return -EINVAL;
-
-	uint32_t eflags = irq_disable();
-	proc_t* proc;
-	proc_t* curr = process_curr();
-	r = proc_create(&proc, curr, path, 1);
 	if (r < 0) {
 		irq_restore(eflags);
 		return r;
+	}
+
+	elf_header_t hdr;
+	r = fs_node_read(&node, 0, &hdr, sizeof(elf_header_t));
+	if (r < 0) {
+		irq_restore(eflags);
+		return r;
+	}
+
+	if (!(elf_isvalid(&hdr) && hdr.machine == 3)) {
+		irq_restore(eflags);
+		return -EINVAL;
+	}
+
+	proc_t* curr = process_curr();
+	proc_t* proc = proc_create(curr, path, 1);
+	if (proc == NULL) {
+		irq_restore(eflags);
+		return errno;
 	}
 
 	proc->entry = (void*)hdr.entry;
