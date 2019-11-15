@@ -25,19 +25,6 @@ endif()
 add_compile_definitions("NEWLAND_KERNEL" "MINIZ_NO_ARCHIVE_WRITING_APIS")
 add_compile_options("-nostdinc" "-fno-builtin" "-Werror=implicit-function-declaration" "-fno-stack-protector")
 
-find_package(Doxygen REQUIRED dot)
-set(DOXYGEN_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/docs)
-set(DOXYGEN_RECURSIVE TRUE)
-set(DOXYGEN_CALL_GRAPH TRUE)
-set(DOXYGEN_CALLER_GRAPH TRUE)
-set(DOXYGEN_TAB_SIZE 2)
-set(DOXYGEN_EXTRACT_ALL TRUE)
-set(DOXYGEN_SOURCE_BROWSER TRUE)
-set(DOXYGEN_USE_MDFILE_AS_MAINPAGE ${PROJECT_SOURCE_DIR}/README.md)
-set(DOXYGEN_QUIET TRUE)
-doxygen_add_docs(docs ALL ${PROJECT_SOURCE_DIR}/arch ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/libc ${PROJECT_SOURCE_DIR}/libfile ${PROJECT_SOURCE_DIR}/liblist ${PROJECT_SOURCE_DIR}/miniz ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/README.md
-	COMMENT "Building kernel documentation")
-
 set(libc_SOURCE_DIR "${PROJECT_SOURCE_DIR}/libc")
 include("${PROJECT_SOURCE_DIR}/libc/build.cmake")
 
@@ -64,6 +51,20 @@ if(NOT CMAKE_PROJECT_NAME STREQUAL "stardustos")
 	add_custom_target(lint ${PROJECT_BINARY_DIR}/lint.sh)
 	add_custom_target(man ALL ${PROJECT_BINARY_DIR}/buildman.sh)
 endif()
+
+find_package(Doxygen REQUIRED dot)
+set(DOXYGEN_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/docs)
+set(DOXYGEN_RECURSIVE TRUE)
+set(DOXYGEN_CALL_GRAPH TRUE)
+set(DOXYGEN_CALLER_GRAPH TRUE)
+set(DOXYGEN_TAB_SIZE 2)
+set(DOXYGEN_EXTRACT_ALL TRUE)
+set(DOXYGEN_SOURCE_BROWSER TRUE)
+set(DOXYGEN_USE_MDFILE_AS_MAINPAGE ${PROJECT_SOURCE_DIR}/README.md)
+set(DOXYGEN_QUIET TRUE)
+doxygen_add_docs(docs ALL ${PROJECT_SOURCE_DIR}/arch ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/libc ${PROJECT_SOURCE_DIR}/libfile ${PROJECT_SOURCE_DIR}/liblist ${PROJECT_SOURCE_DIR}/miniz ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/README.md
+	${PROJECT_BINARY_DIR}/manual.md
+	COMMENT "Building kernel documentation")
 
 add_link_options("-T${ARCH_DIR}/linker.ld" "-nostdlib" "-nostartfiles")
 add_executable(kernel.elf
