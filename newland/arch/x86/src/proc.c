@@ -291,9 +291,15 @@ static void proc_handle_interrrupt(regs_t* regs) {
 	}
 }
 
+static void kcleanup() {
+	while (1) processes_cleanup();
+}
+
 int sched_init() {
-	proc_t* cleanup_proc = proc_create(NULL, "kcleanup", 1);
+	proc_t* cleanup_proc = proc_create(NULL, "kcleanup", 0);
 	if (cleanup_proc == NULL) return errno;
+	cleanup_proc->regs.eip = (uint32_t)kcleanup;
+
 	register_int_handler(0x06, proc_handle_interrrupt);
 	register_int_handler(0x10, proc_handle_interrrupt);
 	register_int_handler(0x0C, proc_handle_interrrupt);
