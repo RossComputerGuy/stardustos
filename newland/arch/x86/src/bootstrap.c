@@ -35,10 +35,9 @@ void bootstrap_main(uint32_t magic, uint32_t mbaddr) {
 	timer_init(50);
 	fpu_init();
 	mem_init(mbi);
-	int r = sched_init();
-	if (r < 0) panic("Failed to initialize the scheduler");
+	sched_init();
 
-	r = mbi_modules_init(mbi);
+	int r = mbi_modules_init(mbi);
 	if (r < 0) panic("Failed to create devices for multiboot modules");
 
 	r = procfs_init();

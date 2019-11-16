@@ -12,7 +12,7 @@
 /**
  * IRQ handler
  */
-typedef void (*irq_t)(regs_t* regs);
+typedef uint32_t (*irq_t)(uint32_t esp, regs_t* regs);
 
 /**
  * Disables interrupts

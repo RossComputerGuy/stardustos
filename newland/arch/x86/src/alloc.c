@@ -23,13 +23,8 @@ static struct block_meta* find_free_block(struct block_meta** last, size_t size)
 
 static struct block_meta* req_space(struct block_meta* last, size_t size) {
 	page_dir_t* pgdir = get_krnlpgdir();
-	struct block_meta* block = (struct block_meta*)mem_alloc(pgdir, sizeof(struct block_meta), 1, 0);
-	if (block == 0) return NULL;
-	void* req = (void*)mem_alloc(pgdir, size + sizeof(struct block_meta), 1, 0);
-	if (req == NULL) {
-		mem_free(pgdir, (unsigned int)block, sizeof(struct block_meta));
-		return NULL;
-	}
+	struct block_meta* block = (struct block_meta*)mem_alloc(pgdir, sizeof(struct block_meta) + size, 1, 0);
+	if (block == NULL) return NULL;
 	if (last) last->next = block;
 	block->size = size;
 	block->next = NULL;
@@ -54,19 +49,19 @@ void* kmalloc(size_t size) {
 			block->free = 0;
 		}
 	}
-	return (block + 1);
+	return (block + sizeof(struct block_meta));
 }
 
 void kfree(void* ptr) {
 	if (!ptr) return;
-	struct block_meta* block = (struct block_meta*)ptr - 1;
+	struct block_meta* block = (struct block_meta*)(ptr - sizeof(struct block_meta));
 	if (block->free) return;
 	block->free = 1;
 }
 
 void* krealloc(void* ptr, size_t size) {
 	if (ptr == NULL) return kmalloc(size);
-	struct block_meta* block = (struct block_meta*)ptr - 1;
+	struct block_meta* block = (struct block_meta*)(ptr - sizeof(struct block_meta));
 	if (block->size >= size) return ptr;
 	void* nptr = kmalloc(size);
 	if (nptr == NULL) return NULL;

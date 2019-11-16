@@ -41,10 +41,6 @@
  */
 #define PROC_READY 3
 
-typedef struct {
-	uint32_t eax, ebx, ecx, edx, esi, edi, esp, ebp, eip, eflags, cr3;
-} proc_regs_t;
-
 /**
  * Structure which represents a process
  * 
@@ -61,12 +57,17 @@ typedef struct proc {
 	/**
 	 * Process name
 	 */
-	const char name[NAME_MAX];
+	const char name[256];
 
 	/**
-	 * Process stack
+	 * Current working directory
 	 */
-	int stack[PROC_STACKSIZE];
+	const char cwd[PATH_MAX];
+
+	/**
+	 * Process TTY
+	 */
+	const char tty[NAME_MAX];
 
 	/**
 	 * Process status
@@ -89,14 +90,24 @@ typedef struct proc {
 	int issignaling:1;
 
 	/**
+	 * Process stack pointer
+	 */
+	uint32_t sp;
+
+	/**
 	 * Current process signal number
 	 */
 	uint8_t signum;
 
 	/**
-	 * Process registers
+	 * Process stack
 	 */
-	proc_regs_t regs;
+	int stack[PROC_STACKSIZE];
+
+	/**
+	 * Process entry
+	 */
+	void (*entry)();
 
 	/**
 	 * Signal handler for the process
@@ -104,9 +115,19 @@ typedef struct proc {
 	void (*signal_handler)(uint8_t signum, void* data);
 
 	/**
+	 * Page directory
+	 */
+	page_dir_t* pgdir;
+
+	/**
 	 * FPU registers
 	 */
 	char fpu_regs[512];
+
+	/**
+	 * File descriptors
+	 */
+	fd_t fd[OPEN_MAX];
 
 	/**
 	 * Process GID
@@ -141,14 +162,6 @@ typedef struct proc {
  * @return The CPU usage of a process
  */
 #define proc_getcpuusage(procptr) ((sched_getusage((*(procptr))->id) * 100) / SCHED_RECCOUNT)
-
-/**
- * Switches the process registers
- *
- * @param[in] a The old registers
- * @param[in] b The new registers
- */
-extern void proc_regswitch(proc_regs_t* a, proc_regs_t* b);
 
 /**
  * Get the number of processes
@@ -207,16 +220,6 @@ proc_t* proc_create(proc_t* parent, const char* name, int isuser);
 int proc_destroy(proc_t** procptr);
 
 /**
- * Pushes data onto the process's stack
- *
- * @param[out] procptr The pointer to the process
- * @param[in] value The data to push
- * @param[in] size The size of the data
- * @return The new stack pointer
- */
-int proc_pushstack(proc_t** procptr, const void* value, size_t size);
-
-/**
  * Switches the page directory
  *
  * @param[out] procptr The pointer to the process
@@ -245,6 +248,13 @@ int proc_sigenter(proc_t** procptr, uint8_t signum, void* data, size_t datasz);
 int proc_sigleave(proc_t** procptr);
 
 /**
+ * Enters the process
+ *
+ * @param[out] procptr The pointer to the process
+ */
+void proc_go(proc_t** procptr);
+
+/**
  * Removes any zombie processes
  */
 void processes_cleanup();
@@ -269,6 +279,5 @@ int sched_getusage(pid_t pid);
 
 /**
  * Sets up the scheduler
- * @return Zero on success or a negative errno code
  */
-int sched_init();
+void sched_init();
