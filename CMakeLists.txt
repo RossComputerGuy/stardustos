@@ -11,6 +11,9 @@ configure_file("${PROJECT_SOURCE_DIR}/data/scripts/lint.sh.in" "${PROJECT_BINARY
 
 add_custom_target(lint ${PROJECT_BINARY_DIR}/lint.sh)
 
+# Tools
+add_subdirectory(tools/nvk)
+
 # Kernel stuff
 add_subdirectory(newland)
 add_subdirectory(modules)
