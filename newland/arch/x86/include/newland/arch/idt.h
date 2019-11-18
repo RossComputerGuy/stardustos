@@ -6,7 +6,7 @@
  */
 #pragma once
 
-#include <sys/types.h>
+#include <stdint.h>
 
 typedef struct {
 	uint32_t ds;

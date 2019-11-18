@@ -9,6 +9,7 @@
 
 #include <string.h>
 
+#ifndef __nvk__
 /**
  * Allocates memory for the kernel
  *
@@ -32,3 +33,10 @@ void kfree(void* ptr);
  * @return Pointer to the newly allocated address
  */
 void* krealloc(void* ptr, size_t size);
+#else
+#include <stdlib.h>
+
+#define kmalloc malloc
+#define kfree free
+#define krealloc realloc
+#endif

@@ -11,32 +11,17 @@ if(NOT NEWLAND_KLOG_SIZE)
 endif()
 
 set(ARCH ${NEWLAND_ARCH})
-set(ARCH_DIR "${PROJECT_SOURCE_DIR}/arch/${NEWLAND_ARCH}")
-
+add_compile_options("-nostdinc" "-fno-builtin" "-fno-stack-protector")
 include(CTest)
-include("${ARCH_DIR}/build.cmake")
-include_directories("${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	add_compile_options("-fdump-rtl-expand")
 	add_link_options("-Wl,-Map=${PROJECT_BINARY_DIR}/kernel.map")
 endif()
 
-add_compile_definitions("NEWLAND_KERNEL" "MINIZ_NO_ARCHIVE_WRITING_APIS")
-add_compile_options("-nostdinc" "-fno-builtin" "-Werror=implicit-function-declaration" "-fno-stack-protector")
-
 set(libc_SOURCE_DIR "${PROJECT_SOURCE_DIR}/libc")
 include("${PROJECT_SOURCE_DIR}/libc/build.cmake")
-
-set(libfile_SOURCE_DIR "${PROJECT_SOURCE_DIR}/libfile")
-include("${PROJECT_SOURCE_DIR}/libfile/build.cmake")
-
-set(liblist_SOURCE_DIR "${PROJECT_SOURCE_DIR}/liblist")
-include("${PROJECT_SOURCE_DIR}/liblist/build.cmake")
-
-set(miniz_SOURCE_DIR "${PROJECT_SOURCE_DIR}/miniz")
-set(miniz_BINARY_DIR "${PROJECT_BINARY_DIR}")
-include("${PROJECT_SOURCE_DIR}/miniz/build.cmake")
+include("${PROJECT_SOURCE_DIR}/build.cmake")
 
 configure_file("${PROJECT_SOURCE_DIR}/data/scripts/buildman.sh.in" "${PROJECT_BINARY_DIR}/buildman.sh" @ONLY)
 configure_file("${PROJECT_SOURCE_DIR}/data/scripts/lint.sh.in" "${PROJECT_BINARY_DIR}/lint.sh" @ONLY)
@@ -44,7 +29,6 @@ configure_file("${PROJECT_SOURCE_DIR}/data/scripts/mkcallgraph.sh.in" "${PROJECT
 configure_file("${PROJECT_SOURCE_DIR}/data/scripts/run.sh.in" "${PROJECT_BINARY_DIR}/run.sh" @ONLY)
 configure_file("${PROJECT_SOURCE_DIR}/data/scripts/test.sh.in" "${PROJECT_BINARY_DIR}/test.sh" @ONLY)
 configure_file("${PROJECT_SOURCE_DIR}/data/scripts/uploadman.sh.in" "${PROJECT_BINARY_DIR}/uploadman.sh" @ONLY)
-configure_file("${PROJECT_SOURCE_DIR}/data/config.h.in" "${PROJECT_BINARY_DIR}/newland-config.h")
 configure_file("${PROJECT_SOURCE_DIR}/data/gdbinit.in" "${PROJECT_BINARY_DIR}/.gdbinit")
 
 if(NOT CMAKE_PROJECT_NAME STREQUAL "stardustos")
@@ -69,23 +53,10 @@ doxygen_add_docs(docs ALL ${PROJECT_SOURCE_DIR}/arch ${PROJECT_SOURCE_DIR}/inclu
 add_link_options("-T${ARCH_DIR}/linker.ld" "-nostdlib" "-nostartfiles")
 add_executable(kernel.elf
 	${LIBC_SOURCES}
-	${LIBFILE_SOURCES}
-	${LIBLIST_SOURCES}
-	${MINIZ_SOURCES}
 	${ARCH_FILES}
+	${NEWLAND_SOURCES}
 	"${ARCH_DIR}/src/alloc.c"
-	"${ARCH_DIR}/src/clock.c"
-	"${PROJECT_SOURCE_DIR}/src/dev/block.c"
-	"${PROJECT_SOURCE_DIR}/src/dev/tty.c"
-	"${PROJECT_SOURCE_DIR}/src/fs/devfs.c"
-	"${PROJECT_SOURCE_DIR}/src/fs/initrd.c"
-	"${PROJECT_SOURCE_DIR}/src/fs/procfs.c"
-	"${PROJECT_SOURCE_DIR}/src/bus.c"
-	"${PROJECT_SOURCE_DIR}/src/dev.c"
-	"${PROJECT_SOURCE_DIR}/src/fs.c"
-	"${PROJECT_SOURCE_DIR}/src/log.c"
-	"${PROJECT_SOURCE_DIR}/src/module.c"
-	"${PROJECT_SOURCE_DIR}/src/time.c")
+	"${ARCH_DIR}/src/clock.c")
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/callgraph.png"

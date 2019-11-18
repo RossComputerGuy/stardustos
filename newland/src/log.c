@@ -34,7 +34,7 @@ static int print(const char* str, size_t len, int inmsg) {
 		buff[0] = '[';
 		memset(buff + 1, ' ', TIME_STRLEN);
 		time_t t = boottime(NULL);
-		ultoa(t, buff + 1, 10);
+		snprintf(buff + 1, TIME_STRLEN, "%d", t);
 		buff += 1 + TIME_STRLEN;
 		buff[0] = ']';
 		buff[1] = ' ';

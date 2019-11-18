@@ -24,6 +24,7 @@ static time_t dt2t(datetime_t dt) {
 	return t;
 }
 
+#ifndef __nvk__
 time_t time(time_t* t) {
 	datetime_t dt;
 	arch_clock(&dt);
@@ -31,3 +32,4 @@ time_t time(time_t* t) {
 	if (t != NULL) *t = i;
 	return i;
 }
+#endif

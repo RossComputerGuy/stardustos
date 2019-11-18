@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <liblist.h>
 #include <limits.h>
+#include <stdint.h>
 #include <string.h>
 
 struct blkdev;

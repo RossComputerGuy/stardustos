@@ -6,13 +6,23 @@
  */
 #pragma once
 
+#ifndef __nvk__
 #include <newland/arch/idt.h>
 #include <newland/arch/mem.h>
 #include <newland/fs.h>
 #include <sys/types.h>
 #include <liblist.h>
 #include <limits.h>
+#include <stdint.h>
 #include <string.h>
+
+#ifndef CHILD_MAX
+#define CHILD_MAX 25
+#endif
+
+#ifndef OPEN_MAX
+#define OPEN_MAX 512
+#endif
 
 #define SCHED_RECCOUNT 128
 
@@ -286,3 +296,6 @@ int sched_getusage(pid_t pid);
  * Sets up the scheduler
  */
 void sched_init();
+#else
+#include <nvk/proc.h>
+#endif

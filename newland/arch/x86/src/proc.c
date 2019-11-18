@@ -66,7 +66,7 @@ proc_t* proc_create(proc_t* parent, const char* name, int isuser) {
 	int parent_index = -1;
 	if (parent != NULL) {
 		for (size_t i = 0; i < parent->child_count; i++) {
-		 if (parent->child[i] == 0) {
+			if (parent->child[i] == 0) {
 				parent_index = i;
 				break;
 			}

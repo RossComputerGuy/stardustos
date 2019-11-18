@@ -10,6 +10,7 @@
 #include <newland/dev.h>
 #include <liblist.h>
 #include <limits.h>
+#include <stdint.h>
 #include <string.h>
 
 /**

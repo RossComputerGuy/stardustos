@@ -3,6 +3,9 @@
  */
 #include <argp.h>
 #include <stdlib.h>
+#include <time.h>
+
+extern time_t boot_time;
 
 /** Argument parsing **/
 struct arguments {
@@ -33,5 +36,7 @@ static struct argp argp = { options, parse_opt, args_doc, doc };
 int main(int argc, char** argv) {
 	struct arguments args;
 	argp_parse(&argp, argc, argv, 0, 0, &args);
+
+	boot_time = time(NULL);
 	return EXIT_SUCCESS;
 }
