@@ -32,6 +32,7 @@ typedef struct proc {
 	size_t child_count;
 	void* (*entry)(void* impl);
 	void* impl;
+	size_t prgsize;
 } proc_t;
 
 size_t process_count();

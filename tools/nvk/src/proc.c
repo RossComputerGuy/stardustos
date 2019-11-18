@@ -3,9 +3,11 @@
  */
 #include <newland/dev/tty.h>
 #include <nvk/proc.h>
+#include <unicorn/unicorn.h>
 #include <errno.h>
 #include <pthread.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 SLIST_HEAD(proc_list, proc_t);
 static struct proc_list processes;
@@ -32,7 +34,23 @@ static void* proc_runner(void* arg) {
 	proc->status = PROC_READY;
 	void* ret = NULL;
 	if (proc->isuser) {
-		// TODO: use unicorn to emulate
+		uc_engine* uc;
+		uc_err err = uc_open(UC_ARCH_X86, UC_MODE_32, &uc);
+		if (err != UC_ERR_OK) {
+			fprintf(stderr, "Failed on uc_open() with error returned: %u\n", err);
+			proc->status = PROC_ZOMBIE;
+			return NULL;
+		}
+		uc_mem_map(uc, 0, 0xFFFFFF, UC_PROT_ALL);
+		uc_mem_map_ptr(uc, 0x1000000, proc->prgsize, UC_PROT_ALL, proc->entry);
+		uc_reg_write(uc, UC_X86_REG_EAX, &proc->impl);
+		if ((err = uc_emu_start(uc, 0x1000000, 0x1000000 + proc->prgsize - 1, 0, 0)) != UC_ERR_OK) {
+			fprintf(stderr, "Failed on uc_open() with error returned: %u\n", err);
+			uc_close(uc);
+			proc->status = PROC_ZOMBIE;
+			return NULL;
+		}
+		uc_close(uc);
 	} else ret = (proc->entry == NULL ? NULL : proc->entry(proc->impl));
 	proc->status = PROC_ZOMBIE;
 	return ret;
