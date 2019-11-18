@@ -24,3 +24,14 @@ proc_t* process_get(size_t i) {
 	}
 	return NULL;
 }
+
+proc_t* proc_create(proc_t* parent, const char* name, int isuser) {
+	proc_t* proc = malloc(sizeof(proc_t));
+	if (proc == NULL) return NULL;
+	memset(proc, 0, sizeof(proc_t));
+
+	strncpy((char*)proc->name, name, NAME_MAX);
+	proc->id = next_pid++;
+	// TODO: finish this
+	return proc;
+}
