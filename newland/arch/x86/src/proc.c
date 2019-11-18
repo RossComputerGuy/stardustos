@@ -222,13 +222,12 @@ uint32_t schedule(uint32_t sp, regs_t* regs) {
 		sched_rec[ticks % SCHED_RECCOUNT] = curr_pid;
 		ticks++;
 		curr_pid = next_proc->id;
+		curr_proc->status = PROC_READY;
 	} else {
 		curr_pid = 1;
 	}
-	curr_proc->status = PROC_READY;
 	next_proc->status = PROC_RUNNING;
-	paging_loaddir(curr_proc->pgdir);
-	paging_invalidate_tlb();
+	paging_loaddir(next_proc->pgdir);
 	fpu_loadctx(next_proc);
 	printk(KLOG_INFO "proc: switching context %d\n", next_proc->id);
 	return next_proc->sp;
