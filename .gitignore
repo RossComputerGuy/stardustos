@@ -38,4 +38,4 @@ wiki
 **/rootfs/copyrootfs.sh
 **/init/init
 **/hello/hello
-**/tools/nvk
+**/tools/nvk/nvk
