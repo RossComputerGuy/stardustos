@@ -2,8 +2,8 @@
  * NewLand Virtual Kernel - (C) 2019 Tristan Ross
  */
 #include <newland/dev/tty.h>
+#include <nvk/emulator.h>
 #include <nvk/proc.h>
-#include <unicorn/unicorn.h>
 #include <errno.h>
 #include <pthread.h>
 #include <stdlib.h>
@@ -29,28 +29,39 @@ proc_t* process_get(size_t i) {
 	return NULL;
 }
 
+proc_t* process_frompid(pid_t pid) {
+	proc_t* proc = NULL;
+	SLIST_FOREACH(proc, &processes, proc_list) {
+		if (proc->id == pid) return proc;
+	}
+	return NULL;
+}
+
+proc_t* process_curr() {
+	if (proc_count == 0) return NULL;
+	if (curr_pid == 0) return NULL;
+	return process_frompid(curr_pid);
+}
+
+proc_t* process_next() {
+	if (proc_count == 0) return NULL;
+	if (curr_pid == 0) return NULL;
+	proc_t* curr_proc = process_frompid(curr_pid);
+	if (curr_proc == NULL) return SLIST_FIRST(&processes);
+	if (SLIST_NEXT(curr_proc, proc_list) != NULL) return SLIST_NEXT(curr_proc, proc_list);
+	return SLIST_FIRST(&processes);
+}
+
 static void* proc_runner(void* arg) {
 	proc_t* proc = (proc_t*)arg;
 	proc->status = PROC_READY;
 	void* ret = NULL;
 	if (proc->isuser) {
-		uc_engine* uc;
-		uc_err err = uc_open(UC_ARCH_X86, UC_MODE_32, &uc);
+		uc_err err = nvk_emu(prog->entry, prog->prgsize, proc->impl);
 		if (err != UC_ERR_OK) {
-			fprintf(stderr, "Failed on uc_open() with error returned: %u\n", err);
 			proc->status = PROC_ZOMBIE;
 			return NULL;
 		}
-		uc_mem_map(uc, 0, 0xFFFFFF, UC_PROT_ALL);
-		uc_mem_map_ptr(uc, 0x1000000, proc->prgsize, UC_PROT_ALL, proc->entry);
-		uc_reg_write(uc, UC_X86_REG_EAX, &proc->impl);
-		if ((err = uc_emu_start(uc, 0x1000000, 0x1000000 + proc->prgsize - 1, 0, 0)) != UC_ERR_OK) {
-			fprintf(stderr, "Failed on uc_open() with error returned: %u\n", err);
-			uc_close(uc);
-			proc->status = PROC_ZOMBIE;
-			return NULL;
-		}
-		uc_close(uc);
 	} else ret = (proc->entry == NULL ? NULL : proc->entry(proc->impl));
 	proc->status = PROC_ZOMBIE;
 	return ret;
@@ -95,7 +106,10 @@ proc_t* proc_create(proc_t* parent, const char* name, int isuser) {
 		parent->child[parent_index] = proc->id;
 		strncpy((char*)proc->tty, parent->tty, NAME_MAX);
 	}
-	// TODO: finish this
+
+	SLIST_INSERT_HEAD(&processes, proc, proc_list);
+	proc_count++;
+	if (proc_count == 1 && curr_pid == 0) curr_pid = proc->id;
 	return proc;
 }
 

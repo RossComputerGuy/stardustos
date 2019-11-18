@@ -24,6 +24,7 @@ endif()
 add_compile_definitions("__nvk__")
 add_executable(nvk
 	${NEWLAND_SOURCES}
+	"${PROJECT_SOURCE_DIR}/src/emulator.c"
 	"${PROJECT_SOURCE_DIR}/src/main.c"
 	"${PROJECT_SOURCE_DIR}/src/proc.c"
 	"${PROJECT_SOURCE_DIR}/src/time.c")
