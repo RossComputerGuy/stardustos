@@ -6,6 +6,7 @@
 #include <newland/dev.h>
 #include <errno.h>
 #include <stddef.h>
+#include <stdlib.h>
 
 static multiboot_info_t* mbi;
 
@@ -16,6 +17,7 @@ static size_t mb_read(fs_node_t* node, off_t offset, void* buff, size_t size) {
 	multiboot_module_t* mod = (multiboot_module_t*)mbi->mods_addr;
 	for (size_t x = 0; x < i; x++) mod = (multiboot_module_t*)((uint32_t)mod->mod_end + 1);
 	if (offset + size >= mod->mod_end) return -EINVAL;
+	size = offset > (mod->mod_end - mod->mod_start) ? 0 : (size_t)min((mod->mod_end - mod->mod_start) - offset, size);
 	memcpy(buff, (void*)(mod->mod_start + offset), size);
 	return size;
 }

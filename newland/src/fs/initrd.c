@@ -16,7 +16,6 @@
 struct initrd {
 	mz_zip_archive zip;
 	list_t nodes;
-	void* buff;
 };
 
 struct initrd_node {
@@ -25,6 +24,14 @@ struct initrd_node {
 	char path[PATH_MAX];
 };
 
+/** Miniz functions **/
+
+static size_t mz_initrd_read(void* opaque, mz_uint64 off, void* buff, size_t size) {
+	fs_node_t* node = (fs_node_t*)opaque;
+	return fs_node_read(&node, off, buff, size);
+}
+
+/** Filesystem operations **/
 static size_t initrd_read(fs_node_t* node, off_t offset, void* buff, size_t size) {
 	struct initrd_node* initrd_node = node->impl;
 	struct initrd* initrd = initrd_node->initrd;
@@ -70,29 +77,18 @@ static int initrd_mount(fs_node_t** targetptr, fs_node_t* source, unsigned long 
 	struct initrd* initrd = kmalloc(sizeof(struct initrd));
 	if (initrd == NULL) return -ENOMEM;
 
-	if ((initrd->buff = kmalloc(source->size)) == NULL) {
-		kfree(initrd);
-		return -ENOMEM;
-	}
+	initrd->zip.m_pRead = mz_initrd_read;
+	initrd->zip.m_pIO_opaque = source;
 
-	int r = fs_node_read(&source, 0, initrd->buff, source->size);
-	if (r < 0) {
-		kfree(initrd->buff);
-		kfree(initrd);
-		return r;
-	}
-
-	if (!mz_zip_reader_init_mem(&initrd->zip, initrd->buff, source->size, MZ_ZIP_FLAG_CASE_SENSITIVE | MZ_ZIP_FLAG_COMPRESSED_DATA)) {
-		kfree(initrd->buff);
+	if (!mz_zip_reader_init(&initrd->zip, source->size, MZ_ZIP_FLAG_CASE_SENSITIVE | MZ_ZIP_FLAG_COMPRESSED_DATA)) {
 		kfree(initrd);
 		printk(KLOG_ERR "initrd: miniz failed to initialize zip reader: %s\n", mz_zip_get_error_string(mz_zip_get_last_error(&initrd->zip)));
 		return -EINVAL;
 	}
 
 /** Root node creation **/
-	r = fs_node_create(targetptr, "/", 6 << FS_NODE_DIR);
+	int r = fs_node_create(targetptr, "/", 6 << FS_NODE_DIR);
 	if (r < 0) {
-		kfree(initrd->buff);
 		kfree(initrd);
 		return r;
 	}
@@ -104,14 +100,12 @@ static int initrd_mount(fs_node_t** targetptr, fs_node_t* source, unsigned long 
 		fs_node_t* node;
 		struct initrd_node* initrd_node = kmalloc(sizeof(struct initrd_node));
 		if (initrd_node == NULL) {
-			kfree(initrd->buff);
 			kfree(initrd);
 			kfree((*targetptr));
 			return -ENOMEM;
 		}
 		mz_zip_archive_file_stat stat;
 		if (!mz_zip_reader_file_stat(&initrd->zip, i, &stat)) {
-			kfree(initrd->buff);
 			kfree(initrd);
 			kfree((*targetptr));
 			kfree(initrd_node);
@@ -123,7 +117,6 @@ static int initrd_mount(fs_node_t** targetptr, fs_node_t* source, unsigned long 
 		initrd_node->index = i;
 		r = fs_node_create(&node, basename(initrd_node->path), 6 << (stat.m_is_directory ? FS_NODE_DIR : FS_NODE_FILE));
 		if (r < 0) {
-			kfree(initrd->buff);
 			kfree(initrd);
 			kfree((*targetptr));
 			kfree(initrd_node);
@@ -143,7 +136,6 @@ static int initrd_mount(fs_node_t** targetptr, fs_node_t* source, unsigned long 
 static int initrd_umount(fs_node_t** targetptr) {
 	struct initrd* initrd = (struct initrd*)((*targetptr)->impl);
 	// TODO: free nodes
-	kfree(initrd->buff);
 	mz_zip_reader_end(&initrd->zip);
 	kfree(initrd);
 	kfree(*targetptr);
