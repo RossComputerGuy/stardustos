@@ -2,8 +2,8 @@
  * NewLand Virtual Kernel - (C) 2019 Tristan Ross
  */
 #include <nvk/proc.h>
-#include <liblist.h>
 #include <pthread.h>
+#include <stdlib.h>
 
 SLIST_HEAD(proc_list, proc_t);
 static struct proc_list processes;
