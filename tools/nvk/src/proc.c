@@ -2,6 +2,7 @@
  * NewLand Virtual Kernel - (C) 2019 Tristan Ross
  */
 #include <newland/dev/tty.h>
+#include <newland/syscall.h>
 #include <nvk/emulator.h>
 #include <nvk/proc.h>
 #include <errno.h>
@@ -56,8 +57,9 @@ static void* proc_runner(void* arg) {
 	proc_t* proc = (proc_t*)arg;
 	proc->status = PROC_READY;
 	void* ret = NULL;
+	curr_pid = proc->id;
 	if (proc->isuser) {
-		uc_err err = nvk_emu(prog->entry, prog->prgsize, proc->impl);
+		uc_err err = nvk_emu(proc->entry, proc->prgsize, proc->impl);
 		if (err != UC_ERR_OK) {
 			proc->status = PROC_ZOMBIE;
 			return NULL;

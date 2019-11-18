@@ -30,4 +30,5 @@ set(NEWLAND_SOURCES ${LIBFILE_SOURCES}
 	"${newland_SOURCE_DIR}/src/fs.c"
 	"${newland_SOURCE_DIR}/src/log.c"
 	"${newland_SOURCE_DIR}/src/module.c"
+	"${newland_SOURCE_DIR}/src/syscall.c"
 	"${newland_SOURCE_DIR}/src/time.c")

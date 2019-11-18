@@ -21,7 +21,7 @@ else()
 	include_directories("${unicorn_SOURCE_DIR}/include")
 endif()
 
-add_compile_definitions("__nvk__")
+add_compile_definitions("__nvk__" "HAS_ERRNO")
 add_executable(nvk
 	${NEWLAND_SOURCES}
 	"${PROJECT_SOURCE_DIR}/src/emulator.c"
