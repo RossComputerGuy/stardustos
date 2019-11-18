@@ -76,6 +76,17 @@ int vsnprintf(char* str, size_t size, const char* format, va_list ap) {
 					wrote += i;
 				}
 				break;
+			case 'l':
+				if (traverse[1] == 'u') {
+					unsigned long lu = va_arg(ap, unsigned long);
+					s = convert(lu, 10);
+				} else {
+					long l = va_arg(ap, long);
+					s = convert(l, 10);
+				}
+				if (wrote < size) strncpy((char*)(str + wrote), s, strlen(s));
+				wrote += strlen(s);
+				break;
 			case '%':
 				if (wrote < size) str[wrote] = '%';
 				wrote++;
