@@ -54,14 +54,14 @@ void* kmalloc(size_t size) {
 
 void kfree(void* ptr) {
 	if (!ptr) return;
-	struct block_meta* block = (struct block_meta*)(ptr - sizeof(struct block_meta));
+	struct block_meta* block = (struct block_meta*)((uint32_t*)ptr - sizeof(struct block_meta));
 	if (block->free) return;
 	block->free = 1;
 }
 
 void* krealloc(void* ptr, size_t size) {
 	if (ptr == NULL) return kmalloc(size);
-	struct block_meta* block = (struct block_meta*)(ptr - sizeof(struct block_meta));
+	struct block_meta* block = (struct block_meta*)((uint32_t*)ptr - sizeof(struct block_meta));
 	if (block->size >= size) return ptr;
 	void* nptr = kmalloc(size);
 	if (nptr == NULL) return NULL;
