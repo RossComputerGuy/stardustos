@@ -11,27 +11,25 @@
 .endm
 
 irq_common_stub:
-	cld
 	pusha
-	push %ds
-	push %es
-	push %fs
-	push %gs
+	mov %ds, %ax
+	push %eax
 	mov $0x10, %ax
 	mov %ax, %ds
 	mov %ax, %es
 	mov %ax, %fs
 	mov %ax, %gs
-	mov %esp, %eax
 	push %esp
 	call irq_handler
-	mov %eax, %esp
-	pop %gs
-	pop %fs
-	pop %es
-	pop %ds
+	pop %ebx
+	pop %ebx
+	mov %bx, %ds
+	mov %bx, %es
+	mov %bx, %fs
+	mov %bx, %gs
 	popa
 	add $8, %esp
+	sti
 	iret
 
 IRQ 0, 32

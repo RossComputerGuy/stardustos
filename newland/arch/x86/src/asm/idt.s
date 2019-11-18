@@ -21,24 +21,25 @@
 .endm
 
 isr_common_stub:
-	cld
 	pusha
-	push %ds
-	push %es
-	push %fs
-	push %gs
+	mov %ds, %ax
+	push %eax
 	mov $0x10, %ax
 	mov %ax, %dx
 	mov %ax, %es
 	mov %ax, %fs
 	mov %ax, %gs
+	push %esp
 	call isr_handler
-	pop %gs
-	pop %fs
-	pop %es
-	pop %ds
+	pop %ebx
+	pop %ebx
+	mov %bx, %ds
+	mov %bx, %es
+	mov %bx, %fs
+	mov %bx, %gs
 	popa
 	add $8, %esp
+	sti
 	iret
 
 ISR_NOERRCODE 0

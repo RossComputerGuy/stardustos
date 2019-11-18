@@ -21,9 +21,8 @@ void register_irq_handler(uint8_t i, irq_t handler) {
 	irq_handlers[i] = handler;
 }
 
-uint32_t irq_handler(uint32_t esp, regs_t regs) {
-	if (regs.int_no >= 40) outb(0xA0, 0x20);
+void irq_handler(regs_t* regs) {
+	if (regs->int_no >= 40) outb(0xA0, 0x20);
 	outb(0x20, 0x20);
-	if (irq_handlers[regs.int_no - 32] != 0) esp = irq_handlers[regs.int_no - 32](esp, &regs);
-	return esp;
+	if (irq_handlers[regs->int_no - 32] != 0) irq_handlers[regs->int_no - 32](regs);
 }

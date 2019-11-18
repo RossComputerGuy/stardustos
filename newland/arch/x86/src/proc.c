@@ -4,6 +4,7 @@
 #include <libfile/elf.h>
 #include <newland/arch/fpu.h>
 #include <newland/arch/irq.h>
+#include <newland/arch/misc.h>
 #include <newland/arch/proc.h>
 #include <newland/dev/tty.h>
 #include <newland/alloc.h>
@@ -103,11 +104,11 @@ proc_t* proc_create(proc_t* parent, const char* name, int isuser) {
 		proc->fd[i].node = NULL;
 	}
 
-	if ((proc->isuser = isuser)) proc->pgdir = mem_alloc_pgdir();
-	else proc->pgdir = get_krnlpgdir();
+	proc->regs.esp = (uint32_t)proc->stack + PROC_STACKSIZE;
 
-	memset(proc->stack, 0, PROC_STACKSIZE);
-	proc->sp = (uint32_t)(&proc->stack[0] + PROC_STACKSIZE - 1);
+	if ((proc->isuser = isuser)) proc->regs.cr3 = (uint32_t)mem_alloc_pgdir();
+	else proc->regs.cr3 = (uint32_t)get_krnlpgdir();
+
 	fpu_savectx(proc);
 
 	SLIST_INSERT_HEAD(&processes, proc, proc_list);
@@ -124,7 +125,7 @@ int proc_destroy(proc_t** procptr) {
 		if (proc->fd[i].node == NULL) continue;
 		fs_node_close(&proc->fd[i].node, &proc->fd[i]);
 	}
-	if (proc->pgdir != get_krnlpgdir()) mem_free_pgdir(proc->pgdir);
+	if ((page_dir_t*)proc->regs.cr3 != get_krnlpgdir()) mem_free_pgdir((page_dir_t*)proc->regs.cr3);
 	if (proc->parent != 0) {
 		proc_t* parent = process_frompid(proc->parent);
 		for (int i = 0; i < parent->child_count; i++) {
@@ -142,10 +143,17 @@ int proc_destroy(proc_t** procptr) {
 	return 0;
 }
 
+int proc_pushstack(proc_t** procptr, const void* value, size_t size) {
+	proc_t* proc = *procptr;
+	proc->regs.esp -= size;
+	memcpy((void*)proc->regs.esp, value, size);
+	return proc->regs.esp;
+}
+
 page_dir_t* proc_switch_pgdir(proc_t** procptr, page_dir_t* pgdir) {
 	proc_t* proc = *procptr;
-	page_dir_t* old = proc->pgdir;
-	proc->pgdir = pgdir;
+	page_dir_t* old = (page_dir_t*)proc->regs.cr3;
+	proc->regs.cr3 = (uint32_t)pgdir;
 	paging_loaddir(pgdir);
 	return old;
 }
@@ -163,12 +171,7 @@ int proc_sigenter(proc_t** procptr, uint8_t signum, void* data, size_t datasz) {
 
 	proc->issignaling = 1;
 	proc->signum = signum;
-	proc->sp -= sizeof(uint8_t);
-	memcpy((void*)proc->sp, &signum, sizeof(uint8_t));
-	if (datasz > 0 && data != NULL) {
-		proc->sp -= datasz;
-		memcpy((void*)proc->sp, data, datasz);
-	}
+	if (datasz > 0 && data != NULL) proc_pushstack(procptr, data, datasz);
 	return 0;
 }
 
@@ -180,31 +183,6 @@ int proc_sigleave(proc_t** procptr) {
 	return 0;
 }
 
-void proc_go(proc_t** procptr) {
-	proc_t* proc = *procptr;
-	regs_t regs;
-	regs.eflags = 0x202;
-	if (proc->issignaling) {
-		if (proc->signal_handler != NULL) regs.eip = (uint32_t)proc->signal_handler;
-	} else regs.eip = (uint32_t)proc->entry;
-	regs.ebp = ((uint32_t)proc->stack + PROC_STACKSIZE);
-	if (proc->isuser) {
-		regs.cs = 0x18;
-		regs.ds = 0x20;
-		regs.es = 0x20;
-		regs.fs = 0x20;
-		regs.gs = 0x20;
-	} else {
-		regs.cs = 0x08;
-		regs.ds = 0x10;
-		regs.es = 0x10;
-		regs.fs = 0x10;
-		regs.gs = 0x10;
-	}
-	proc->sp -= sizeof(regs_t);
-	memcpy((void*)proc->sp, &regs, sizeof(regs_t));
-}
-
 void processes_cleanup() {
 	proc_t* proc;
 	SLIST_FOREACH(proc, &processes, proc_list) {
@@ -212,25 +190,20 @@ void processes_cleanup() {
 	}
 }
 
-uint32_t schedule(uint32_t sp, regs_t* regs) {
-	if (proc_count == 0) return sp;
+void schedule(regs_t* regs) {
+	if (proc_count == 0) return;
 	proc_t* curr_proc = process_frompid(curr_pid);
 	proc_t* next_proc = process_next();
-	if (curr_proc != NULL) {
-		curr_proc->sp = sp;
-		fpu_savectx(curr_proc);
-		sched_rec[ticks % SCHED_RECCOUNT] = curr_pid;
-		ticks++;
-		curr_pid = next_proc->id;
-		curr_proc->status = PROC_READY;
-	} else {
-		curr_pid = 1;
-	}
+	if (curr_proc == NULL) return;
+	fpu_savectx(curr_proc);
+	sched_rec[ticks % SCHED_RECCOUNT] = curr_pid;
+	ticks++;
+	curr_proc->status = PROC_READY;
+	curr_pid = next_proc->id;
 	next_proc->status = PROC_RUNNING;
-	paging_loaddir(next_proc->pgdir);
 	fpu_loadctx(next_proc);
 	printk(KLOG_INFO "proc: switching context %d\n", next_proc->id);
-	return next_proc->sp;
+	proc_regswitch(&curr_proc->regs, &next_proc->regs);
 }
 
 int proc_exec(const char* path, const char** argv) {
@@ -261,23 +234,16 @@ int proc_exec(const char* path, const char** argv) {
 		return errno;
 	}
 
-	proc->entry = (void*)hdr.entry;
-
-	proc->sp -= strlen(path) + 1;
-	memcpy((void*)proc->sp, path, strlen(path) + 1);
+	proc->regs.eip = hdr.entry;
 
 	int argc = 0;
 	if (argv != NULL) {
 		while (argv[argc] != NULL) {
-			proc->sp -= strlen(argv[argc]) + 1;
-			memcpy((void*)proc->sp, argv[argc], strlen(argv[argc]) + 1);
+			proc_pushstack(&proc, argv[argc], strlen((const char*)argv[argc]) + 1);
 			argc++;
 		}
 	}
-	argc++;
-
-	proc->sp -= sizeof(int);
-	memcpy((void*)proc->sp, &argc, sizeof(int));
+	proc_pushstack(&proc, &argc, sizeof(int));
 
 	elf_program_t prog;
 	for (int i = 0; i < hdr.phnum; i++) {
@@ -288,9 +254,9 @@ int proc_exec(const char* path, const char** argv) {
 			return r;
 		}
 		if (prog.vaddr >= 0x100000) {
-			page_dir_t* oldpgdir = proc_switch_pgdir(&curr, proc->pgdir);
-			paging_loaddir(proc->pgdir);
-			mem_map(proc->pgdir, prog.vaddr, PAGE_ALIGN_UP(prog.memsz) / PAGE_SIZE, 1, 1);
+			page_dir_t* oldpgdir = proc_switch_pgdir(&curr, (page_dir_t*)proc->regs.cr3);
+			paging_loaddir((page_dir_t*)proc->regs.cr3);
+			mem_map((page_dir_t*)proc->regs.cr3, prog.vaddr, PAGE_ALIGN_UP(prog.memsz) / PAGE_SIZE, 1, 1);
 			memset((void*)prog.vaddr, 0, prog.memsz);
 
 			r = fs_node_read(&node, prog.offset, (void*)prog.vaddr, prog.filesz);
@@ -302,8 +268,6 @@ int proc_exec(const char* path, const char** argv) {
 			proc_switch_pgdir(&curr, oldpgdir);
 		}
 	}
-
-	proc_go(&proc);
 
 	irq_restore(eflags);
 	return proc->id;
@@ -319,7 +283,10 @@ int sched_getusage(pid_t pid) {
 
 static void proc_handle_interrrupt(regs_t* regs) {
 	proc_t* curr_proc = process_curr();
-	if (curr_proc == NULL) return;
+	if (curr_proc == NULL) {
+		printk(KLOG_ERR "received unhandled interrupt: %d\n", regs->err_code);
+		halt();
+	}
 	switch (regs->int_no) {
 		/* Invalid Opcode */
 		case 0x06:
