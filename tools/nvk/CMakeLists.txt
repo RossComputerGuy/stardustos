@@ -28,6 +28,7 @@ add_compile_definitions("__nvk__" "HAS_LIBC")
 add_link_options("-T${PROJECT_BINARY_DIR}/nvk.ld")
 add_executable(nvk
 	${NEWLAND_SOURCES}
+	"${PROJECT_SOURCE_DIR}/src/fs/rootfs.c"
 	"${PROJECT_SOURCE_DIR}/src/emulator.c"
 	"${PROJECT_SOURCE_DIR}/src/main.c"
 	"${PROJECT_SOURCE_DIR}/src/proc.c"

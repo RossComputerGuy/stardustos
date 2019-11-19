@@ -15,6 +15,7 @@ extern time_t boot_time;
 /** Argument parsing **/
 struct arguments {
 	char* rootfs;
+	char* initrd;
 };
 
 const char* arg_program_version = "NVK 1.0";
@@ -22,12 +23,16 @@ const char* argp_program_bug_address = "<spaceboyross@yandex.com>";
 static char doc[] = "NewLand Virtual Kernel, a program which emulates the NewLand kernel on Linux";
 static char args_doc[] = "ROOTFS";
 static struct argp_option options[] = {
+	{ "initrd", 'r', "FILE", 0, "Uses FILE for the initrd" },
 	{ 0 }
 };
 
 static error_t parse_opt(int key, char* arg, struct argp_state* state) {
 	struct arguments* args = state->input;
 	switch (key) {
+		case 'r':
+			args->initrd = arg;
+			break;
 		case ARGP_KEY_ARG:
 			args->rootfs = arg;
 			break;
@@ -39,8 +44,13 @@ static error_t parse_opt(int key, char* arg, struct argp_state* state) {
 static struct argp argp = { options, parse_opt, args_doc, doc };
 
 int main(int argc, char** argv) {
-	struct arguments args;
+	struct arguments args = { NULL, NULL };
 	argp_parse(&argp, argc, argv, 0, 0, &args);
+
+	if (args.initrd == NULL && args.rootfs == NULL) {
+		fprintf(stderr, "Requires the initrd or rootfs argument\n");
+		return EXIT_FAILURE;
+	}
 
 	boot_time = time(NULL);
 
