@@ -67,11 +67,11 @@ int main(int argc, char** argv) {
 		return EXIT_FAILURE;
 	}
 
-	r = modules_init();
+	/*r = modules_init();
 	if (r < 0) {
 		fprintf(stderr, "Failed to load kernel modules: %d\n", r);
 		return EXIT_FAILURE;
-	}
+	}*/
 
 	r = rootfs_init();
 	if (r < 0) {
