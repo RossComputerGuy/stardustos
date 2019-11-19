@@ -6,7 +6,7 @@
 #include <stddef.h>
 
 const static syscall_t syscall_handlers[] = {
-#include <newland/__syscalls.h>
+#include <newland/__syscall_handlers.h>
 };
 
 #define N_SYSCALLS (sizeof(syscall_handlers) / sizeof(syscall_t))

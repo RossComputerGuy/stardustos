@@ -7,4 +7,6 @@
 #define NEWLAND_SYS_close 2
 
 #ifndef HAS_LIBC
+#define SYS_open NEWLAND_SYS_open
+#define SYS_close NEWLAND_SYS_close
 #endif
