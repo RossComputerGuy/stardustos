@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <fcntl.h>
 #include <liblist.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -36,6 +37,26 @@ static fs_node_t* rootfs_get_cached_node_byindex(fs_node_t* pnode, size_t index)
 		i++;
 	}
 	return NULL;
+}
+
+static size_t rootfs_write(fs_node_t* node, off_t offset, const void* buff, size_t size) {
+	struct rootfs_node* rootfs_node = node->impl;
+	int fd = open(rootfs_node->path, O_WRONLY);
+	if (fd < 0) return -NEWLAND_EINVAL;
+	lseek(fd, offset, SEEK_SET);
+	size_t n = write(fd, buff, size);
+	close(fd);
+	return n;
+}
+
+static size_t rootfs_read(fs_node_t* node, off_t offset, void* buff, size_t size) {
+	struct rootfs_node* rootfs_node = node->impl;
+	int fd = open(rootfs_node->path, O_RDONLY);
+	if (fd < 0) return -NEWLAND_EINVAL;
+	lseek(fd, offset, SEEK_SET);
+	size_t n = read(fd, buff, size);
+	close(fd);
+	return n;
 }
 
 static int rootfs_get_child(fs_node_t* node, fs_node_t** childptr, size_t index) {
@@ -89,6 +110,8 @@ static int rootfs_get_child(fs_node_t* node, fs_node_t** childptr, size_t index)
 					rootfs_node->path = p;
 					node->impl = rootfs_node;
 					node->opts.get_child = rootfs_get_child;
+					node->opts.read = rootfs_read;
+					node->opts.write = rootfs_write;
 					list_add(&rootfs->cached_nodes, node);
 					closedir(dir);
 					return 0;
