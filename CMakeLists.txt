@@ -34,4 +34,7 @@ add_subdirectory(programs/init)
 add_subdirectory(initrd)
 add_subdirectory(rootfs)
 
+# Misc
+add_subdirectory(sdlinux)
+
 include(CTest)

@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.15)
+project(sdlinux NONE)
+
+if(NOT CMAKE_PROJECT_NAME STREQUAL "stardustos")
+	add_subdirectory(nvk)
+endif()
