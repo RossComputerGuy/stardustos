@@ -1,6 +1,11 @@
 /**
  * NewLand Virtual Kernel - (C) 2019 Tristan Ross
  */
+#include <newland/fs/devfs.h>
+#include <newland/fs/initrd.h>
+#include <newland/fs/procfs.h>
+#include <newland/module.h>
+#include <nvk/proc.h>
 #include <argp.h>
 #include <stdlib.h>
 #include <time.h>
@@ -38,5 +43,35 @@ int main(int argc, char** argv) {
 	argp_parse(&argp, argc, argv, 0, 0, &args);
 
 	boot_time = time(NULL);
+
+	int r = procfs_init();
+	if (r < 0) {
+		fprintf(stderr, "Failed to initialize procfs: %d\n", r);
+		return EXIT_FAILURE;
+	}
+
+	r = initrd_init();
+	if (r < 0) {
+		fprintf(stderr, "Failed to initialize initrd: %d\n", r);
+		return EXIT_FAILURE;
+	}
+
+	r = modules_init();
+	if (r < 0) {
+		fprintf(stderr, "Failed to load kernel modules: %d\n", r);
+		return EXIT_FAILURE;
+	}
+
+	r = devfs_init();
+	if (r < 0) {
+		fprintf(stderr, "Failed to load kernel modules: %d\n", r);
+		return EXIT_FAILURE;
+	}
+
+	r = proc_exec("/init", NULL);
+	if (r < 0) {
+		fprintf(stderr, "Failed to execute init process: %d\n", r);
+		return EXIT_FAILURE;
+	}
 	return EXIT_SUCCESS;
 }

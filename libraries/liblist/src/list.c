@@ -52,3 +52,13 @@ void list_remove(list_t* list, void* value) {
 		break;
 	}
 }
+
+void list_destroy(list_t* list) {
+	list_node_t* node = SLIST_FIRST(list);
+	list_node_t* next = node;
+	while (next != NULL) {
+		node = next;
+		next = SLIST_NEXT(node, list);
+		free(node);
+	}
+}

@@ -1,10 +1,14 @@
 /**
  * NewLand Virtual Kernel - (C) 2019 Tristan Ross
  */
+#include <libfile/elf.h>
 #include <newland/dev/tty.h>
+#include <newland/errno.h>
+#include <newland/fs.h>
 #include <newland/syscall.h>
 #include <nvk/emulator.h>
 #include <nvk/proc.h>
+#include <sys/mman.h>
 #include <errno.h>
 #include <pthread.h>
 #include <stdlib.h>
@@ -84,7 +88,7 @@ proc_t* proc_create(proc_t* parent, const char* name, int isuser) {
 		}
 		if (parent_index == -1) {
 			if (parent->child_count + 1 > CHILD_MAX) {
-				errno = -ECHILD;
+				errno = ECHILD;
 				return NULL;
 			}
 			parent_index = parent->child_count++;
@@ -115,7 +119,65 @@ proc_t* proc_create(proc_t* parent, const char* name, int isuser) {
 	return proc;
 }
 
+int proc_destroy(proc_t** procptr) {
+	proc_t* proc = *procptr;
+	list_destroy(&proc->progs);
+	if (proc->parent != 0) {
+		proc_t* parent = process_frompid(proc->parent);
+		for (int i = 0; i < parent->child_count; i++) {
+			if (parent->child[i] == proc->id) {
+				parent->child[i] = 0;
+				parent->child_count--;
+				break;
+			}
+		}
+	}
+	SLIST_REMOVE(&processes, proc, proc_t, proc_list);
+	proc_count--;
+	free(proc);
+	return 0;
+}
+
 void proc_go(proc_t** procptr) {
 	proc_t* proc = *procptr;
-	pthread_create(&proc->thread, NULL, proc_runner, proc->impl);
+	pthread_attr_t attr;
+	pthread_attr_init(&attr);
+	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+	pthread_attr_setstack(&attr, proc->stack, PROC_STACKSIZE);
+	pthread_create(&proc->thread, &attr, proc_runner, proc->impl);
+}
+
+int proc_exec(const char* path, const char** argv) {
+	fs_node_t* node;
+	int r = fs_resolve(&node, path);
+	if (r < 0) return r;
+
+	elf_header_t hdr;
+	r = fs_node_read(&node, 0, &hdr, sizeof(elf_header_t));
+	if (r < 0) return r;
+
+	if (!(elf_isvalid(&hdr) && hdr.machine == 3)) return -NEWLAND_EINVAL;
+
+	proc_t* curr = process_curr();
+	proc_t* proc = proc_create(curr, path, 1);
+	if (proc == NULL) return -NEWLAND_EINVAL;
+
+	elf_program_t prog;
+	for (int i = 0; i < hdr.phnum; i++) {
+		r = fs_node_read(&node, hdr.phoff + (hdr.phentsize * i), &prog, sizeof(elf_program_t));
+		if (r < 0) {
+			proc_destroy(&proc);
+			return r;
+		}
+		void* addr = mmap(NULL, prog.memsz, (prog.flags & ELF_PROG_EXEC ? PROT_EXEC : 0)
+			| (prog.flags & ELF_PROG_WRITE ? PROT_WRITE : 0)
+			| (prog.flags & ELF_PROG_READ ? PROT_READ : 0), MAP_ANONYMOUS | MAP_PRIVATE, 0, 0);
+		if (addr == NULL) {
+			proc_destroy(&proc);
+			return -NEWLAND_EINVAL;
+		}
+		if (prog.memsz >= hdr.entry && proc->entry != NULL) proc->entry = addr + hdr.entry;
+		list_add(&proc->progs, addr);
+	}
+	return proc->id;
 }

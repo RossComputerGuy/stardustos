@@ -59,6 +59,10 @@ typedef struct {
 	uint8_t entsize;
 } elf_section_t;
 
+#define ELF_PROG_EXEC (1 << 0)
+#define ELF_PROG_WRITE (1 << 1)
+#define ELF_PROG_READ (1 << 2)
+
 typedef struct {
 	uint32_t type;
 	uint32_t offset;

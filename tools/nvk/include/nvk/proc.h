@@ -14,11 +14,14 @@
 #define PROC_RUNNING 2
 #define PROC_READY 3
 
+#define PROC_STACKSIZE 0x16000
+
 typedef struct proc {
 	SLIST_ENTRY(struct proc) proc_list;
 	const char name[NAME_MAX];
 	const char tty[NAME_MAX];
 	const char cwd[PATH_MAX];
+	int stack[PROC_STACKSIZE];
 	int status;
 	int exitval;
 	int isuser:1;
@@ -32,6 +35,7 @@ typedef struct proc {
 	size_t child_count;
 	void* (*entry)(void* impl);
 	void* impl;
+	list_t progs;
 	size_t prgsize;
 } proc_t;
 
@@ -39,4 +43,7 @@ size_t process_count();
 proc_t* process_get(size_t i);
 
 proc_t* proc_create(proc_t* parent, const char* name, int isuser);
+int proc_destroy(proc_t** procptr);
 void proc_go(proc_t** procptr);
+
+int proc_exec(const char* path, const char** argv);

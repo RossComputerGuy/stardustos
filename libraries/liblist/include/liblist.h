@@ -46,3 +46,4 @@ size_t list_length(list_t* list);
 void* list_get(list_t* list, size_t i);
 int list_add(list_t* list, void* value);
 void list_remove(list_t* list, void* value);
+void list_destroy(list_t* list);
