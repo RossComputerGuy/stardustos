@@ -4,7 +4,7 @@
 #include <newland/dev/tty.h>
 #include <newland/log.h>
 #include <newland/time.h>
-#include <errno.h>
+#include <newland/errno.h>
 #include <limits.h>
 #include <newland-config.h>
 #include <stdarg.h>

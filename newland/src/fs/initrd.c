@@ -7,7 +7,7 @@
 #include <newland/dev.h>
 #include <newland/fs.h>
 #include <newland/log.h>
-#include <errno.h>
+#include <newland/errno.h>
 #include <libgen.h>
 #include <liblist.h>
 #include <miniz.h>
@@ -37,7 +37,7 @@ static size_t initrd_read(fs_node_t* node, off_t offset, void* buff, size_t size
 	struct initrd* initrd = initrd_node->initrd;
 	size_t sz;
 	void* _buff = mz_zip_reader_extract_to_heap(&initrd->zip, initrd_node->index, &sz, 0);
-	if (_buff == NULL) return -EINVAL;
+	if (_buff == NULL) return -NEWLAND_EINVAL;
 	memcpy(buff, (void*)(((char*)_buff) + offset), size);
 	kfree(_buff);
 	return sz;
@@ -69,13 +69,13 @@ static int initrd_get_child(fs_node_t* node, fs_node_t** childptr, size_t index)
 			index--;
 		}
 	}
-	return -ENOENT;
+	return -NEWLAND_ENOENT;
 }
 
 static int initrd_mount(fs_node_t** targetptr, fs_node_t* source, unsigned long flags, const void* data) {
 /** Decompress **/
 	struct initrd* initrd = kmalloc(sizeof(struct initrd));
-	if (initrd == NULL) return -ENOMEM;
+	if (initrd == NULL) return -NEWLAND_ENOMEM;
 
 	initrd->zip.m_pRead = mz_initrd_read;
 	initrd->zip.m_pIO_opaque = source;
@@ -83,7 +83,7 @@ static int initrd_mount(fs_node_t** targetptr, fs_node_t* source, unsigned long 
 	if (!mz_zip_reader_init(&initrd->zip, source->size, MZ_ZIP_FLAG_CASE_SENSITIVE | MZ_ZIP_FLAG_COMPRESSED_DATA)) {
 		kfree(initrd);
 		printk(KLOG_ERR "initrd: miniz failed to initialize zip reader: %s\n", mz_zip_get_error_string(mz_zip_get_last_error(&initrd->zip)));
-		return -EINVAL;
+		return -NEWLAND_EINVAL;
 	}
 
 /** Root node creation **/
@@ -102,7 +102,7 @@ static int initrd_mount(fs_node_t** targetptr, fs_node_t* source, unsigned long 
 		if (initrd_node == NULL) {
 			kfree(initrd);
 			kfree((*targetptr));
-			return -ENOMEM;
+			return -NEWLAND_ENOMEM;
 		}
 		mz_zip_archive_file_stat stat;
 		if (!mz_zip_reader_file_stat(&initrd->zip, i, &stat)) {
@@ -110,7 +110,7 @@ static int initrd_mount(fs_node_t** targetptr, fs_node_t* source, unsigned long 
 			kfree((*targetptr));
 			kfree(initrd_node);
 			printk(KLOG_ERR "initrd: miniz failed to stat: %s\n", mz_zip_get_error_string(mz_zip_get_last_error(&initrd->zip)));
-			return -EINVAL;
+			return -NEWLAND_EINVAL;
 		}
 		memset(initrd_node->path, 0, PATH_MAX);
 		strcpy(initrd_node->path, stat.m_filename);

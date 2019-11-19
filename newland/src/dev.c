@@ -3,7 +3,7 @@
  */
 #include <newland/alloc.h>
 #include <newland/dev.h>
-#include <errno.h>
+#include <newland/errno.h>
 
 SLIST_HEAD(dev_list, device_t);
 static struct dev_list devices = { NULL };
@@ -51,10 +51,10 @@ device_t* device_fromname(const char* name) {
 }
 
 int register_device(dev_t dev, const char* name, fs_node_opts_t opts, size_t size) {
-	if (strlen(name) > NAME_MAX) return -ENAMETOOLONG;
-	if (device_fromname(name) != NULL || device_fromdev(dev) != NULL) return -EEXIST;
+	if (strlen(name) > NAME_MAX) return -NEWLAND_ENAMETOOLONG;
+	if (device_fromname(name) != NULL || device_fromdev(dev) != NULL) return -NEWLAND_EEXIST;
 	device_t* device = kmalloc(sizeof(device_t));
-	if (device == NULL) return -ENOMEM;
+	if (device == NULL) return -NEWLAND_ENOMEM;
 	device->dev = dev;
 	device->size = size;
 	strcpy((char*)device->name, name);
@@ -66,7 +66,7 @@ int register_device(dev_t dev, const char* name, fs_node_opts_t opts, size_t siz
 
 int unregister_device(dev_t dev) {
 	device_t* device = device_fromdev(dev);
-	if (device == NULL) return -ENODEV;
+	if (device == NULL) return -NEWLAND_ENODEV;
 	SLIST_REMOVE(&devices, device, device_t, dev_list);
 	dev_count--;
 	kfree(device);

@@ -9,7 +9,7 @@
 #include <newland/dev/tty.h>
 #include <newland/alloc.h>
 #include <newland/log.h>
-#include <errno.h>
+#include <newland/errno.h>
 #include <signal.h>
 
 SLIST_HEAD(proc_list, proc_t);
@@ -73,7 +73,7 @@ proc_t* proc_create(proc_t* parent, const char* name, int isuser) {
 		}
 		if (parent_index == -1) {
 			if (parent->child_count + 1 > CHILD_MAX) {
-				errno = -ECHILD;
+				errno = -NEWLAND_ECHILD;
 				kfree(proc);
 				irq_restore(irqflgs);
 				return NULL;
@@ -160,13 +160,13 @@ page_dir_t* proc_switch_pgdir(proc_t** procptr, page_dir_t* pgdir) {
 
 int proc_sigenter(proc_t** procptr, uint8_t signum, void* data, size_t datasz) {
 	proc_t* proc = *procptr;
-	if (proc->issignaling) return -EINPROGRESS;
+	if (proc->issignaling) return -NEWLAND_EINPROGRESS;
 	if (proc->signal_handler == NULL) {
 		if (signum == SIGKILL || signum == SIGSEGV || signum == SIGSTKFLT || signum == SIGILL) {
 			proc->status = PROC_ZOMBIE;
 			return 0;
 		}
-		return -ENOSYS;
+		return -NEWLAND_ENOSYS;
 	}
 
 	proc->issignaling = 1;
@@ -177,7 +177,7 @@ int proc_sigenter(proc_t** procptr, uint8_t signum, void* data, size_t datasz) {
 
 int proc_sigleave(proc_t** procptr) {
 	proc_t* proc = *procptr;
-	if (!proc->issignaling) return -EINTR;
+	if (!proc->issignaling) return -NEWLAND_EINTR;
 	proc->issignaling = 0;
 	proc->signum = 0;
 	return 0;
@@ -224,7 +224,7 @@ int proc_exec(const char* path, const char** argv) {
 
 	if (!(elf_isvalid(&hdr) && hdr.machine == 3)) {
 		irq_restore(eflags);
-		return -EINVAL;
+		return -NEWLAND_EINVAL;
 	}
 
 	proc_t* curr = process_curr();

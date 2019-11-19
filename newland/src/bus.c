@@ -4,7 +4,7 @@
 #include <newland/alloc.h>
 #include <newland/bus.h>
 #include <newland/log.h>
-#include <errno.h>
+#include <newland/errno.h>
 
 SLIST_HEAD(bus_list, bus_t);
 static struct bus_list buses = { NULL };
@@ -33,18 +33,18 @@ bus_t* bus_fromname(const char* name) {
 }
 
 int bus_regdev(bus_t* bus, const char* name, const char* dname) {
-	if (bus_getdev(bus, dname) != NULL) return -EEXIST;
+	if (bus_getdev(bus, dname) != NULL) return -NEWLAND_EEXIST;
 	bus_dev_t* bdev = bus_getdevbyname(bus, name);
-	if (bdev == NULL) return -ENOENT;
+	if (bdev == NULL) return -NEWLAND_ENOENT;
 	strcpy((char*)bdev->dname, dname);
 	// TODO: maybe the bus should have a function call for handling the registration
 	return 0;
 }
 
 int bus_unregdev(bus_t* bus, const char* name, const char* dname) {
-	if (bus_getdev(bus, dname) == NULL) return -ENOENT;
+	if (bus_getdev(bus, dname) == NULL) return -NEWLAND_ENOENT;
 	bus_dev_t* bdev = bus_getdevbyname(bus, name);
-	if (bdev == NULL) return -ENOENT;
+	if (bdev == NULL) return -NEWLAND_ENOENT;
 	memset((void*)bdev->dname, 0, NAME_MAX);
 	// TODO: maybe the bus should have a function call for handling the unregistring
 	return 0;
@@ -71,9 +71,9 @@ bus_dev_t* bus_getdevbyname(bus_t* bus, const char* name) {
 }
 
 int bus_adddev(bus_t* bus, const char* name) {
-	if (bus_getdevbyname(bus, name) != NULL) return -EEXIST;
+	if (bus_getdevbyname(bus, name) != NULL) return -NEWLAND_EEXIST;
 	bus_dev_t* dev = kmalloc(sizeof(bus_dev_t));
-	if (dev == NULL) return -ENOMEM;
+	if (dev == NULL) return -NEWLAND_ENOMEM;
 	strcpy((char*)dev->name, name);
 	SLIST_INSERT_HEAD(&bus->dev_list, dev, dev_list);
 	bus->dev_count++;
@@ -82,16 +82,16 @@ int bus_adddev(bus_t* bus, const char* name) {
 
 int bus_remdev(bus_t* bus, const char* name) {
 	bus_dev_t* dev = bus_getdevbyname(bus, name);
-	if (dev == NULL) return -ENOENT;
+	if (dev == NULL) return -NEWLAND_ENOENT;
 	SLIST_REMOVE(&bus->dev_list, dev, bus_dev_t, dev_list);
 	bus->dev_count--;
 	return 0;
 }
 
 int register_bus(const char* type, const char* name) {
-	if ((type != NULL && strlen(type) > NAME_MAX) || strlen(name) > NAME_MAX) return -ENAMETOOLONG;
+	if ((type != NULL && strlen(type) > NAME_MAX) || strlen(name) > NAME_MAX) return -NEWLAND_ENAMETOOLONG;
 	bus_t* bus = kmalloc(sizeof(bus_t));
-	if (bus == NULL) return -ENOMEM;
+	if (bus == NULL) return -NEWLAND_ENOMEM;
 	if (type != NULL) strcpy((char*)bus->type, type);
 	strcpy((char*)bus->name, name);
 	bus->dev_count = 0;
@@ -103,7 +103,7 @@ int register_bus(const char* type, const char* name) {
 
 int unregister_bus(const char* name) {
 	bus_t* bus = bus_fromname(name);
-	if (bus == NULL) return -ENOENT;
+	if (bus == NULL) return -NEWLAND_ENOENT;
 	SLIST_REMOVE(&buses, bus, bus_t, bus_list);
 	buses_count--;
 	bus_dev_t* dev = NULL;

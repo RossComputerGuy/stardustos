@@ -4,7 +4,7 @@
 #include <newland/arch/multiboot.h>
 #include <newland/dev/block.h>
 #include <newland/dev.h>
-#include <errno.h>
+#include <newland/errno.h>
 #include <stddef.h>
 #include <stdlib.h>
 
@@ -13,10 +13,10 @@ static multiboot_info_t* mbi;
 /** Normal device opts **/
 static size_t mb_read(fs_node_t* node, off_t offset, void* buff, size_t size) {
 	uint8_t i = ((node->name[6] - '0') * 10) + (node->name[5] - '0');
-	if (i > mbi->mods_count) return -EINVAL;
+	if (i > mbi->mods_count) return -NEWLAND_EINVAL;
 	multiboot_module_t* mod = (multiboot_module_t*)mbi->mods_addr;
 	for (size_t x = 0; x < i; x++) mod = (multiboot_module_t*)((uint32_t)mod->mod_end + 1);
-	if (offset + size >= mod->mod_end) return -EINVAL;
+	if (offset + size >= mod->mod_end) return -NEWLAND_EINVAL;
 	size = offset > (mod->mod_end - mod->mod_start) ? 0 : (size_t)min((mod->mod_end - mod->mod_start) - offset, size);
 	memcpy(buff, (void*)(mod->mod_start + offset), size);
 	return size;

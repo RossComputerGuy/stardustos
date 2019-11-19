@@ -5,7 +5,7 @@
 #include <newland/fs/procfs.h>
 #include <newland/alloc.h>
 #include <newland/fs.h>
-#include <errno.h>
+#include <newland/errno.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -31,7 +31,7 @@ static int procfs_get_child(fs_node_t* node, fs_node_t** childptr, size_t index)
 	procfs_cleanup();
 	if (list_indexof(&procs, node) == -1) {
 		// TODO: add /self symlink
-		if (index >= process_count()) return -ENOENT;
+		if (index >= process_count()) return -NEWLAND_ENOENT;
 		if (list_get(&procs, index) == NULL) {
 			char name[NAME_MAX];
 			snprintf(name, NAME_MAX, "%lu", index);
@@ -49,7 +49,7 @@ static int procfs_get_child(fs_node_t* node, fs_node_t** childptr, size_t index)
 			return 0;
 		}
 	}
-	return -ENOENT;
+	return -NEWLAND_ENOENT;
 }
 
 static int procfs_mount(fs_node_t** targetptr, fs_node_t* source, unsigned long flags, const void* data) {

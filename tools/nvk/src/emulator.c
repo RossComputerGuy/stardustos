@@ -36,6 +36,7 @@ uc_err nvk_emu(void* prog, size_t size, void* impl) {
 	}
 	uc_hook syscall_hook;
 	uc_hook_add(uc, &syscall_hook, UC_HOOK_INSN, hook_syscall, NULL, 1, 0, UC_X86_INS_SYSCALL);
+	// TODO: check if prog is an ELF program and memory map it in
 	uc_mem_map(uc, NVK_RAM_START, NVK_RAM_END, UC_PROT_ALL);
 	uc_mem_map_ptr(uc, NVK_PROG_START, size, UC_PROT_ALL, prog);
 	uc_reg_write(uc, UC_X86_REG_EAX, &impl);

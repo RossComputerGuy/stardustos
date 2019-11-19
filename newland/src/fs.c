@@ -3,16 +3,16 @@
  */
 #include <newland/alloc.h>
 #include <newland/fs.h>
-#include <errno.h>
+#include <newland/errno.h>
 #include <libgen.h>
 
 /** Filesystem Node **/
 static ino_t next_inode = 0;
 
 int fs_node_create(fs_node_t** nodeptr, const char* name, mode_t mode) {
-	if (strlen(name) > NAME_MAX) return -ENAMETOOLONG;
+	if (strlen(name) > NAME_MAX) return -NEWLAND_ENAMETOOLONG;
 	fs_node_t* node = (*nodeptr = kmalloc(sizeof(fs_node_t)));
-	if (node == NULL) return -ENOMEM;
+	if (node == NULL) return -NEWLAND_ENOMEM;
 	strcpy((char*)node->name, name);
 	node->mode = mode;
 	node->ino = next_inode++;
@@ -21,14 +21,14 @@ int fs_node_create(fs_node_t** nodeptr, const char* name, mode_t mode) {
 
 int fs_node_close(fs_node_t** nodeptr, fd_t* fd) {
 	fs_node_t* node = *nodeptr;
-	if (node->opts.close == NULL) return -ENOSYS;
+	if (node->opts.close == NULL) return -NEWLAND_ENOSYS;
 	return node->opts.close(node, fd);
 }
 
 size_t fs_node_read(fs_node_t** nodeptr, off_t offset, void* buff, size_t size) {
 	fs_node_t* node = *nodeptr;
 	int type = FS_NODE_TYPE_GET(node->mode);
-	if (node->opts.read == NULL) return -ENOSYS;
+	if (node->opts.read == NULL) return -NEWLAND_ENOSYS;
 	if (type == FS_NODE_LINK) {
 		char path[PATH_MAX];
 		int r = node->opts.read(node, 0, path, node->size);
@@ -37,15 +37,15 @@ size_t fs_node_read(fs_node_t** nodeptr, off_t offset, void* buff, size_t size) 
 		r = fs_resolve(&parentnode, path);
 		if (r < 0) return r;
 		return fs_node_read(&parentnode, offset, buff, size);
-	} else if (type == FS_NODE_DIR) return -EISDIR;
+	} else if (type == FS_NODE_DIR) return -NEWLAND_EISDIR;
 	return node->opts.read(node, offset, buff, size);
 }
 
 size_t fs_node_write(fs_node_t** nodeptr, off_t offset, const void* buff, size_t size) {
 	fs_node_t* node = *nodeptr;
 	int type = FS_NODE_TYPE_GET(node->mode);
-	if (node->opts.read == NULL) return -ENOSYS;
-	if (node->opts.write == NULL) return -ENOSYS;
+	if (node->opts.read == NULL) return -NEWLAND_ENOSYS;
+	if (node->opts.write == NULL) return -NEWLAND_ENOSYS;
 	if (type == FS_NODE_LINK) {
 		char path[PATH_MAX];
 		int r = node->opts.read(node, 0, path, node->size);
@@ -54,15 +54,15 @@ size_t fs_node_write(fs_node_t** nodeptr, off_t offset, const void* buff, size_t
 		r = fs_resolve(&parentnode, path);
 		if (r < 0) return r;
 		return fs_node_write(&parentnode, offset, buff, size);
-	} else if (type == FS_NODE_DIR) return -EISDIR;
+	} else if (type == FS_NODE_DIR) return -NEWLAND_EISDIR;
 	return node->opts.write(node, offset, buff, size);
 }
 
 int fs_node_vioctl(fs_node_t** nodeptr, int req, va_list ap) {
 	fs_node_t* node = *nodeptr;
 	int type = FS_NODE_TYPE_GET(node->mode);
-	if (node->opts.read == NULL) return -ENOSYS;
-	if (node->opts.ioctl == NULL) return -ENOSYS;
+	if (node->opts.read == NULL) return -NEWLAND_ENOSYS;
+	if (node->opts.ioctl == NULL) return -NEWLAND_ENOSYS;
 	if (type == FS_NODE_LINK) {
 		char path[PATH_MAX];
 		int r = node->opts.read(node, 0, path, node->size);
@@ -71,7 +71,7 @@ int fs_node_vioctl(fs_node_t** nodeptr, int req, va_list ap) {
 		r = fs_resolve(&parentnode, path);
 		if (r < 0) return r;
 		return fs_node_vioctl(&parentnode, req, ap);
-	} else if (type == FS_NODE_DIR) return -EISDIR;
+	} else if (type == FS_NODE_DIR) return -NEWLAND_EISDIR;
 	return node->opts.ioctl(node, req, ap);
 }
 
@@ -100,7 +100,7 @@ int fs_node_resolve(fs_node_t** nodeptr, fs_node_t** foundptr, const char* path)
 			}
 		}
 	}
-	return -ENOENT;
+	return -NEWLAND_ENOENT;
 }
 
 /** Filesystem stuff **/
@@ -132,10 +132,10 @@ fs_t* fs_fromname(const char* name) {
 }
 
 int register_fs(const char* name, int type, fs_opts_t opts) {
-	if (fs_fromname(name) != NULL) return -EEXIST;
-	if (strlen(name) > NAME_MAX) return -ENAMETOOLONG;
+	if (fs_fromname(name) != NULL) return -NEWLAND_EEXIST;
+	if (strlen(name) > NAME_MAX) return -NEWLAND_ENAMETOOLONG;
 	fs_t* fs = kmalloc(sizeof(fs_t));
-	if (fs == NULL) return -ENOMEM;
+	if (fs == NULL) return -NEWLAND_ENOMEM;
 	strcpy((char*)fs->name, name);
 	fs->type = type;
 	fs->opts = opts;
@@ -146,7 +146,7 @@ int register_fs(const char* name, int type, fs_opts_t opts) {
 
 int unregister_fs(const char* name) {
 	fs_t* fs = fs_fromname(name);
-	if (fs == NULL) return -ENOENT;
+	if (fs == NULL) return -NEWLAND_ENOENT;
 	SLIST_REMOVE(&filesystems, fs, fs_t, fs_list);
 	filesystem_count--;
 	kfree(fs);
@@ -160,7 +160,7 @@ static struct mp_list mountpoints = { NULL };
 static size_t mp_count = 0;
 
 int fs_resolve(fs_node_t** nodeptr, const char* path) {
-	if (path == NULL) return -EINVAL;
+	if (path == NULL) return -NEWLAND_EINVAL;
 	if (path[0] == '/') path++;
 	mountpoint_t* mp = NULL;
 	fs_node_t* root = NULL;
@@ -172,10 +172,10 @@ int fs_resolve(fs_node_t** nodeptr, const char* path) {
 	}
 	if (root == NULL) {
 		mp = mountpoint_fromtarget("/");
-		if (mp == NULL) return -EINVAL;
+		if (mp == NULL) return -NEWLAND_EINVAL;
 		root = mp->rootnode;
 	}
-	if (root == NULL) return -EINVAL;
+	if (root == NULL) return -NEWLAND_EINVAL;
 	path += strlen(mp->target);
 	return fs_node_resolve(&root, nodeptr, path);
 }
@@ -201,11 +201,11 @@ mountpoint_t* mountpoint_fromtarget(const char* target) {
 }
 
 int mountpoint_create_fromnode(fs_t** fsptr, fs_node_t* source, const char* target, unsigned long flags, const void* data) {
-	if (!(flags & MS_BIND) && (fsptr == NULL || *fsptr == NULL)) return -EINVAL;
-	if (source == NULL || mountpoint_fromtarget(target) != NULL) return -EBUSY;
+	if (!(flags & MS_BIND) && (fsptr == NULL || *fsptr == NULL)) return -NEWLAND_EINVAL;
+	if (source == NULL || mountpoint_fromtarget(target) != NULL) return -NEWLAND_EBUSY;
 	if (target[0] == '/') target++;
 	mountpoint_t* mp = kmalloc(sizeof(mountpoint_t));
-	if (mp == NULL) return -ENOMEM;
+	if (mp == NULL) return -NEWLAND_ENOMEM;
 	strcpy((char*)mp->target, target);
 	mp->flags = flags;
 	if (!(flags & MS_BIND)) {
@@ -222,8 +222,8 @@ int mountpoint_create_fromnode(fs_t** fsptr, fs_node_t* source, const char* targ
 }
 
 int mountpoint_create(fs_t** fsptr, const char* src, const char* target, unsigned long flags, const void* data) {
-	if (!(flags & MS_BIND) && (fsptr == NULL || *fsptr == NULL)) return -EINVAL;
-	if ((src != NULL && mountpoint_fromsrc(src) != NULL) || mountpoint_fromtarget(target) != NULL) return -EBUSY;
+	if (!(flags & MS_BIND) && (fsptr == NULL || *fsptr == NULL)) return -NEWLAND_EINVAL;
+	if ((src != NULL && mountpoint_fromsrc(src) != NULL) || mountpoint_fromtarget(target) != NULL) return -NEWLAND_EBUSY;
 	if (target[0] == '/') target++;
 	fs_node_t* sourcenode = NULL;
 	int r = fs_resolve(&sourcenode, src);
@@ -237,7 +237,7 @@ int mountpoint_create(fs_t** fsptr, const char* src, const char* target, unsigne
 
 int mountpoint_destroy(const char* target) {
 	mountpoint_t* mp = mountpoint_fromtarget(target);
-	if (mp == NULL) return -EINVAL;
+	if (mp == NULL) return -NEWLAND_EINVAL;
 	SLIST_REMOVE(&mountpoints, mp, mountpoint_t, mp_list);
 	mp_count--;
 	kfree(mp);

@@ -6,7 +6,7 @@
 #include <newland/alloc.h>
 #include <newland/dev.h>
 #include <newland/fs.h>
-#include <errno.h>
+#include <newland/errno.h>
 #include <liblist.h>
 
 static list_t devfs_nodes = { NULL };

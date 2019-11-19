@@ -5,7 +5,7 @@
 #include <newland/alloc.h>
 #include <newland/dev.h>
 #include <newland/log.h>
-#include <errno.h>
+#include <newland/errno.h>
 
 SLIST_HEAD(blkdev_list, blkdev_t);
 static struct blkdev_list block_devices = { NULL };
@@ -47,21 +47,21 @@ blkdev_t* blkdev_fromname(const char* name) {
 /** File Node Operations **/
 static size_t blkdev_read(fs_node_t* node, off_t offset, void* buff, size_t size) {
 	blkdev_t* blkdev = blkdev_get(DEV_MINOR(node->rdev));
-	if (blkdev == NULL) return -ENODEV;
-	if (blkdev->opts.read_block == NULL) return -ENOSYS;
+	if (blkdev == NULL) return -NEWLAND_ENODEV;
+	if (blkdev->opts.read_block == NULL) return -NEWLAND_ENOSYS;
 	return blkdev->opts.read_block(blkdev, offset / blkdev->size, buff, size);
 }
 
 static size_t blkdev_write(fs_node_t* node, off_t offset, const void* buff, size_t size) {
 	blkdev_t* blkdev = blkdev_get(DEV_MINOR(node->rdev));
-	if (blkdev == NULL) return -ENODEV;
-	if (blkdev->opts.write_block == NULL) return -ENOSYS;
+	if (blkdev == NULL) return -NEWLAND_ENODEV;
+	if (blkdev->opts.write_block == NULL) return -NEWLAND_ENOSYS;
 	return blkdev->opts.write_block(blkdev, offset / blkdev->size, buff, size);
 }
 
 static int blkdev_ioctl(fs_node_t* node, int req, va_list ap) {
 	blkdev_t* blkdev = blkdev_get(DEV_MINOR(node->rdev));
-	if (blkdev == NULL) return -ENODEV;
+	if (blkdev == NULL) return -NEWLAND_ENODEV;
 	switch (req) {
 		case BLKDEV_SIZE:
 			{
@@ -76,7 +76,7 @@ static int blkdev_ioctl(fs_node_t* node, int req, va_list ap) {
 			}
 			return 0;
 	}
-	return -EINVAL;
+	return -NEWLAND_EINVAL;
 }
 
 static fs_node_opts_t blkdev_fsopts = {
@@ -87,9 +87,9 @@ static fs_node_opts_t blkdev_fsopts = {
 
 /** Registration **/
 int register_blkdev(const char* name, blksize_t blksize, blkcnt_t blkcnt, blkdev_opts_t opts) {
-	if (blkdev_fromname(name) != NULL || device_fromname(name) != NULL) return -EEXIST;
+	if (blkdev_fromname(name) != NULL || device_fromname(name) != NULL) return -NEWLAND_EEXIST;
 	blkdev_t* blkdev = kmalloc(sizeof(blkdev_t));
-	if (blkdev == NULL) return -ENOMEM;
+	if (blkdev == NULL) return -NEWLAND_ENOMEM;
 	strcpy((char*)blkdev->name, name);
 	blkdev->size = blksize;
 	blkdev->count = blkcnt;
@@ -107,7 +107,7 @@ int register_blkdev(const char* name, blksize_t blksize, blkcnt_t blkcnt, blkdev
 
 int unregister_blkdev(const char* name) {
 	blkdev_t* blkdev = blkdev_fromname(name);
-	if (blkdev == NULL || device_fromname(name) == NULL) return -ENODEV;
+	if (blkdev == NULL || device_fromname(name) == NULL) return -NEWLAND_ENODEV;
 	size_t idx = blkdev_indexof(blkdev);
 	int r = unregister_device(MKDEV(DEVMAJ_BLOCK, idx));
 	if (r < 0) return r;

@@ -5,7 +5,7 @@
 #include <newland/alloc.h>
 #include <newland/dev.h>
 #include <newland/log.h>
-#include <errno.h>
+#include <newland/errno.h>
 
 SLIST_HEAD(tty_list, tty_t);
 static struct tty_list ttys = { NULL };
@@ -49,9 +49,9 @@ static fs_node_opts_t tty_fsopts = {};
 
 /** Registration **/
 int register_tty(const char* name, tty_opts_t opts) {
-	if (tty_fromname(name) != NULL || device_fromname(name) != NULL) return -EEXIST;
+	if (tty_fromname(name) != NULL || device_fromname(name) != NULL) return -NEWLAND_EEXIST;
 	tty_t* tty = kmalloc(sizeof(tty_t));
-	if (tty == NULL) return -ENOMEM;
+	if (tty == NULL) return -NEWLAND_ENOMEM;
 	strcpy((char*)tty->name, name);
 	tty->opts = opts;
 	int r = register_device(MKDEV(DEVMAJ_TTY, tty_cnt), name, tty_fsopts, 0);
@@ -67,7 +67,7 @@ int register_tty(const char* name, tty_opts_t opts) {
 
 int unregister_tty(const char* name) {
 	tty_t* tty = tty_fromname(name);
-	if (tty == NULL || device_fromname(name) == NULL) return -ENODEV;
+	if (tty == NULL || device_fromname(name) == NULL) return -NEWLAND_ENODEV;
 	size_t idx = tty_indexof(tty);
 	int r = unregister_device(MKDEV(DEVMAJ_TTY, idx));
 	if (r < 0) return r;

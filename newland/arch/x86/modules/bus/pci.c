@@ -7,7 +7,7 @@
 #include <newland/bus.h>
 #include <newland/log.h>
 #include <newland/module.h>
-#include <errno.h>
+#include <newland/errno.h>
 #include <string.h>
 
 /** Read & Write **/
@@ -58,7 +58,7 @@ static int genres(pci_dev_t* addr, bus_dev_t** devptr, uint8_t barindex) {
 	barsize = (~barsize) + 1;
 	if (barsize == 0) return 0;
 	bus_dev_res_t* res = kmalloc(sizeof(bus_dev_res_t));
-	if (res == NULL) return -ENOMEM;
+	if (res == NULL) return -NEWLAND_ENOMEM;
 	res->size = barsize;
 	if (barval & 0x4) {
 		res->value = barval & 0xFFFFFFF0;

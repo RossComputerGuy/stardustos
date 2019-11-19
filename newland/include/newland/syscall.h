@@ -6,7 +6,7 @@
  */
 #pragma once
 
-typedef void* (*syscall_t)(void* arg0, void* arg1, void* arg2, void* arg3, void* arg4);
+typedef int (*syscall_t)(void* arg0, void* arg1, void* arg2, void* arg3, void* arg4);
 
 /**
  * Exectes a system call

@@ -4,7 +4,7 @@
 #include <newland/arch/idt.h>
 #include <newland/arch/mem.h>
 #include <newland/log.h>
-#include <errno.h>
+#include <newland/errno.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -54,7 +54,7 @@ unsigned int phys_alloc(unsigned int count) {
 			return addr;
 		}
 	}
-	return -ENOMEM;
+	return -NEWLAND_ENOMEM;
 }
 
 /** Virtual Memory Management **/
