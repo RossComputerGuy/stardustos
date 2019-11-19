@@ -11,6 +11,9 @@ include_directories("${PROJECT_SOURCE_DIR}/include")
 set(newland_SOURCE_DIR "${PROJECT_SOURCE_DIR}/newland")
 include("${PROJECT_SOURCE_DIR}/newland/build.cmake")
 
+configure_file("${PROJECT_SOURCE_DIR}/data/scripts/genlinker.sh.in" "${PROJECT_BINARY_DIR}/genlinker.sh")
+execute_process(COMMAND "${PROJECT_BINARY_DIR}/genlinker.sh")
+
 find_package(PkgConfig)
 find_package(Threads REQUIRED)
 
@@ -22,6 +25,7 @@ else()
 endif()
 
 add_compile_definitions("__nvk__" "HAS_LIBC")
+add_link_options("-T${PROJECT_BINARY_DIR}/nvk.ld")
 add_executable(nvk
 	${NEWLAND_SOURCES}
 	"${PROJECT_SOURCE_DIR}/src/emulator.c"

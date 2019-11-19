@@ -85,3 +85,5 @@ _*.diff
 **/unicorn/mem_apis
 tmp/
 config.log
+genlinker.sh
+nvk.ld

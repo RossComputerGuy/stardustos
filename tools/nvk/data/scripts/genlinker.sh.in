@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+@PROJECT_SOURCE_DIR@/scripts/deflinker.sh | sed '$d' > @PROJECT_BINARY_DIR@/nvk.ld
+cat << EOF >> @PROJECT_BINARY_DIR@/nvk.ld
+	.modinfo_array : {
+		PROVIDE_HIDDEN(__modules_start = .);
+		KEEP(*(modinfo*))
+		PROVIDE_HIDDEN(__modules_end = .);
+	}
+}
+EOF
