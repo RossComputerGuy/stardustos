@@ -202,7 +202,7 @@ mountpoint_t* mountpoint_fromtarget(const char* target) {
 
 int mountpoint_create_fromnode(fs_t** fsptr, fs_node_t* source, const char* target, unsigned long flags, const void* data) {
 	if (!(flags & MS_BIND) && (fsptr == NULL || *fsptr == NULL)) return -NEWLAND_EINVAL;
-	if (source == NULL || mountpoint_fromtarget(target) != NULL) return -NEWLAND_EBUSY;
+	if (source != NULL && mountpoint_fromtarget(target) != NULL) return -NEWLAND_EBUSY;
 	if (target[0] == '/') target++;
 	mountpoint_t* mp = kmalloc(sizeof(mountpoint_t));
 	if (mp == NULL) return -NEWLAND_ENOMEM;

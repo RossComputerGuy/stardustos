@@ -5,6 +5,7 @@
 #include <newland/fs/initrd.h>
 #include <newland/fs/procfs.h>
 #include <newland/module.h>
+#include <nvk/fs/rootfs.h>
 #include <nvk/proc.h>
 #include <argp.h>
 #include <stdlib.h>
@@ -66,15 +67,33 @@ int main(int argc, char** argv) {
 		return EXIT_FAILURE;
 	}
 
-	/*r = modules_init();
+	r = modules_init();
 	if (r < 0) {
 		fprintf(stderr, "Failed to load kernel modules: %d\n", r);
 		return EXIT_FAILURE;
-	}*/
+	}
+
+	r = rootfs_init();
+	if (r < 0) {
+		fprintf(stderr, "Failed to initialize rootfs: %d\n", r);
+		return EXIT_FAILURE;
+	}
 
 	r = devfs_init();
 	if (r < 0) {
 		fprintf(stderr, "Failed to load kernel modules: %d\n", r);
+		return EXIT_FAILURE;
+	}
+
+	fs_t* fs = fs_fromname("rootfs");
+	if (fs == NULL) {
+		fprintf(stderr, "Failed to find fs: rootfs\n");
+		return EXIT_FAILURE;
+	}
+
+	r = mountpoint_create_fromnode(&fs, NULL, "/", 0, args.rootfs);
+	if (r < 0) {
+		fprintf(stderr, "Failed to find mount rootfs: %d\n", r);
 		return EXIT_FAILURE;
 	}
 
