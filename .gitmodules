@@ -7,3 +7,6 @@
 [submodule "sdlinux/packages/musl/src"]
 	path = sdlinux/packages/musl/src
 	url = git://git.musl-libc.org/musl
+[submodule "sdlinux/packages/busybox/src"]
+	path = sdlinux/packages/busybox/src
+	url = git://busybox.net/busybox.git

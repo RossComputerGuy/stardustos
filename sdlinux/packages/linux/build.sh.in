@@ -8,3 +8,6 @@ fi
 cp @PACKAGE_SOURCE_DIR@/config @PACKAGE_BINARY_DIR@/build/.config
 cd @PACKAGE_BINARY_DIR@/build
 make vmlinux
+make INSTALL_HDR_PATH=@BUILDFS@/usr headers_install
+mkdir -p @ROOTFS@/boot
+cp vmlinuz @ROOTFS@/boot/vmlinuz
