@@ -90,6 +90,7 @@ nvk.ld
 **/sdlinux/packages/*/build
 **/sdlinux/packages/busybox/config
 **/sdlinux/packages/musl/config.mak
+**/sdlinux/packages/musl/musl-gcc.specs
 **/sdlinux/*.pkg.sh
 **/sdlinux/initrd
 **/sdlinux/buildfs

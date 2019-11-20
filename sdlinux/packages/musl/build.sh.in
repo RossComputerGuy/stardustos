@@ -10,8 +10,7 @@ cd @PACKAGE_BINARY_DIR@/build
 ./configure --prefix=/usr --libdir=/lib --target=i386 CFLAGS="-m32" CROSS_COMPILE=x86_64-linux-gnu-
 make
 sed -i "s|/lib/|@BUILDFS@/lib/|" obj/musl-gcc
-sed -i "s|/lib|@BUILDFS@/lib|" lib/musl-gcc.specs
-sed -i "s|/usr|@BUILDFS@/usr|" lib/musl-gcc.specs
+cp @PACKAGE_BINARY_DIR@/musl-gcc.specs lib/musl-gcc.specs
 make install DESTDIR=@BUILDFS@
 make install-libs DESTDIR=@INITRD@
 rm @INITRD@/lib/musl-gcc.specs -rf
