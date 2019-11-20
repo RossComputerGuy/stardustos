@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -e
+cd @PACKAGE_SOURCE_DIR@/src
+cp ../config.mk config.mk
+export PATH=$PATH:@BUILDFS@/usr/bin
+export CC=musl-gcc
+export LD=musl-gcc
+export LIBRARY_PATH=@BUILDFS@/lib
+export CFLAGS="-m32"
+export LDFLAGS="-m32"
+export LDFLAGS_STATIC="-m32"
+export UNICORN_QEMU_FLAGS="--cpu=i386"
+make
+make install PREFIX=/ DESTDIR=@INITRD@

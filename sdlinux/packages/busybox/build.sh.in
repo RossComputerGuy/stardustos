@@ -13,3 +13,4 @@ export CC=musl-gcc
 export LD=musl-gcc
 make
 make install
+rm -rf @INITRD@/usr @INITRD@/sbin

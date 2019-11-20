@@ -10,3 +10,6 @@
 [submodule "sdlinux/packages/busybox/src"]
 	path = sdlinux/packages/busybox/src
 	url = git://busybox.net/busybox.git
+[submodule "sdlinux/packages/unicorn/src"]
+	path = sdlinux/packages/unicorn/src
+	url = https://github.com/unicorn-engine/unicorn
