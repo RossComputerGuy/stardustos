@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+git clone https://github.com/torvalds/linux @PROJECT_BINARY_DIR@/linux
+cd @PROJECT_BINARY_DIR@/linux
+git checkout v@version@

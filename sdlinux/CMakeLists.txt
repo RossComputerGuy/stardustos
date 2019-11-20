@@ -4,3 +4,6 @@ project(sdlinux NONE)
 if(NOT CMAKE_PROJECT_NAME STREQUAL "stardustos")
 	add_subdirectory(nvk)
 endif()
+
+include(pkg.cmake)
+include(packages/linux/build.cmake)
