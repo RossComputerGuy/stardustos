@@ -21,13 +21,11 @@ static int print(const char* str, size_t len, int inmsg) {
 		str += 2;
 		len -= 2;
 	}
+#ifndef __nvk__
 	size_t freesize = NEWLAND_KLOG_SIZE - klog_pos;
 	if (!inmsg) len += TIME_STRLEN + 3;
 	if (freesize < len) {
-		size_t l = 0;
-		while (klog_buffer[l] != '\n') l++;
-		memmove(klog_buffer, klog_buffer + l, NEWLAND_KLOG_SIZE - l);
-		klog_pos -= l;
+		klog_pos = 0;
 	}
 	char* buff = klog_buffer + klog_pos;
 	if (!inmsg) {
@@ -49,6 +47,7 @@ static int print(const char* str, size_t len, int inmsg) {
 		if (buff[len - 1] == '\n') tty->opts.write(tty, "\r", 1);
 	}
 	klog_pos += len;
+#endif
 	return len;
 }
 

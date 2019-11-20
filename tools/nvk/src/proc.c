@@ -142,9 +142,9 @@ void proc_go(proc_t** procptr) {
 	proc_t* proc = *procptr;
 	pthread_attr_t attr;
 	pthread_attr_init(&attr);
-	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 	pthread_attr_setstack(&attr, proc->stack, PROC_STACKSIZE);
-	pthread_create(&proc->thread, &attr, proc_runner, proc->impl);
+	pthread_create(&proc->thread, &attr, proc_runner, proc);
+	pthread_join(proc->thread, NULL);
 }
 
 int proc_exec(const char* path, const char** argv) {
@@ -179,5 +179,7 @@ int proc_exec(const char* path, const char** argv) {
 		if (prog.memsz >= hdr.entry && proc->entry != NULL) proc->entry = addr + hdr.entry;
 		list_add(&proc->progs, addr);
 	}
+
+	proc_go(&proc);
 	return proc->id;
 }

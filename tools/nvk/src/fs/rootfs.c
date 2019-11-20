@@ -113,6 +113,7 @@ static int rootfs_get_child(fs_node_t* node, fs_node_t** childptr, size_t index)
 					node->opts.read = rootfs_read;
 					node->opts.write = rootfs_write;
 					list_add(&rootfs->cached_nodes, node);
+					*childptr = node;
 					closedir(dir);
 					return 0;
 				}
