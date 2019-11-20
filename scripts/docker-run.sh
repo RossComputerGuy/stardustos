@@ -7,4 +7,4 @@ else
 	p=$(dirname "$p")
 fi
 p=$(readlink -f "$p")
-docker run -ti -v "$p":/usr/src -t stardustos /usr/src/scripts/build.sh "$@"
+docker run -v "$p":/usr/src -t stardustos /usr/src/scripts/build.sh "$@"
