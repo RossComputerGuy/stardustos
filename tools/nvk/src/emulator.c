@@ -36,9 +36,17 @@ uc_err nvk_emu(void* prog, size_t size, void* impl) {
 	}
 	uc_hook syscall_hook;
 	uc_hook_add(uc, &syscall_hook, UC_HOOK_INSN, hook_syscall, NULL, 1, 0, UC_X86_INS_SYSCALL);
-	// TODO: check if prog is an ELF program and memory map it in
-	uc_mem_map(uc, NVK_RAM_START, NVK_RAM_END, UC_PROT_ALL);
-	uc_mem_map_ptr(uc, NVK_PROG_START, size, UC_PROT_ALL, prog);
+	if ((err = uc_mem_map(uc, NVK_RAM_START, NVK_RAM_END, UC_PROT_ALL)) != UC_ERR_OK) {
+		fprintf(stderr, "Failed on uc_mem_map() with error returned: %u\n", err);
+		uc_close(uc);
+		return err;
+	}
+	/* TODO: check if is ELF file */
+	if ((err = uc_mem_map_ptr(uc, NVK_PROG_START, size, UC_PROT_ALL, prog)) != UC_ERR_OK) {
+		fprintf(stderr, "Failed on uc_mem_map_ptr() with error returned: %u\n", err);
+		uc_close(uc);
+		return err;
+	}
 	uc_reg_write(uc, UC_X86_REG_EAX, &impl);
 	if ((err = uc_emu_start(uc, NVK_PROG_START, NVK_PROG_START + size - 1, 0, 0)) != UC_ERR_OK) {
 		fprintf(stderr, "Failed on uc_emu_start() with error returned: %u\n", err);
