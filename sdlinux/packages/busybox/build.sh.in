@@ -1,14 +1,12 @@
 #!/usr/bin/env bash
 
 set -e
-pkgver=@PACKAGE_VERSION@
-pkgver="${pkgver/./_}"
 if ! [ -d @PACKAGE_BINARY_DIR@/build ]; then
 	ln -s @PACKAGE_SOURCE_DIR@/src @PACKAGE_BINARY_DIR@/build
 	cd @PACKAGE_BINARY_DIR@/build
-	git checkout "v$pkgver"
+	git checkout v1_31_1
 fi
 cp @PACKAGE_BINARY_DIR@/config @PACKAGE_BINARY_DIR@/build/.config
 cd @PACKAGE_BINARY_DIR@/build
 export PATH=$PATH:@BUILDFS@/usr/bin
-make
+make CC=musl-gcc LD=musl-gcc
