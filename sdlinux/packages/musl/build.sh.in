@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 
+set -e
 if ! [ -d @PACKAGE_BINARY_DIR@/build ]; then
 	ln -s @PACKAGE_SOURCE_DIR@/src @PACKAGE_BINARY_DIR@/build
 	cd @PACKAGE_BINARY_DIR@/build
 	git checkout v@PACKAGE_VERSION@
 fi
-cp @PACKAGE_BINARY_DIR@/config.mak @PACKAGE_BINARY_DIR@/build/config.mak
 cd @PACKAGE_BINARY_DIR@/build
+./configure --prefix=/usr --libdir=/lib --target=i386 CFLAGS="-m32" CROSS_COMPILE=x86_64-linux-gnu-
 make
+make install DESTDIR=@BUILDFS@
+make install-libs DESTDIR=@OUTPUTFS@

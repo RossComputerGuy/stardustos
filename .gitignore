@@ -90,3 +90,5 @@ nvk.ld
 **/sdlinux/packages/*/build
 **/sdlinux/packages/musl/config.mak
 **/sdlinux/*.pkg.sh
+**/sdlinux/outputfs
+**/sdlinux/buildfs
