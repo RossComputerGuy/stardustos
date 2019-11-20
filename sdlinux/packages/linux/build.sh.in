@@ -7,4 +7,4 @@ if ! [ -d @PROJECT_BINARY_DIR@/linux ]; then
 fi
 cp @PROJECT_SOURCE_DIR@/packages/linux/config @PROJECT_BINARY_DIR@/linux/.config
 cd @PROJECT_BINARY_DIR@/linux
-make vmlinuz
+make vmlinux
