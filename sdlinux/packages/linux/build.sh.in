@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
-git clone https://github.com/torvalds/linux @PROJECT_BINARY_DIR@/linux
+if ! [ -d @PROJECT_BINARY_DIR@/linux ]; then
+	git clone https://github.com/torvalds/linux @PROJECT_BINARY_DIR@/linux
+	cd @PROJECT_BINARY_DIR@/linux
+	git checkout v@version@
+fi
+cp @PROJECT_SOURCE_DIR@/packages/linux/config @PROJECT_BINARY_DIR@/linux/.config
 cd @PROJECT_BINARY_DIR@/linux
-git checkout v@version@
+make vmlinuz
