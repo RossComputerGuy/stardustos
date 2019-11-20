@@ -1,8 +1,22 @@
 # Package builder
 
-function(add_package name version)
-	configure_file("${PROJECT_SOURCE_DIR}/packages/${name}/build.sh.in" "${PROJECT_BINARY_DIR}/${name}.pkg.sh")
-	add_custom_target(sdlinux-${name} ALL
-		COMMAND "${PROJECT_BINARY_DIR}/${name}.pkg.sh"
-		COMMENT "Building package ${name} (v${version})")
+function(add_package PACKAGE_NAME PACKAGE_VERSION)
+	set(PACKAGE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/packages/${PACKAGE_NAME})
+	set(PACKAGE_BINARY_DIR ${PROJECT_BINARY_DIR}/packages/${PACKAGE_NAME})
+	set(OUTPUTFS ${PROJECT_BINARY_DIR}/outputfs)
+	set(BUILDFS ${PROJECT_BINARY_DIR}/buildfs)
+	configure_file("${PACKAGE_SOURCE_DIR}/build.sh.in" "${PROJECT_BINARY_DIR}/${PACKAGE_NAME}.pkg.sh")
+	execute_process(COMMAND mkdir -p ${PACKAGE_BINARY_DIR} ${OUTPUTFS} ${BUILDFS})
+	if(PACKAGE_OUTPUT)
+		add_custom_command(OUTPUT ${PACKAGE_OUTPUT}
+			COMMAND "${PROJECT_BINARY_DIR}/${PACKAGE_NAME}.pkg.sh"
+			WORKING_DIRECTORY ${PACKAGE_SOURCE_DIR}
+			COMMENT "Building package ${PACKAGE_NAME} (v${PACKAGE_VERSION})")
+		add_custom_target(sdlinux-${PACKAGE_NAME} ALL DEPENDS ${PACKAGE_OUTPUT})
+	else()
+		add_custom_target(sdlinux-${PACKAGE_NAME} ALL
+			COMMAND "${PROJECT_BINARY_DIR}/${PACKAGE_NAME}.pkg.sh"
+			WORKING_DIRECTORY ${PACKAGE_SOURCE_DIR}
+			COMMENT "Building package ${PACKAGE_NAME} (v${PACKAGE_VERSION})")
+	endif()
 endfunction()

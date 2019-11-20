@@ -1,3 +1,9 @@
 [submodule "tools/nvk/deps/unicorn"]
 	path = tools/nvk/deps/unicorn
 	url = https://github.com/unicorn-engine/unicorn
+[submodule "sdlinux/packages/linux/src"]
+	path = sdlinux/packages/linux/src
+	url = https://github.com/torvalds/linux
+[submodule "sdlinux/packages/musl/src"]
+	path = sdlinux/packages/musl/src
+	url = git://git.musl-libc.org/musl

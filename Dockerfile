@@ -1,7 +1,8 @@
 FROM debian:sid
 
-RUN apt-get update -y >/dev/null 2>&1 && \
-	yes | apt-get install -y build-essential libssl-dev flex bc bison grub grub-pc-bin bash-completion xorriso gcc gdb python cmake zip unzip curl cppcheck rubygems cscope doxygen graphviz git xvfb x11vnc qemu-system openbox >/dev/null 2>&1 \
+RUN dpkg --add-architecture i386 >/dev/null && \
+  apt-get update -y >/dev/null 2>&1 && \
+	yes | apt-get install -y build-essential libssl-dev gcc-7-multilib flex bc bison grub grub-pc-bin bash-completion xorriso gcc gdb python cmake zip unzip curl cppcheck rubygems cscope doxygen graphviz git xvfb x11vnc qemu-system openbox >/dev/null 2>&1 \
 	&& apt-get clean >/dev/null 2>&1 && rm -rf /var/lib/apt/lists/* /tmp/*
 
 ENV WINDOW_MANAGER="openbox"

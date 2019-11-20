@@ -5,6 +5,6 @@ if ! [ -d @PACKAGE_BINARY_DIR@/build ]; then
 	cd @PACKAGE_BINARY_DIR@/build
 	git checkout v@PACKAGE_VERSION@
 fi
-cp @PACKAGE_SOURCE_DIR@/config @PACKAGE_BINARY_DIR@/build/.config
+cp @PACKAGE_BINARY_DIR@/config.mak @PACKAGE_BINARY_DIR@/build/config.mak
 cd @PACKAGE_BINARY_DIR@/build
-make vmlinux
+make

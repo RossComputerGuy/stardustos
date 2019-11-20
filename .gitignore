@@ -87,5 +87,6 @@ tmp/
 config.log
 genlinker.sh
 nvk.ld
-**/sdlinux/linux/
+**/sdlinux/packages/*/build
+**/sdlinux/packages/musl/config.mak
 **/sdlinux/*.pkg.sh

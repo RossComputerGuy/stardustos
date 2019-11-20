@@ -7,3 +7,4 @@ endif()
 
 include(pkg.cmake)
 include(packages/linux/build.cmake)
+include(packages/musl/build.cmake)

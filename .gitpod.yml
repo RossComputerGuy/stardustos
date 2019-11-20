@@ -1,2 +1,9 @@
 image:
   file: Dockerfile
+tasks:
+  - init: echo "export DISPLAY=:0" >> ~/.bashrc && echo "[ ! -e /tmp/.X0-lock ] && (/usr/bin/start-vnc-session.sh &> /tmp/display-\${DISPLAY}.log)" >> ~/.bashrc
+ports:
+  - port: 5900
+    onOpen: ignore
+  - port: 6080
+    onOpen: open-preview

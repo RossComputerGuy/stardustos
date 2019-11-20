@@ -7,4 +7,4 @@ serices:
 before_install:
   - sudo chown 1000 . -R
   - ./scripts/docker-init.sh
-script: ./scripts/docker-run.sh
+script: travis_wait ./scripts/docker-run.sh
