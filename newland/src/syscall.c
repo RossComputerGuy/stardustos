@@ -3,6 +3,7 @@
  */
 #include <newland/errno.h>
 #include <newland/syscall.h>
+#include <sys/newland.h>
 #include <stddef.h>
 
 const static syscall_t syscall_handlers[] = {

@@ -3,6 +3,6 @@
  */
 #pragma once
 
-#define NL_PROP_NVK_VERSION 1
+#define NL_PROP_ISNVK 1
 
 int nl_getbuildprop(int prop, void* output, int* size);

@@ -5,3 +5,4 @@
  * \since v0.1.0
  */
 #pragma once
+(syscall_t)nl_getbuildprop

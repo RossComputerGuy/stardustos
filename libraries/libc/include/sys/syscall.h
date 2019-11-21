@@ -3,10 +3,8 @@
  */
 #pragma once
 
-#define NEWLAND_SYS_open 1
-#define NEWLAND_SYS_close 2
+#define NEWLAND_SYS_nl_getbuildprop 0
 
 #ifndef HAS_LIBC
-#define SYS_open NEWLAND_SYS_open
-#define SYS_close NEWLAND_SYS_close
+#define SYS_open NEWLAND_SYS_nl_getbuildprop
 #endif
