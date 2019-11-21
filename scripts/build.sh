@@ -11,4 +11,4 @@ cd build
 p=$(dirname "$0")
 p=$(dirname "$p")
 cmake -S "$p" "$@"
-make
+make -j $(($(grep -P '^core id\t' /proc/cpuinfo | sort -u | wc -l) / 2))
