@@ -1,15 +1,18 @@
 #!/usr/bin/env bash
 
 set -e
-cd @PACKAGE_SOURCE_DIR@/src
-cp ../config.mk config.mk
+if ! [ -d @PACKAGE_BINARY_DIR@/unicorn-@PACKAGE_VERSION@ ]; then
+	cd @PACKAGE_BINARY_DIR@
+	curl -L "https://github.com/unicorn-engine/unicorn/archive/@PACKAGE_VERSION@.tar.gz" | tar zxf -
+fi
+cd @PACKAGE_BINARY_DIR@/unicorn-@PACKAGE_VERSION@
+cp @PACKAGE_SOURCE_DIR@/config.mk config.mk
 export PATH=$PATH:@BUILDFS@/usr/bin
-export CC=musl-gcc
-export LD=musl-gcc
 export LIBRARY_PATH=@BUILDFS@/lib
-export CFLAGS="-m32"
-export LDFLAGS="-m32"
-export LDFLAGS_STATIC="-m32"
-export UNICORN_QEMU_FLAGS="--cpu=i386"
-make
+export CFLAGS="-m32 --sysroot=@BUILDFS@ -isystem @BUILDFS@/usr/include"
+export LDFLAGS="-m32 -specs @BUILDFS@/lib/musl-gcc.specs"
+export LDFLAGS_STATIC="-m32 -specs @BUILDFS@/lib/musl-gcc.specs"
+export UNICORN_QEMU_FLAGS="--cpu=i386 --disable-stack-protector"
+make VERBOSE=1
 make install PREFIX=/ DESTDIR=@INITRD@
+rm -rf @INITRD@/include @INITRD@/lib/pkgconfig

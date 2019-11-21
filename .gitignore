@@ -91,6 +91,7 @@ nvk.ld
 **/sdlinux/packages/busybox/config
 **/sdlinux/packages/musl/config.mak
 **/sdlinux/packages/musl/musl-gcc.specs
+**/sdlinux/packages/unicorn/unicorn-*
 **/sdlinux/*.pkg.sh
 **/sdlinux/initrd
 **/sdlinux/buildfs
