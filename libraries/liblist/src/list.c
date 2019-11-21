@@ -5,7 +5,7 @@
 #include <liblist.h>
 #include <stdlib.h>
 
-size_t list_indexof(list_t* list, void* value) {
+size_t liblist_indexof(list_t* list, void* value) {
 	list_node_t* node = NULL;
 	size_t i = 0;
 	SLIST_FOREACH(node, list, list) {
@@ -15,7 +15,7 @@ size_t list_indexof(list_t* list, void* value) {
 	return -1;
 }
 
-size_t list_length(list_t* list) {
+size_t liblist_length(list_t* list) {
 	list_node_t* node = NULL;
 	size_t i = 0;
 	SLIST_FOREACH(node, list, list) {
@@ -24,7 +24,7 @@ size_t list_length(list_t* list) {
 	return i;
 }
 
-void* list_get(list_t* list, size_t i) {
+void* liblist_get(list_t* list, size_t i) {
 	list_node_t* node = NULL;
 	size_t index = 0;
 	SLIST_FOREACH(node, list, list) {
@@ -34,8 +34,8 @@ void* list_get(list_t* list, size_t i) {
 	return NULL;
 }
 
-int list_add(list_t* list, void* value) {
-	if (list_indexof(list, value) != -1) return -EEXIST;
+int liblist_add(list_t* list, void* value) {
+	if (liblist_indexof(list, value) != -1) return -EEXIST;
 	list_node_t* node = malloc(sizeof(list_node_t));
 	if (node == NULL) return -ENOMEM;
 	node->value = value;
@@ -43,7 +43,7 @@ int list_add(list_t* list, void* value) {
 	return 0;
 }
 
-void list_remove(list_t* list, void* value) {
+void liblist_remove(list_t* list, void* value) {
 	list_node_t* node = NULL;
 	SLIST_FOREACH(node, list, list) {
 		if (node->value != value) continue;
@@ -53,7 +53,7 @@ void list_remove(list_t* list, void* value) {
 	}
 }
 
-void list_destroy(list_t* list) {
+void liblist_destroy(list_t* list) {
 	list_node_t* node = SLIST_FIRST(list);
 	list_node_t* next = node;
 	while (next != NULL) {

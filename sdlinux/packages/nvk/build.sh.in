@@ -4,6 +4,9 @@ set -e
 mkdir @PACKAGE_BINARY_DIR@/build -p
 cd @PACKAGE_BINARY_DIR@/build
 export PATH=$PATH:@BUILDFS@/usr/bin
+export CFLAGS="-m32"
+export CXXFLAGS="-m32"
+export LDFLAGS="-Wl,-rpath @BUILDFS@/lib"
 cmake @PACKAGE_SOURCE_DIR@/src -DCMAKE_TOOLCHAIN_FILE=@PROJECT_BINARY_DIR@/toolchain.cmake
 make
 cp nvk @INITRD@/bin/nvk

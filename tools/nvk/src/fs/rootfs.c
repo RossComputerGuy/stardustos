@@ -71,7 +71,7 @@ static int rootfs_get_child(fs_node_t* node, fs_node_t** childptr, size_t index)
 	}
 	fs_node_t* cached_node = rootfs_get_cached_node_byindex(node, index);
 	if (cached_node == NULL) {
-		index -= list_length(&rootfs->cached_nodes);
+		index -= liblist_length(&rootfs->cached_nodes);
 		DIR* dir = opendir(path);
 		if (dir == NULL) return -NEWLAND_EINVAL;
 		seekdir(dir, index);
@@ -112,7 +112,7 @@ static int rootfs_get_child(fs_node_t* node, fs_node_t** childptr, size_t index)
 					node->opts.get_child = rootfs_get_child;
 					node->opts.read = rootfs_read;
 					node->opts.write = rootfs_write;
-					list_add(&rootfs->cached_nodes, node);
+					liblist_add(&rootfs->cached_nodes, node);
 					*childptr = node;
 					closedir(dir);
 					return 0;

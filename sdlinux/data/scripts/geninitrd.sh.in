@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+mkdir @PROJECT_BINARY_DIR@/boot/ -p
+find . | cpio --create --format='newc' > @PROJECT_BINARY_DIR@/boot/initrd.cpio

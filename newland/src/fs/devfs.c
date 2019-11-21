@@ -12,7 +12,7 @@
 static list_t devfs_nodes = { NULL };
 
 fs_node_t* devfs_get(size_t i) {
-	fs_node_t* node = list_get(&devfs_nodes, i);
+	fs_node_t* node = liblist_get(&devfs_nodes, i);
 	if (node == NULL) {
 		device_t* device = device_get(i);
 		if (device == NULL) return NULL;
@@ -28,7 +28,7 @@ fs_node_t* devfs_get(size_t i) {
 		node->rdev = device->dev;
 		node->size = device->size;
 		node->opts = device->opts;
-		list_add(&devfs_nodes, node);
+		liblist_add(&devfs_nodes, node);
 		return node;
 	}
 	return node;

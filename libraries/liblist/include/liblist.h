@@ -41,9 +41,9 @@ typedef struct list_node {
 SLIST_HEAD(list, list_node_t);
 typedef struct list list_t;
 
-size_t list_indexof(list_t* list, void* value);
-size_t list_length(list_t* list);
-void* list_get(list_t* list, size_t i);
-int list_add(list_t* list, void* value);
-void list_remove(list_t* list, void* value);
-void list_destroy(list_t* list);
+size_t liblist_indexof(list_t* list, void* value);
+size_t liblist_length(list_t* list);
+void* liblist_get(list_t* list, size_t i);
+int liblist_add(list_t* list, void* value);
+void liblist_remove(list_t* list, void* value);
+void liblist_destroy(list_t* list);

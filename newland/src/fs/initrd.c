@@ -128,7 +128,7 @@ static int initrd_mount(fs_node_t** targetptr, fs_node_t* source, unsigned long 
 		node->dev = source->rdev;
 		if (stat.m_is_directory) node->opts.get_child = initrd_get_child;
 		else node->opts.read = initrd_read;
-		list_add(&initrd->nodes, node);
+		liblist_add(&initrd->nodes, node);
 	}
 	return 0;
 }

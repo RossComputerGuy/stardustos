@@ -97,3 +97,4 @@ nvk.ld
 **/sdlinux/buildfs
 **/sdlinux/rootfs
 toolchain.cmake
+geninitrd.sh

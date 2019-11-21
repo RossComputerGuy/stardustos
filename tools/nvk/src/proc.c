@@ -121,7 +121,7 @@ proc_t* proc_create(proc_t* parent, const char* name, int isuser) {
 
 int proc_destroy(proc_t** procptr) {
 	proc_t* proc = *procptr;
-	list_destroy(&proc->progs);
+	liblist_destroy(&proc->progs);
 	if (proc->parent != 0) {
 		proc_t* parent = process_frompid(proc->parent);
 		for (int i = 0; i < parent->child_count; i++) {
@@ -177,7 +177,7 @@ int proc_exec(const char* path, const char** argv) {
 			return -NEWLAND_EINVAL;
 		}
 		if (prog.memsz >= hdr.entry && proc->entry != NULL) proc->entry = addr + hdr.entry;
-		list_add(&proc->progs, addr);
+		liblist_add(&proc->progs, addr);
 	}
 
 	proc_go(&proc);
