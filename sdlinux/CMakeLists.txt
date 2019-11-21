@@ -5,10 +5,12 @@ if(NOT CMAKE_PROJECT_NAME STREQUAL "stardustos")
 	add_subdirectory(nvk)
 endif()
 
+configure_file("${PROJECT_SOURCE_DIR}/toolchain.cmake.in" "${PROJECT_BINARY_DIR}/toolchain.cmake" @ONLY)
 include(pkg.cmake)
 
 # Add packages
 include(packages/busybox/build.cmake)
 include(packages/linux/build.cmake)
 include(packages/musl/build.cmake)
+include(packages/nvk/build.cmake)
 include(packages/unicorn/build.cmake)

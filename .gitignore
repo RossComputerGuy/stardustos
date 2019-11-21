@@ -96,3 +96,4 @@ nvk.ld
 **/sdlinux/initrd
 **/sdlinux/buildfs
 **/sdlinux/rootfs
+toolchain.cmake

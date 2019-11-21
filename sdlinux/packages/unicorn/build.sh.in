@@ -15,4 +15,7 @@ export LDFLAGS_STATIC="-m32 -specs @BUILDFS@/lib/musl-gcc.specs"
 export UNICORN_QEMU_FLAGS="--cpu=i386 --disable-stack-protector"
 make VERBOSE=1
 make install PREFIX=/ DESTDIR=@INITRD@
+mkdir -p @BUILDFS@/usr/include/unicorn @BUILDFS@/lib/pkgconfig
+mv @INITRD@/include/unicorn/* @BUILDFS@/usr/include/unicorn
+mv @INITRD@/lib/pkgconfig/* @BUILDFS@/lib/pkgconfig
 rm -rf @INITRD@/include @INITRD@/lib/pkgconfig
