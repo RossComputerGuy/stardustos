@@ -12,7 +12,7 @@ p=$(dirname "$0")
 p=$(dirname "$p")
 cmake -S "$p" "$@"
 c=$(($(grep -P '^core id\t' /proc/cpuinfo | sort -u | wc -l) / 2))
-if [ -z "$c" ]; then
+if [ -z "$c" ] || [ "$c" -lt 1 ]; then
 	c=2
 fi
 make -j "$c"
