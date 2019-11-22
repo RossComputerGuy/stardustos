@@ -100,3 +100,4 @@ toolchain.cmake
 geninitrd.sh
 **/toolchain/build-*
 **/toolchain/*.sh
+**/toolchain/crossroot/
