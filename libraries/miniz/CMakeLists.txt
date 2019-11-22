@@ -13,3 +13,8 @@ if(NOT CMAKE_PROJECT_NAME STREQUAL "stardustos")
 endif()
 add_dependencies(miniz libc)
 include_directories("${PROJECT_SOURCE_DIR}/libc/arch/${ARCH}/include" "${PROJECT_SOURCE_DIR}/libc/include")
+
+if(NOT CMAKE_PROJECT_NAME STREQUAL "stardustos")
+	add_subdirectory(toolchain)
+	add_dependencies(miniz toolchain)
+endif()

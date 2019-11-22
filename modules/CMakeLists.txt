@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
 include("platform.cmake")
-# TODO: add in the toolchain
 project(newland-modules)
 
 if(NOT NEWLAND_ARCH)

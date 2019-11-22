@@ -16,3 +16,8 @@ include("${libc_SOURCE_DIR}/arch/${ARCH}/build.cmake")
 add_executable(hello "${PROJECT_SOURCE_DIR}/src/main.c")
 add_dependencies(hello libc)
 target_link_libraries(hello "${libc_BINARY_DIR}/libc.a")
+
+if(NOT CMAKE_PROJECT_NAME STREQUAL "stardustos")
+	add_subdirectory(toolchain)
+	add_dependencies(hello toolchain)
+endif()
