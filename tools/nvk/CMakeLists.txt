@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
+include("platform.cmake")
 project(nvk)
-
-if(NOT ARCH)
-	set(ARCH "x86")
-endif()
 
 set(NEWLAND_ARCH ${ARCH})
 include_directories("${PROJECT_SOURCE_DIR}/include")
