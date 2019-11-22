@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 3.15)
+include("platform.cmake")
+# TODO: make sure we add the toolchain if its not in the system
 project(libfile)
 
-if(NOT ARCH)
-	set(ARCH "x86")
-endif()
-
+include("${CMAKE_BINARY_DIR}/toolchain.cmake")
 include("${PROJECT_SOURCE_DIR}/build.cmake")
 add_compile_options("-nostdlib" "-fno-builtin")
 add_library(libfile ${LIBFILE_SOURCES})

@@ -1,9 +1,13 @@
 cmake_minimum_required(VERSION 3.15)
+include("platform.cmake")
+# TODO: add in the toolchain
 project(newland-modules)
 
 if(NOT NEWLAND_ARCH)
-	set(NEWLAND_ARCH "x86")
+	set(NEWLAND_ARCH ${ARCH})
 endif()
+
+include("${CMAKE_BINARY_DIR}/toolchain.cmake")
 
 set(NEWLAND_SOURCE "${PROJECT_SOURCE_DIR}/newland")
 include("${PROJECT_SOURCE_DIR}/newland/module.cmake")

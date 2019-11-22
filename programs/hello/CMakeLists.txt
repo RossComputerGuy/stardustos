@@ -1,13 +1,12 @@
 cmake_minimum_required(VERSION 3.15)
+include("platform.cmake")
+# TODO: make sure we add the toolchain if its not in the system
 project(hello)
-
-if(NOT ARCH)
-	set(ARCH "x86")
-endif()
 
 add_compile_options("-nostdinc" "-fno-builtin")
 add_link_options("-nostdlib" "-nostartfiles")
 
+include("${CMAKE_BINARY_DIR}/toolchain.cmake")
 if(NOT CMAKE_PROJECT_NAME STREQUAL "stardustos")
 	add_subdirectory(libc)
 endif()

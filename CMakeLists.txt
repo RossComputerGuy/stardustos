@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.15)
-project(stardustos NONE)
 
-if(NOT ARCH)
-	set(ARCH "x86")
-endif()
+include(platform.cmake)
+add_subdirectory(toolchain)
+set(CMAKE_TOOLCHAIN_FILE ${CMAKE_BINARY_DIR}/toolchain.cmake)
+project(stardustos NONE)
 
 set(NEWLAND_ARCH "${ARCH}")
 

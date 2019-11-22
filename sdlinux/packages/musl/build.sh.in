@@ -7,7 +7,10 @@ if ! [ -d @PACKAGE_BINARY_DIR@/build ]; then
 	git checkout v@PACKAGE_VERSION@
 fi
 cd @PACKAGE_BINARY_DIR@/build
-./configure --prefix=/usr --libdir=/lib --target=i386 CFLAGS="-m32" CROSS_COMPILE=x86_64-linux-gnu-
+export CFLAGS="-m32"
+export CROSS_COMPILE=x86_64-pc-linux-gnu-
+export CC="${CROSS_COMPILE}gcc"
+./configure --prefix=/usr --libdir=/lib --target=i386
 make
 sed -i "s|/lib/|@BUILDFS@/lib/|" obj/musl-gcc
 cp @PACKAGE_BINARY_DIR@/musl-gcc.specs lib/musl-gcc.specs

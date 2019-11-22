@@ -1,15 +1,17 @@
 cmake_minimum_required(VERSION 3.15)
 include("version.cmake")
+include("platform.cmake")
 project(newland C ASM)
 
 if(NOT NEWLAND_ARCH)
-	set(NEWLAND_ARCH x86)
+	set(NEWLAND_ARCH ${ARCH})
 endif()
 
 if(NOT NEWLAND_KLOG_SIZE)
 	set(NEWLAND_KLOG_SIZE 1000)
 endif()
 
+include("${CMAKE_BINARY_DIR}/toolchain.cmake")
 set(ARCH ${NEWLAND_ARCH})
 add_compile_options("-nostdinc" "-fno-builtin" "-fno-stack-protector")
 include(CTest)
@@ -55,6 +57,7 @@ add_executable(kernel.elf
 	${LIBC_SOURCES}
 	${ARCH_FILES}
 	${NEWLAND_SOURCES}
+	"${PROJECT_SOURCE_DIR}/deps/liballoc/liballoc.c"
 	"${ARCH_DIR}/src/alloc.c"
 	"${ARCH_DIR}/src/clock.c")
 
@@ -67,3 +70,8 @@ endif()
 
 add_test(NAME kernel
 	COMMAND ${PROJECT_BINARY_DIR}/test.sh)
+
+if(NOT CMAKE_PROJECT_NAME STREQUAL "stardustos")
+	add_subdirectory(toolchain)
+	add_dependencies(kernel.elf toolchain)
+endif()

@@ -10,3 +10,12 @@
 [submodule "sdlinux/packages/busybox/src"]
 	path = sdlinux/packages/busybox/src
 	url = git://busybox.net/busybox.git
+[submodule "toolchain/binutils"]
+	path = toolchain/binutils
+	url = git://sourceware.org/git/binutils-gdb.git
+[submodule "toolchain/gcc"]
+	path = toolchain/gcc
+	url = git://gcc.gnu.org/git/gcc.git
+[submodule "newland/deps/liballoc"]
+	path = newland/deps/liballoc
+	url = https://github.com/blanham/liballoc/

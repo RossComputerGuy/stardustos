@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.15)
+# TODO: make sure we add the toolchain if its not in the system
 project(sdlinux NONE)
 
+include("${CMAKE_BINARY_DIR}/toolchain.cmake")
 if(NOT CMAKE_PROJECT_NAME STREQUAL "stardustos")
 	add_subdirectory(nvk)
 endif()
