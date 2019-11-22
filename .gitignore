@@ -101,3 +101,4 @@ geninitrd.sh
 **/toolchain/build-*
 **/toolchain/*.sh
 **/toolchain/crossroot/
+toolchain.sh

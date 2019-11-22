@@ -8,6 +8,7 @@ if(NOT CMAKE_PROJECT_NAME STREQUAL "stardustos")
 endif()
 
 configure_file("${PROJECT_SOURCE_DIR}/data/scripts/geninitrd.sh.in" "${PROJECT_BINARY_DIR}/geninitrd.sh" @ONLY)
+configure_file("${PROJECT_SOURCE_DIR}/data/scripts/toolchain.sh.in" "${PROJECT_BINARY_DIR}/toolchain.sh" @ONLY)
 configure_file("${PROJECT_SOURCE_DIR}/data/toolchain.cmake.in" "${PROJECT_BINARY_DIR}/toolchain.cmake" @ONLY)
 include(pkg.cmake)
 

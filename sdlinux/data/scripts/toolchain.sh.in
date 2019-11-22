@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+export CC=@CROSS_COMPILER@-gcc
+export LD=@CROSS_COMPILER@-gcc

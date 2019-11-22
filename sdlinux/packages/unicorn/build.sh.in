@@ -7,12 +7,17 @@ if ! [ -d @PACKAGE_BINARY_DIR@/unicorn-@PACKAGE_VERSION@ ]; then
 fi
 cd @PACKAGE_BINARY_DIR@/unicorn-@PACKAGE_VERSION@
 cp @PACKAGE_SOURCE_DIR@/config.mk config.mk
+cpu=@ARCH@
+if [ @ARCH@ == "x86" ]; then
+	cpu="i386"
+fi
 export PATH=$PATH:@BUILDFS@/usr/bin
 export LIBRARY_PATH=@BUILDFS@/lib
-export CFLAGS="-m32 --sysroot=@BUILDFS@ -isystem @BUILDFS@/usr/include"
-export LDFLAGS="-m32 -specs @BUILDFS@/lib/musl-gcc.specs"
-export LDFLAGS_STATIC="-m32 -specs @BUILDFS@/lib/musl-gcc.specs"
-export UNICORN_QEMU_FLAGS="--cpu=i386 --disable-stack-protector"
+export CFLAGS="--sysroot=@BUILDFS@ -isystem @BUILDFS@/usr/include"
+export LDFLAGS="-specs @BUILDFS@/lib/musl-gcc.specs"
+export LDFLAGS_STATIC="-specs @BUILDFS@/lib/musl-gcc.specs"
+export UNICORN_QEMU_FLAGS="--cpu=$cpu --disable-stack-protector"
+source @PROJECT_BINARY_DIR@/toolchain.sh
 make VERBOSE=1
 make install PREFIX=/ DESTDIR=@INITRD@
 mkdir -p @BUILDFS@/usr/include/unicorn @BUILDFS@/lib/pkgconfig
