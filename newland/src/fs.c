@@ -19,9 +19,15 @@ int fs_node_create(fs_node_t** nodeptr, const char* name, mode_t mode) {
 	return node->ino;
 }
 
+int fs_node_open(fs_node_t** nodeptr, fd_t* fd) {
+	fs_node_t* node = *nodeptr;
+	if (node->opts.open == NULL) return 0;
+	return node->opts.open(node, fd);
+}
+
 int fs_node_close(fs_node_t** nodeptr, fd_t* fd) {
 	fs_node_t* node = *nodeptr;
-	if (node->opts.close == NULL) return -NEWLAND_ENOSYS;
+	if (node->opts.close == NULL) return 0;
 	return node->opts.close(node, fd);
 }
 

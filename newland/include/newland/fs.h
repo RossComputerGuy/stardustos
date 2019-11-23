@@ -356,6 +356,15 @@ typedef struct mountpoint {
 int fs_node_create(fs_node_t** nodeptr, const char* name, mode_t mode);
 
 /**
+ * Opens a file descriptor
+ *
+ * @param[out] nodeptr The pointer to the filesystem node
+ * @param[out] fd Pointer to the file descriptor
+ * @return Zero on success or a negative errno code on failure
+ */
+int fs_node_open(fs_node_t** nodeptr, fd_t* fd);
+
+/**
  * Closes a file descriptor
  *
  * @param[out] nodeptr The pointer to the filesystem node

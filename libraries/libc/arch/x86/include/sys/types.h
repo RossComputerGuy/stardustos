@@ -27,3 +27,5 @@ typedef unsigned long blksize_t;
 typedef unsigned int blkcnt_t;
 typedef unsigned int dev_t;
 typedef unsigned int nlink_t;
+
+typedef signed int ssize_t;
