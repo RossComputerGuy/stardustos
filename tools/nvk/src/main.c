@@ -14,7 +14,7 @@
 extern time_t boot_time;
 
 int main(int argc, char** argv) {
-	if (argc < 1) {
+	if (argc < 2) {
 		fprintf(stderr, "Requires the rootfs argument\n");
 		return EXIT_FAILURE;
 	}

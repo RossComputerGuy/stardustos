@@ -5,6 +5,6 @@ set -e
 mkdir -p @PROJECT_BINARY_DIR@/build-gcc
 cd @PROJECT_BINARY_DIR@/build-gcc
 @PROJECT_SOURCE_DIR@/gcc/configure --target=@CROSS_COMPILER@ --prefix=@PROJECT_BINARY_DIR@/crossroot \
-	--disable-nls --enable-languages=c,c++ --enable-plugins --with-mpfr --with-mpc
-make
-make install
+	--disable-nls --enable-languages=c,c++ --enable-plugins --enable-multilib --with-mpfr --with-mpc --with-newlib
+make all-gcc
+make install-gcc

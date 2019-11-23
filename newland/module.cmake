@@ -15,7 +15,7 @@ if(NOT CMAKE_PROJECT_NAME STREQUAL "stardustos")
 endif()
 
 function(add_kmodule name)
-	include_directories("${NEWLAND_SOURCE}/include" "${NEWLAND_SOURCE}/arch/${NEWLAND_ARCH}/include")
+	include_directories("${NEWLAND_SOURCE}/include" "${NEWLAND_SOURCE}/arch/${NEWLAND_ARCH}/include" "${NEWLAND_SOURCE}/liblist/include")
 	add_compile_definitions("NEWLAND_MODULE" "NEWLAND_VERSION=\"${NEWLAND_VERSION}\"")
 	add_compile_options("-nostdinc" "-fno-builtin" "-Werror=implicit-function-declaration" "-fno-stack-protector" "-r")
 	string(REPLACE "/" "_" "target" "${name}")

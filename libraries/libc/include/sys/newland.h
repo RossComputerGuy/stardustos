@@ -4,6 +4,7 @@
 #pragma once
 
 #include <sys/types.h>
+#include <string.h>
 
 #define NL_PROP_ISNVK 1
 

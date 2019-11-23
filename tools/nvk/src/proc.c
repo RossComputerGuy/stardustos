@@ -63,7 +63,7 @@ static void* proc_runner(void* arg) {
 	void* ret = NULL;
 	curr_pid = proc->id;
 	if (proc->isuser) {
-		uc_err err = nvk_emu(proc->entry, proc->prgsize, proc->impl);
+		uc_err err = nvk_emu(proc->prog, proc->prgsize, proc->impl);
 		if (err != UC_ERR_OK) {
 			proc->status = PROC_ZOMBIE;
 			return NULL;
@@ -121,7 +121,7 @@ proc_t* proc_create(proc_t* parent, const char* name, int isuser) {
 
 int proc_destroy(proc_t** procptr) {
 	proc_t* proc = *procptr;
-	liblist_destroy(&proc->progs);
+	if (proc->prog != NULL) free(proc->prog);
 	if (proc->parent != 0) {
 		proc_t* parent = process_frompid(proc->parent);
 		for (int i = 0; i < parent->child_count; i++) {
@@ -152,33 +152,24 @@ int proc_exec(const char* path, const char** argv) {
 	int r = fs_resolve(&node, path);
 	if (r < 0) return r;
 
-	elf_header_t hdr;
-	r = fs_node_read(&node, 0, &hdr, sizeof(elf_header_t));
+	void* prog = malloc(node->size);
+	if (prog == NULL) return -NEWLAND_ENOMEM;
+	r = fs_node_read(&node, 0, &prog, node->size);
 	if (r < 0) return r;
 
-	if (!(elf_isvalid(&hdr) && hdr.machine == 3)) return -NEWLAND_EINVAL;
+	if (!elf_isvalid((elf_header_t*)prog)) {
+		free(prog);
+		return -NEWLAND_EINVAL;
+	}
 
 	proc_t* curr = process_curr();
 	proc_t* proc = proc_create(curr, path, 1);
-	if (proc == NULL) return -NEWLAND_EINVAL;
-
-	elf_program_t prog;
-	for (int i = 0; i < hdr.phnum; i++) {
-		r = fs_node_read(&node, hdr.phoff + (hdr.phentsize * i), &prog, sizeof(elf_program_t));
-		if (r < 0) {
-			proc_destroy(&proc);
-			return r;
-		}
-		void* addr = mmap(NULL, prog.memsz, (prog.flags & ELF_PROG_EXEC ? PROT_EXEC : 0)
-			| (prog.flags & ELF_PROG_WRITE ? PROT_WRITE : 0)
-			| (prog.flags & ELF_PROG_READ ? PROT_READ : 0), MAP_ANONYMOUS | MAP_PRIVATE, 0, 0);
-		if (addr == NULL) {
-			proc_destroy(&proc);
-			return -NEWLAND_EINVAL;
-		}
-		if (prog.memsz >= hdr.entry && proc->entry != NULL) proc->entry = addr + hdr.entry;
-		liblist_add(&proc->progs, addr);
+	if (proc == NULL) {
+		free(prog);
+		return -NEWLAND_EINVAL;
 	}
+
+	proc->prog = prog;
 
 	proc_go(&proc);
 	return proc->id;

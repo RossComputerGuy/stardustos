@@ -3,6 +3,7 @@
  */
 #include <newland/arch/proc.h>
 #include <newland/errno.h>
+#include <newland/fs.h>
 #include <sys/newland.h>
 
 int nl_getbuildprop(int prop, void* output, int* size) {
@@ -18,7 +19,7 @@ int nl_getbuildprop(int prop, void* output, int* size) {
 }
 
 pid_t nl_getpid() {
-	proc_t* proc = proccess_curr();
+	proc_t* proc = process_curr();
 	if (proc == NULL) return 0;
 	return proc->id;
 }
@@ -46,7 +47,7 @@ int nl_open(const char* path, int mode) {
 		}
 	}
 	if (fd == -1) return -NEWLAND_EMFILE;
-	int r = fs_node_resolve(&proc->fd[fd].node, path);
+	int r = fs_resolve(&proc->fd[fd].node, path);
 	if (r < 0) return r;
 	proc->fd[fd].mode = mode;
 	proc->fd[fd].gid = proc->gid;

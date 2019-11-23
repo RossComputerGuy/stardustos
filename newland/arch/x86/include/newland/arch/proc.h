@@ -203,7 +203,7 @@ proc_t* process_frompid(pid_t pid);
  * 
  * @return A process or NULL if not found
  */
-proc_t* proccess_curr();
+proc_t* process_curr();
 
 /**
  * Used by the scheduler to find the next process in which to execute

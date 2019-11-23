@@ -3,6 +3,6 @@
 mkdir -p @PROJECT_BINARY_DIR@/build-binutils
 cd @PROJECT_BINARY_DIR@/build-binutils
 @PROJECT_SOURCE_DIR@/binutils/configure --target=@CROSS_COMPILER@ --prefix=@PROJECT_BINARY_DIR@/crossroot \
-	--disable-nls --disable-werror --disable-gdb --disable-libdecnumber --disable-readline --disable-sim
+	--disable-nls --disable-werror --disable-gdb --disable-libdecnumber --disable-readline --disable-sim --enable-multilib
 make
 make install

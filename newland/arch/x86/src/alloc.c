@@ -17,6 +17,6 @@ void* liballoc_alloc(int pages) {
 }
 
 int liballoc_free(void* ptr, int pages) {
-	mem_free(get_krnlpgdir(), pages * PAGE_SIZE);
+	mem_free(get_krnlpgdir(), (uint32_t)ptr, pages * PAGE_SIZE);
 	return 0;
 }

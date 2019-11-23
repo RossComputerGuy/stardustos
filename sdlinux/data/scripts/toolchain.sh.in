@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 
+export PATH=$PATH:@CMAKE_BINARY_DIR@/toolchain/crossroot/bin
 export CC=@CROSS_COMPILER@-gcc
 export LD=@CROSS_COMPILER@-gcc
+export CROSS_COMPILE=@CROSS_COMPILER@-

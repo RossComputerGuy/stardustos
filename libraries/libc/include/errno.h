@@ -17,6 +17,7 @@
 #define NEWLAND_EISDIR 12
 #define NEWLAND_EBUSY 13
 #define NEWLAND_ENOENT 14
+#define NEWLAND_EMFILE 15
 
 #ifndef HAS_LIBC
 #define ENOMEM NEWLAND_ENOMEM
@@ -33,6 +34,7 @@
 #define EISDIR NEWLAND_EISDIR
 #define EBUSY NEWLAND_EBUSY
 #define ENOENT NEWLAND_ENOENT
+#define EMFILE NEWLAND_EMFILE
 #endif
 
 extern int errno;

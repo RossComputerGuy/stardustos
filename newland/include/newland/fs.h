@@ -71,6 +71,7 @@ typedef struct {
 	uid_t uid;
 	pid_t pid;
 	off_t offset;
+	int mode;
 } fd_t;
 
 /**

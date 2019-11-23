@@ -15,6 +15,11 @@ struct boundary_tag {
 	struct boundary_tag* prev;
 };
 
+extern int liballoc_lock();
+extern int liballoc_unlock();
+extern void* liballoc_alloc(int);
+extern int liballoc_free(void*, int);
+
 void* malloc(size_t);
 void* realloc(void*, size_t);
 void* calloc(size_t, size_t);

@@ -7,6 +7,7 @@
  */
 #pragma once
 
+#include <liblist.h>
 #include <string.h>
 
 /**
@@ -44,6 +45,11 @@ typedef struct modinfo {
 	const char modver[12];
 
 	/**
+	 * Kernel module dependencies
+	 */
+	const char** deps;
+
+	/**
 	 * Kernel version string
 	 */
 	const char krnlver[12];
@@ -57,6 +63,9 @@ typedef struct modinfo {
 	 * Module exit function
 	 */
 	modfini_t fini;
+
+	SLIST_ENTRY(struct modinfo) mod_installed;
+	SLIST_ENTRY(struct modinfo) mod_loaded;
 } __attribute__((packed)) modinfo_t;
 
 #ifdef NEWLAND_MODULE
@@ -82,7 +91,8 @@ typedef struct modinfo {
  * @param[in] license The license of the module
  * @param[in] modver The version of the kernel module
  */
-#define MODULE(id, author, license, modver) modinfo_t kmod_## id __attribute__((section("modinfo"))) = { #id, author, license, modver, NEWLAND_VERSION, init, fini }
+#define MODULE(id, author, license, modver, ...) modinfo_t kmod_## id __attribute__((section("modinfo"))) = { #id, author, license, modver, NULL, NEWLAND_VERSION, init, fini }
+#define MODULE_DEPENDS(id, author, license, modver, ...) modinfo_t kmod_## id __attribute__((section("modinfo"))) = { #id, author, license, modver, { __VA_ARGS__ __VA_OPT__(,) }, NEWLAND_VERSION, init, fini }
 #else
 #include <newland-config.h>
 
@@ -108,15 +118,9 @@ typedef struct modinfo {
  * @param[in] license The license of the module
  * @param[in] modver The version of the kernel module
  */
-#define MODULE(id, author, license, modver) modinfo_t kmod_## id __attribute__((section("modinfo"))) = { #id, author, license, modver, NEWLAND_VERSION, kmod_## id ##_init, kmod_## id ##_fini }
+#define MODULE(id, author, license, modver, ...) modinfo_t kmod_## id __attribute__((section("modinfo"))) = { #id, author, license, modver, NULL, NEWLAND_VERSION, kmod_## id ##_init, kmod_## id ##_fini }
+#define MODULE_DEPENDS(id, author, license, modver, ...) modinfo_t kmod_## id __attribute__((section("modinfo"))) = { #id, author, license, modver, { __VA_ARGS__ __VA_OPT__(,) }, NEWLAND_VERSION, kmod_## id ##_init, kmod_## id ##_fini }
 #endif
-
-/**
- * Get installed kernel module count
- *
- * @return A number
- */
-size_t module_count();
 
 /**
  * Finds a kernel modules by its ID
@@ -132,3 +136,19 @@ modinfo_t* module_fromid(const char* id);
  * @return Zero on success or a negative errno code
  */
 int modules_init();
+
+/**
+ * Installs a kernel module
+ *
+ * @param[in] module The kernel module to install
+ * @return Zero on success or a negative errno code
+ */
+int module_install(modinfo_t* module);
+
+/**
+ * Initializes a kernel module
+ *
+ * @param[in] id The ID of the kernel module to initialize
+ * @return Zero on success or a negative errno code
+ */
+int module_init(const char* id);
