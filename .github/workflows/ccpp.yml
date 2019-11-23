@@ -10,6 +10,6 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: configure
-      run: cmake -S . -B build
+      run: mkdir -p build && cmake -S . -B build
     - name: make
       run: make -C build
