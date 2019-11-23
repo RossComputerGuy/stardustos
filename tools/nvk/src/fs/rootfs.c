@@ -108,6 +108,7 @@ static int rootfs_get_child(fs_node_t* node, fs_node_t** childptr, size_t index)
 					}
 					rootfs_node->rootfs = rootfs;
 					rootfs_node->path = p;
+					node->size = st.st_size;
 					node->impl = rootfs_node;
 					node->opts.get_child = rootfs_get_child;
 					node->opts.read = rootfs_read;

@@ -27,7 +27,7 @@ int modules_init() {
 	size_t modcount = (((uintptr_t)&__modules_end) - ((uintptr_t)&__modules_start)) / sizeof(modinfo_t);
 	printk(KLOG_INFO "modules: loading %d kernel modules\n", modcount);
 	for (size_t i = 0; i < modcount; i++) {
-		modinfo_t* mod = (modinfo_t*)(((uintptr_t)&__modules_start) + (sizeof(modinfo_t) * i) + (i == 0 ? 0 : 17));
+		modinfo_t* mod = (modinfo_t*)(((uintptr_t)&__modules_start) + (sizeof(modinfo_t) * i));
 		int r = module_install(mod);
 		if (r < 0) return r;
 	}

@@ -154,8 +154,15 @@ int proc_exec(const char* path, const char** argv) {
 
 	void* prog = malloc(node->size);
 	if (prog == NULL) return -NEWLAND_ENOMEM;
-	r = fs_node_read(&node, 0, &prog, node->size);
-	if (r < 0) return r;
+	size_t total = 0;
+	while (total < node->size) {
+		r = fs_node_read(&node, total, prog, node->size);
+		if (r < 0) {
+			free(prog);
+			return r;
+		}
+		total += r;
+	}
 
 	if (!elf_isvalid((elf_header_t*)prog)) {
 		free(prog);

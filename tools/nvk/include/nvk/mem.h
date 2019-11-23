@@ -1,6 +1,7 @@
 #pragma once
 
-#define NVK_RAM_START 0x0
-#define NVK_RAM_END 0xFFFFFF
+#define NVK_RAM_START 0
+#define NVK_RAM_SIZE (1024*1024*1024)
+#define NVK_RAM_END (NVK_RAM_START + NVK_RAM_SIZE)
 
 #define NVK_PROG_START (NVK_RAM_END + 1)
