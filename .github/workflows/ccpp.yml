@@ -9,7 +9,7 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
-    - name: configure
-      run: mkdir -p build && cd build && cmake ..
-    - name: make
-      run: make -C build
+    - name: Initialize Docker Container
+      run: ./scripts/docker-init.sh
+    - name: Build Docker Container
+      run: ./scripts/docker-run.sh
