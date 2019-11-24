@@ -9,6 +9,8 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
+    - name: Fix UID for Docker build user
+      run: ./scripts/docker-fix.sh
     - name: Initialize Docker Container
       run: ./scripts/docker-init.sh
     - name: Build Docker Container
