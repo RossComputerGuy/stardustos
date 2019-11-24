@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -e
+
+mkdir -p @PROJECT_BINARY_DIR@/build-musl
+cd @PROJECT_BINARY_DIR@/build-musl
+@PROJECT_SOURCE_DIR@/musl/configure --target=@CROSS_COMPILER@ --prefix=@PROJECT_BINARY_DIR@/crossroot
+make
+make install
+
+cd @PROJECT_SOURCE_DIR@/build-newlib
+make
+make install
