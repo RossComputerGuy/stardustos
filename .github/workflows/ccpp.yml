@@ -9,6 +9,8 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
+    - name: Download submodules
+      run: git submodule update --init --recursive
     - name: Fix UID for Docker build user
       run: ./scripts/docker-fix.sh
     - name: Initialize Docker Container
