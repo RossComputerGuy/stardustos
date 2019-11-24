@@ -19,3 +19,6 @@
 [submodule "newland/deps/liballoc"]
 	path = newland/deps/liballoc
 	url = https://github.com/blanham/liballoc/
+[submodule "toolchain/glibc"]
+	path = toolchain/glibc
+	url = git://sourceware.org/git/glibc.git

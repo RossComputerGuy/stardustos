@@ -2,12 +2,12 @@
 
 set -e
 
-mkdir -p @PROJECT_BINARY_DIR@/build-musl
-cd @PROJECT_BINARY_DIR@/build-musl
+mkdir -p @PROJECT_BINARY_DIR@/build-glibc
+cd @PROJECT_BINARY_DIR@/build-glibc
 export PATH=$PATH:@PROJECT_BINARY_DIR@/crossroot/bin
 export CROSS_COMPILE=@CROSS_COMPILER@-
 export CC=@CROSS_COMPILER@-gcc
-@PROJECT_SOURCE_DIR@/musl/configure --target=@CROSS_COMPILER@ --prefix=@PROJECT_BINARY_DIR@/crossroot
+@PROJECT_SOURCE_DIR@/glibc/configure --target=@CROSS_COMPILER@ --prefix=@PROJECT_BINARY_DIR@/crossroot
 make
 make install
 
