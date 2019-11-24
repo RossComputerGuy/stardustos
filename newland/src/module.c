@@ -24,8 +24,8 @@ modinfo_t* module_fromid(const char* id) {
 
 int modules_init() {
 /** Install the modules from the binary into the list **/
-	size_t modcount = (((uintptr_t)&__modules_end) - ((uintptr_t)&__modules_start)) / sizeof(modinfo_t);
-	printk(KLOG_INFO "modules: loading %d kernel modules\n", modcount);
+	size_t mc = (((uintptr_t)&__modules_end) - ((uintptr_t)&__modules_start)) / sizeof(modinfo_t);
+	printk(KLOG_INFO "modules: loading %d kernel modules\n", mc);
 	for (size_t i = 0; i < mc; i++) {
 		modinfo_t* mod = (modinfo_t*)(((uintptr_t)&__modules_start) + (sizeof(modinfo_t) * i));
 		int r = module_install(mod);
