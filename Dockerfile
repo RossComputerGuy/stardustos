@@ -13,8 +13,8 @@ COPY data/novnc-index.html /opt/novnc/index.html
 COPY data/start-vnc-session.sh /usr/bin/
 RUN chmod +x /usr/bin/start-vnc-session.sh
 
-RUN useradd builder -m -u 1000 && \
-	passwd -d builder
+RUN useradd builder -m -u 1000
+RUN passwd -d builder
 
 RUN gem install mdl
 
