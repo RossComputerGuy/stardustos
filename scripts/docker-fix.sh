@@ -3,8 +3,6 @@
 p=$(dirname "$0")
 p=$(dirname "$p")
 p=$(readlink -f "$p")
-
-id=$(id -u)
 line=$(grep "RUN useradd" "$p/Dockerfile")
-rep=$(echo "$line" | sed -re "s/(-u)[^=]*$/\1 $id/")
-sed "s|$line|$rep|g" "$p/Dockerfile"
+rep=$(echo "$line" | sed -r "s/(-u)[^=]*$/\1 $(id -u)/")
+sed -i "s|$line|$rep|g" "$p/Dockerfile"
