@@ -134,7 +134,10 @@ static int rootfs_mount(fs_node_t** targetptr, fs_node_t* source, unsigned long 
 	rootfs->path = (char*)data;
 
 	int r = fs_node_create(targetptr, "/", 6 << FS_NODE_DIR);
-	if (r < 0) return r;
+	if (r < 0) {
+		free(rootfs);
+		return r;
+	}
 	(*targetptr)->impl = rootfs;
 	(*targetptr)->opts.get_child = rootfs_get_child;
 	return 0;

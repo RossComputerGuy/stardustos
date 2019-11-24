@@ -3,6 +3,7 @@
  */
 #include <newland/arch/mem.h>
 #include <newland/alloc.h>
+#include <liballoc.h>
 
 int liballoc_lock() {
 	return 0;
