@@ -1,8 +1,8 @@
 FROM debian:sid
 
-RUN dpkg --add-architecture i386 >/dev/null && \
+RUN dpkg --add-architecture i386 >/dev/null 2>&1 && \
 	apt-get update -y >/dev/null 2>&1 && \
-	yes | apt-get install -y build-essential libssl-dev texinfo libgmp10 libmpfr6 libmpc3 cpio rsync gcc-7-multilib flex bc bison grub grub-pc-bin bash-completion xorriso gcc gdb python cmake zip unzip curl cppcheck rubygems cscope doxygen graphviz git xvfb x11vnc qemu-system openbox libgmp-dev libmpfr-dev libmpc-dev >/dev/null \
+	yes | apt-get install -y build-essential gawk libssl-dev texinfo libgmp10 libmpfr6 libmpc3 cpio rsync gcc-7-multilib flex bc bison grub grub-pc-bin bash-completion xorriso gcc gdb python cmake zip unzip curl cppcheck rubygems cscope doxygen graphviz git xvfb x11vnc qemu-system openbox libgmp-dev libmpfr-dev libmpc-dev >/dev/null \
 	&& apt-get clean >/dev/null 2>&1 && rm -rf /var/lib/apt/lists/* /tmp/*
 
 ENV WINDOW_MANAGER="openbox"
