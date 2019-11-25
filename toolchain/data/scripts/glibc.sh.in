@@ -7,7 +7,8 @@ cd @PROJECT_BINARY_DIR@/build-glibc
 export PATH=$PATH:@PROJECT_BINARY_DIR@/crossroot/bin
 export CROSS_COMPILE=@CROSS_COMPILER@-
 export CC=@CROSS_COMPILER@-gcc
-@PROJECT_SOURCE_DIR@/glibc/configure --target=@CROSS_COMPILER@ --prefix=@PROJECT_BINARY_DIR@/crossroot
+export CHOST=$(find /usr/bin -name "$(uname -m)-*-linux-gnu-gcc" | awk -F "-" 'sub(FS $NF, x)')
+@PROJECT_SOURCE_DIR@/glibc/configure --target=@CROSS_COMPILER@ --prefix=@PROJECT_BINARY_DIR@/crossroot --host=$CHOST
 make
 make install
 
