@@ -31,5 +31,5 @@ The TTY device must have already been registered for this function to work and
 the name cannot be `NULL`. The kernel event system sends the `tty:unregister`
 event and the TTY will be unregistered in the central device API.
 
-[register_tty]: https://github.com/RossComputerGuy/stardustos/blob/master/newland/src/dev/tty.c#L51
-[unregister_tty]: https://github.com/RossComputerGuy/stardustos/blob/master/newland/src/dev/tty.c#L68
+[register_tty]: https://github.com/RossComputerGuy/stardustos/blob/master/#L
+[unregister_tty]: https://github.com/RossComputerGuy/stardustos/blob/master/#L

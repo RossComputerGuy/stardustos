@@ -28,5 +28,5 @@ the kernel event system sends a `blkdev:unregister` event. The function used is
 called [`unregister_blkdev`][unregister_blkdev] and just requires the block device
 name.
 
-[register_blkdev]: https://github.com/RossComputerGuy/stardustos/blob/master/newland/src/dev/block.c#L89
-[unregister_blkdev]: https://github.com/RossComputerGuy/stardustos/blob/master/newland/src/dev/block.c#L108
+[register_blkdev]: https://github.com/RossComputerGuy/stardustos/blob/master/#L
+[unregister_blkdev]: https://github.com/RossComputerGuy/stardustos/blob/master/#L
